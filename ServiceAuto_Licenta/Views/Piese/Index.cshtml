@@ -1,0 +1,220 @@
+﻿@model IEnumerable<ServiceAutoLicenta.Models.Entities.Piesa>
+@{
+    ViewData["Title"] = "Piese de schimb";
+}
+
+<div class="page-header">
+    <div>
+        <h2>Parts Inventory</h2>
+        <p>Gestionează stocurile de piese de schimb</p>
+    </div>
+    <a asp-action="Adauga" class="btn-primary-custom">
+        <i class="bi bi-plus-lg"></i> Piesă nouă
+    </a>
+</div>
+
+@if (TempData["Succes"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show mb-4">
+        <i class="bi bi-check-circle me-2"></i>@TempData["Succes"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["Eroare"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show mb-4">
+        <i class="bi bi-exclamation-circle me-2"></i>@TempData["Eroare"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<!-- Stat cards -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3 col-sm-6">
+        <div class="stat-card">
+            <div style="display:flex;align-items:center;gap:16px;">
+                <div class="stat-icon" style="background:#eff6ff;margin-bottom:0;">
+                    <i class="bi bi-gear-fill" style="color:#2563eb;"></i>
+                </div>
+                <div>
+                    <div class="stat-value" style="font-size:22px;">@Model.Count()</div>
+                    <div class="stat-label">Total Piese</div>
+                    <div style="font-size:11px;color:var(--text-muted);">SKUs urmărite</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="stat-card">
+            <div style="display:flex;align-items:center;gap:16px;">
+                <div class="stat-icon" style="background:#fef2f2;margin-bottom:0;">
+                    <i class="bi bi-exclamation-triangle-fill" style="color:#ef4444;"></i>
+                </div>
+                <div>
+                    <div class="stat-value" style="font-size:22px;color:#ef4444;">@(ViewBag.NrAlerte ?? 0)</div>
+                    <div class="stat-label">Stoc scăzut</div>
+                    <div style="font-size:11px;color:var(--text-muted);">Necesită reaprovizionare</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="stat-card">
+            <div style="display:flex;align-items:center;gap:16px;">
+                <div class="stat-icon" style="background:#fef2f2;margin-bottom:0;">
+                    <i class="bi bi-box-seam" style="color:#ef4444;"></i>
+                </div>
+                <div>
+                    <div class="stat-value" style="font-size:22px;color:#ef4444;">@Model.Count(p => p.StocCurent == 0)</div>
+                    <div class="stat-label">Stoc epuizat</div>
+                    <div style="font-size:11px;color:var(--text-muted);">Indisponibile</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="stat-card">
+            <div style="display:flex;align-items:center;gap:16px;">
+                <div class="stat-icon" style="background:#f0fdf4;margin-bottom:0;">
+                    <i class="bi bi-cash-stack" style="color:#16a34a;"></i>
+                </div>
+                <div>
+                    <div class="stat-value" style="font-size:18px;color:#16a34a;">@Model.Sum(p => p.StocCurent * p.PretAchizitie).ToString("N0") lei</div>
+                    <div class="stat-label">Valoare stoc</div>
+                    <div style="font-size:11px;color:var(--text-muted);">Total la preț achiziție</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Alertă stoc scăzut -->
+@if ((ViewBag.NrAlerte ?? 0) > 0 && ViewBag.StocScazut != true)
+{
+    <div class="alert-warning-custom mb-4">
+        <i class="bi bi-exclamation-triangle-fill" style="color:#d97706;font-size:18px;"></i>
+        <span><strong>@ViewBag.NrAlerte piese</strong> au stocul scăzut și necesită reaprovizionare.</span>
+        <a asp-action="Index" asp-route-stocScazut="true"
+           style="margin-left:auto;background:#f59e0b;color:white;padding:5px 12px;border-radius:6px;font-size:13px;text-decoration:none;font-weight:500;">
+            Arată stoc scăzut
+        </a>
+    </div>
+}
+
+<!-- Filtre + Căutare -->
+<div class="content-card" style="margin-bottom:16px;">
+    <div style="padding:14px 20px;">
+        <form method="get" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <div style="position:relative;flex:1;min-width:220px;">
+                <i class="bi bi-search" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:14px;"></i>
+                <input type="text" name="cautare" value="@ViewBag.Cautare"
+                       style="padding:8px 12px 8px 32px;border:1px solid var(--border-color);border-radius:8px;font-size:13px;width:100%;outline:none;"
+                       placeholder="Caută după denumire, cod, producător..." />
+            </div>
+            <select name="filtru" style="padding:8px 12px;border:1px solid var(--border-color);border-radius:8px;font-size:13px;outline:none;">
+                <option value="">Toate</option>
+                <option value="stocScazut" selected="@(ViewBag.StocScazut == true)">Stoc scăzut</option>
+                <option value="disponibil">Disponibil</option>
+            </select>
+            <button type="submit" class="btn-outline-custom">
+                <i class="bi bi-funnel me-1"></i> Filtrează
+            </button>
+            @if (!string.IsNullOrEmpty(ViewBag.Cautare) || ViewBag.StocScazut == true)
+            {
+                <a asp-action="Index" class="btn-outline-custom" style="color:#ef4444;border-color:#fca5a5;">
+                    <i class="bi bi-x-lg"></i>
+                </a>
+            }
+        </form>
+    </div>
+</div>
+
+<!-- Tabel piese -->
+<div class="content-card">
+    @if (!Model.Any())
+    {
+        <div style="text-align:center;padding:60px 20px;color:var(--text-muted);">
+            <i class="bi bi-gear" style="font-size:3rem;opacity:0.3;"></i>
+            <p style="margin-top:12px;">Nu există piese înregistrate.</p>
+            <a asp-action="Adauga" class="btn-primary-custom" style="margin-top:8px;">
+                <i class="bi bi-plus-lg"></i> Adaugă prima piesă
+            </a>
+        </div>
+    }
+    else
+    {
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>Piesă</th>
+                    <th>Categorie</th>
+                    <th>Stoc</th>
+                    <th>Preț</th>
+                    <th>Producător</th>
+                    <th>Status</th>
+                    <th>Acțiuni</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var piesa in Model)
+                {
+                    <tr>
+                        <td>
+                            <div style="font-weight:500;">@piesa.Denumire</div>
+                            <div style="font-size:12px;color:var(--text-muted);font-family:monospace;">@piesa.CodPiesa</div>
+                        </td>
+                        <td>
+                            <span style="background:#f1f5f9;color:var(--text-muted);padding:3px 10px;border-radius:20px;font-size:12px;">
+                                Piesă
+                            </span>
+                        </td>
+                        <td>
+                            @{
+                                int procent = piesa.StocMinim > 0 ? Math.Min(100, (int)((double)piesa.StocCurent / piesa.StocMinim * 100)) : 100;
+                                string culoare = piesa.StocCurent == 0 ? "#ef4444" : piesa.StocScazut ? "#f59e0b" : "#16a34a";
+                            }
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                <div class="stock-bar">
+                                    <div class="stock-bar-fill" style="width:@(Math.Min(procent, 100))%;background:@culoare;"></div>
+                                </div>
+                                <span style="font-size:13px;font-weight:500;">@piesa.StocCurent / min @piesa.StocMinim</span>
+                            </div>
+                        </td>
+                        <td style="font-size:13px;">@piesa.PretVanzare.ToString("N2") lei</td>
+                        <td style="font-size:13px;color:var(--text-muted);">@(piesa.Producator ?? "-")</td>
+                        <td>
+                            @if (piesa.StocCurent == 0)
+                            {
+                                <span style="background:#fef2f2;color:#dc2626;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:500;">Epuizat</span>
+                            }
+                            else if (piesa.StocScazut)
+                            {
+                                <span style="background:#fffbeb;color:#d97706;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:500;">Stoc scăzut</span>
+                            }
+                            else
+                            {
+                                <span style="background:#f0fdf4;color:#16a34a;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:500;">În stoc</span>
+                            }
+                        </td>
+                        <td>
+                            <div style="display:flex;gap:6px;">
+                                <a asp-action="Detalii" asp-route-id="@piesa.Id"
+                                   class="btn-outline-custom" style="padding:5px 10px;">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a asp-action="Editeaza" asp-route-id="@piesa.Id"
+                                   class="btn-outline-custom" style="padding:5px 10px;">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a asp-action="Sterge" asp-route-id="@piesa.Id"
+                                   class="btn-outline-custom" style="padding:5px 10px;color:#ef4444;border-color:#fca5a5;">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

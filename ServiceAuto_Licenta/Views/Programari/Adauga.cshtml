@@ -1,0 +1,67 @@
+﻿@model ServiceAutoLicenta.Models.Entities.Programare
+@{
+    ViewData["Title"] = "Programare nouă";
+}
+
+<div class="page-header">
+    <div style="display:flex;align-items:center;gap:12px;">
+        <a asp-action="Index" class="btn-outline-custom" style="padding:8px 12px;">
+            <i class="bi bi-arrow-left"></i>
+        </a>
+        <div>
+            <h2>Programare nouă</h2>
+            <p>Creează o programare nouă în service</p>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="form-card">
+            <form asp-action="Adauga" asp-controller="Programari" method="post">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4"></div>
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label">Mașină *</label>
+                        <select asp-for="MasinaId" asp-items="ViewBag.MasinaId" class="form-select">
+                            <option value="">-- Selectează mașina --</option>
+                        </select>
+                        <span asp-validation-for="MasinaId" class="text-danger" style="font-size:12px;"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="DataIntrare" class="form-label">Data intrare *</label>
+                        <input asp-for="DataIntrare" type="date" class="form-control" />
+                        <span asp-validation-for="DataIntrare" class="text-danger" style="font-size:12px;"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="DataIesire" class="form-label">Data ieșire estimată</label>
+                        <input asp-for="DataIesire" type="date" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Status" class="form-label">Status</label>
+                        <select asp-for="Status" class="form-select"
+                                asp-items="Html.GetEnumSelectList<ServiceAutoLicenta.Models.Entities.StatusProgramare>()">
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <label asp-for="Observatii" class="form-label">Observații</label>
+                        <textarea asp-for="Observatii" class="form-control" rows="3"
+                                  placeholder="Descrie problema sau serviciul solicitat..."></textarea>
+                    </div>
+                </div>
+                <div style="display:flex;gap:12px;margin-top:28px;">
+                    <button type="submit" class="btn-primary-custom">
+                        <i class="bi bi-check-lg"></i> Creează programare
+                    </button>
+                    <a asp-action="Index" class="btn-outline-custom">Anulează</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

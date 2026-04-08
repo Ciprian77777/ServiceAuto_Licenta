@@ -1,0 +1,72 @@
+﻿@model ServiceAutoLicenta.Models.Entities.Client
+@{
+    ViewData["Title"] = "Editează client";
+}
+
+<div class="page-header">
+    <div style="display:flex;align-items:center;gap:12px;">
+        <a asp-action="Index" class="btn-outline-custom" style="padding:8px 12px;">
+            <i class="bi bi-arrow-left"></i>
+        </a>
+        <div>
+            <h2>Editează client</h2>
+            <p>Modifică datele clientului @Model.NumeComplet</p>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="form-card">
+            <form asp-action="Editeaza" asp-controller="Clienti" method="post">
+                <input type="hidden" asp-for="Id" />
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4"></div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="Nume" class="form-label">Nume *</label>
+                        <input asp-for="Nume" class="form-control" />
+                        <span asp-validation-for="Nume" class="text-danger" style="font-size:12px;"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Prenume" class="form-label">Prenume *</label>
+                        <input asp-for="Prenume" class="form-control" />
+                        <span asp-validation-for="Prenume" class="text-danger" style="font-size:12px;"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Telefon" class="form-label">Telefon *</label>
+                        <input asp-for="Telefon" class="form-control" />
+                        <span asp-validation-for="Telefon" class="text-danger" style="font-size:12px;"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Email" class="form-label">Email</label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger" style="font-size:12px;"></span>
+                    </div>
+                    <div class="col-12">
+                        <label asp-for="Adresa" class="form-label">Adresă</label>
+                        <input asp-for="Adresa" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Cnp" class="form-label">CNP</label>
+                        <input asp-for="Cnp" class="form-control" />
+                        <span asp-validation-for="Cnp" class="text-danger" style="font-size:12px;"></span>
+                    </div>
+                </div>
+
+                <div style="display:flex;gap:12px;margin-top:28px;">
+                    <button type="submit" class="btn-primary-custom">
+                        <i class="bi bi-check-lg"></i> Salvează modificările
+                    </button>
+                    <a asp-action="Index" class="btn-outline-custom">Anulează</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

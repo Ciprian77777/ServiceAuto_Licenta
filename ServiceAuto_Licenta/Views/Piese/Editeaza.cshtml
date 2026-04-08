@@ -1,0 +1,77 @@
+﻿@model ServiceAutoLicenta.Models.Entities.Piesa
+@{
+    ViewData["Title"] = "Editează piesă";
+}
+
+<div class="page-header">
+    <div style="display:flex;align-items:center;gap:12px;">
+        <a asp-action="Index" class="btn-outline-custom" style="padding:8px 12px;">
+            <i class="bi bi-arrow-left"></i>
+        </a>
+        <div>
+            <h2>Editează piesă</h2>
+            <p>@Model.Denumire</p>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="form-card">
+            <form asp-action="Editeaza" asp-controller="Piese" method="post">
+                <input type="hidden" asp-for="Id" />
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4"></div>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="CodPiesa" class="form-label">Cod piesă *</label>
+                        <input asp-for="CodPiesa" class="form-control" />
+                        <span asp-validation-for="CodPiesa" class="text-danger" style="font-size:12px;"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Producator" class="form-label">Producător</label>
+                        <input asp-for="Producator" class="form-control" />
+                    </div>
+                    <div class="col-12">
+                        <label asp-for="Denumire" class="form-label">Denumire *</label>
+                        <input asp-for="Denumire" class="form-control" />
+                        <span asp-validation-for="Denumire" class="text-danger" style="font-size:12px;"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="PretAchizitie" class="form-label">Preț achiziție *</label>
+                        <div class="input-group">
+                            <input asp-for="PretAchizitie" class="form-control" />
+                            <span class="input-group-text">lei</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="PretVanzare" class="form-label">Preț vânzare *</label>
+                        <div class="input-group">
+                            <input asp-for="PretVanzare" class="form-control" />
+                            <span class="input-group-text">lei</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="StocCurent" class="form-label">Stoc curent</label>
+                        <input asp-for="StocCurent" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="StocMinim" class="form-label">Stoc minim</label>
+                        <input asp-for="StocMinim" class="form-control" />
+                    </div>
+                </div>
+                <div style="display:flex;gap:12px;margin-top:28px;">
+                    <button type="submit" class="btn-primary-custom">
+                        <i class="bi bi-check-lg"></i> Salvează modificările
+                    </button>
+                    <a asp-action="Index" class="btn-outline-custom">Anulează</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

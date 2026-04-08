@@ -1,0 +1,131 @@
+﻿@model ServiceAutoLicenta.Models.Entities.Client
+@{
+    ViewData["Title"] = "Detalii client";
+}
+
+<div class="page-header">
+    <div style="display:flex;align-items:center;gap:12px;">
+        <a asp-action="Index" class="btn-outline-custom" style="padding:8px 12px;">
+            <i class="bi bi-arrow-left"></i>
+        </a>
+        <div>
+            <h2>@Model.NumeComplet</h2>
+            <p>Detalii client și istoricul mașinilor</p>
+        </div>
+    </div>
+    <a asp-action="Editeaza" asp-route-id="@Model.Id" class="btn-outline-custom">
+        <i class="bi bi-pencil"></i> Editează
+    </a>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="content-card mb-4">
+            <div class="content-card-header">
+                <h5>Date personale</h5>
+            </div>
+            <div style="padding:20px;">
+                <div style="text-align:center;margin-bottom:20px;">
+                    <div class="client-avatar" style="width:64px;height:64px;font-size:22px;margin:0 auto 12px;">
+                        @(Model.Nume.Substring(0, 1))@(Model.Prenume.Substring(0, 1))
+                    </div>
+                    <div style="font-weight:600;font-size:16px;">@Model.NumeComplet</div>
+                    <div style="font-size:13px;color:var(--text-muted);">Client din @Model.CreatedAt.ToString("MMM yyyy")</div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:12px;">
+                    <div style="display:flex;align-items:center;gap:10px;font-size:14px;">
+                        <i class="bi bi-telephone" style="color:var(--text-muted);width:16px;"></i>
+                        <span>@Model.Telefon</span>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.Email))
+                    {
+                        <div style="display:flex;align-items:center;gap:10px;font-size:14px;">
+                            <i class="bi bi-envelope" style="color:var(--text-muted);width:16px;"></i>
+                            <span>@Model.Email</span>
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.Adresa))
+                    {
+                        <div style="display:flex;align-items:center;gap:10px;font-size:14px;">
+                            <i class="bi bi-geo-alt" style="color:var(--text-muted);width:16px;"></i>
+                            <span>@Model.Adresa</span>
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.Cnp))
+                    {
+                        <div style="display:flex;align-items:center;gap:10px;font-size:14px;">
+                            <i class="bi bi-card-text" style="color:var(--text-muted);width:16px;"></i>
+                            <span>@Model.Cnp</span>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="content-card">
+            <div class="content-card-header">
+                <div>
+                    <h5>Mașini (@Model.Masini.Count)</h5>
+                    <p>Vehiculele înregistrate</p>
+                </div>
+                <a asp-controller="Masini" asp-action="Adauga" asp-route-clientId="@Model.Id"
+                   class="btn-primary-custom">
+                    <i class="bi bi-plus-lg"></i> Adaugă mașină
+                </a>
+            </div>
+            @if (!Model.Masini.Any())
+            {
+                <div style="text-align:center;padding:40px;color:var(--text-muted);">
+                    <i class="bi bi-car-front" style="font-size:2.5rem;opacity:0.3;"></i>
+                    <p style="margin-top:10px;">Nicio mașină înregistrată.</p>
+                </div>
+            }
+            else
+            {
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Mașină</th>
+                            <th>Nr. înmatriculare</th>
+                            <th>Km</th>
+                            <th>Programări</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var masina in Model.Masini)
+                        {
+                            <tr>
+                                <td>
+                                    <div style="font-weight:500;">@masina.Marca @masina.ModelMasina</div>
+                                    <div style="font-size:12px;color:var(--text-muted);">@masina.AnFabricatie</div>
+                                </td>
+                                <td>
+                                    <span style="background:#f1f5f9;padding:4px 10px;border-radius:6px;font-size:13px;font-weight:600;">
+                                        @masina.NrInmatriculare
+                                    </span>
+                                </td>
+                                <td style="font-size:13px;color:var(--text-muted);">
+                                    @(masina.KmActuali?.ToString("N0") ?? "0") km
+                                </td>
+                                <td>
+                                    <span style="background:#eff6ff;color:#2563eb;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;">
+                                        @masina.Programari.Count
+                                    </span>
+                                </td>
+                                <td>
+                                    <a asp-controller="Masini" asp-action="Detalii"
+                                       asp-route-id="@masina.Id" class="btn-outline-custom" style="padding:5px 10px;">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+</div>

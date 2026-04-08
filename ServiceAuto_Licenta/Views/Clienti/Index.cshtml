@@ -1,0 +1,185 @@
+﻿@model IEnumerable<ServiceAutoLicenta.Models.Entities.Client>
+@{
+    ViewData["Title"] = "Clienți";
+}
+
+<div class="page-header">
+    <div>
+        <h2>Client Management</h2>
+        <p>Gestionează baza de date de clienți</p>
+    </div>
+    <a asp-action="Adauga" class="btn-primary-custom">
+        <i class="bi bi-plus-lg"></i> Client nou
+    </a>
+</div>
+
+@if (TempData["Succes"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show mb-4">
+        <i class="bi bi-check-circle me-2"></i>@TempData["Succes"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["Eroare"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show mb-4">
+        <i class="bi bi-exclamation-circle me-2"></i>@TempData["Eroare"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<!-- Stat cards -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div style="display:flex;align-items:center;gap:16px;">
+                <div class="stat-icon" style="background:#eff6ff;margin-bottom:0;">
+                    <i class="bi bi-people-fill" style="color:#2563eb;"></i>
+                </div>
+                <div>
+                    <div class="stat-value" style="font-size:22px;">@Model.Count()</div>
+                    <div class="stat-label">Total Clienți</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div style="display:flex;align-items:center;gap:16px;">
+                <div class="stat-icon" style="background:#f0fdf4;margin-bottom:0;">
+                    <i class="bi bi-car-front-fill" style="color:#16a34a;"></i>
+                </div>
+                <div>
+                    <div class="stat-value" style="font-size:22px;">@Model.Sum(c => c.Masini.Count)</div>
+                    <div class="stat-label">Total Mașini</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div style="display:flex;align-items:center;gap:16px;">
+                <div class="stat-icon" style="background:#f5f3ff;margin-bottom:0;">
+                    <i class="bi bi-person-plus-fill" style="color:#7c3aed;"></i>
+                </div>
+                <div>
+                    <div class="stat-value" style="font-size:22px;">
+                        @Model.Count(c => c.CreatedAt >= DateTime.Now.AddMonths(-1))
+                    </div>
+                    <div class="stat-label">Noi luna aceasta</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabel clienți -->
+<div class="content-card">
+    <div class="content-card-header">
+        <form method="get" class="d-flex gap-2 align-items-center">
+            <div style="position:relative;">
+                <i class="bi bi-search" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:14px;"></i>
+                <input type="text" name="cautare" value="@ViewBag.Cautare"
+                       style="padding:8px 12px 8px 32px;border:1px solid var(--border-color);border-radius:8px;font-size:13px;width:260px;outline:none;"
+                       placeholder="Caută după nume, telefon, email..." />
+            </div>
+            <button type="submit" class="btn-outline-custom">Caută</button>
+            @if (!string.IsNullOrEmpty(ViewBag.Cautare))
+            {
+                <a asp-action="Index" class="btn-outline-custom" style="color:#ef4444;border-color:#fca5a5;">
+                    <i class="bi bi-x-lg"></i>
+                </a>
+            }
+        </form>
+        <span style="font-size:13px;color:var(--text-muted);">@Model.Count() clienți găsiți</span>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div style="text-align:center;padding:60px 20px;color:var(--text-muted);">
+            <i class="bi bi-people" style="font-size:3rem;opacity:0.3;"></i>
+            <p style="margin-top:12px;">Nu există clienți înregistrați.</p>
+            <a asp-action="Adauga" class="btn-primary-custom" style="margin-top:8px;">
+                <i class="bi bi-plus-lg"></i> Adaugă primul client
+            </a>
+        </div>
+    }
+    else
+    {
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>Client</th>
+                    <th>Telefon</th>
+                    <th>Email</th>
+                    <th>Mașini</th>
+                    <th>Client din</th>
+                    <th>Acțiuni</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var client in Model)
+                {
+                    <tr>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:12px;">
+                                <div class="client-avatar">
+                                    @(client.Nume.Substring(0, 1))@(client.Prenume.Substring(0, 1))
+                                </div>
+                                <div>
+                                    <div style="font-weight:500;">@client.NumeComplet</div>
+                                    @if (!string.IsNullOrEmpty(client.Adresa))
+                                    {
+                                        <div style="font-size:12px;color:var(--text-muted);">@client.Adresa</div>
+                                    }
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span style="font-size:13px;">
+                                <i class="bi bi-telephone" style="color:var(--text-muted);margin-right:4px;"></i>
+                                @client.Telefon
+                            </span>
+                        </td>
+                        <td style="font-size:13px;color:var(--text-muted);">
+                            @if (!string.IsNullOrEmpty(client.Email))
+                            {
+                                <i class="bi bi-envelope" style="margin-right:4px;"></i>
+                                @client.Email
+                            }
+                            else
+                            {
+
+                                <span>-</span>
+                            }
+                        </td>
+                        <td>
+                            <span style="background:#eff6ff;color:#2563eb;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;">
+                                @client.Masini.Count
+                            </span>
+                        </td>
+                        <td style="font-size:13px;color:var(--text-muted);">
+                            @client.CreatedAt.ToString("MMM dd, yyyy")
+                        </td>
+                        <td>
+                            <div style="display:flex;gap:6px;">
+                                <a asp-action="Detalii" asp-route-id="@client.Id"
+                                   class="btn-outline-custom" style="padding:5px 10px;" title="Detalii">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a asp-action="Editeaza" asp-route-id="@client.Id"
+                                   class="btn-outline-custom" style="padding:5px 10px;" title="Editează">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a asp-action="Sterge" asp-route-id="@client.Id"
+                                   class="btn-outline-custom" style="padding:5px 10px;color:#ef4444;border-color:#fca5a5;" title="Șterge">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

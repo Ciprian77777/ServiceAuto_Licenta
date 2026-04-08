@@ -1,0 +1,74 @@
+﻿@model ServiceAutoLicenta.Models.Entities.Masina
+@{
+    ViewData["Title"] = "Mașină nouă";
+}
+
+<div class="page-header">
+    <div style="display:flex;align-items:center;gap:12px;">
+        <a asp-action="Index" class="btn-outline-custom" style="padding:8px 12px;">
+            <i class="bi bi-arrow-left"></i>
+        </a>
+        <div>
+            <h2>Mașină nouă</h2>
+            <p>Adaugă un vehicul în sistem</p>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="form-card">
+            <form asp-action="Adauga" asp-controller="Masini" method="post">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4"></div>
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label">Proprietar *</label>
+                        <select asp-for="ClientId" asp-items="ViewBag.ClientId" class="form-select">
+                            <option value="">-- Selectează clientul --</option>
+                        </select>
+                        <span asp-validation-for="ClientId" class="text-danger" style="font-size:12px;"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Marca" class="form-label">Marcă *</label>
+                        <input asp-for="Marca" class="form-control" placeholder="ex: Dacia, VW, BMW" />
+                        <span asp-validation-for="Marca" class="text-danger" style="font-size:12px;"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="ModelMasina" class="form-label">Model *</label>
+                        <input asp-for="ModelMasina" class="form-control" placeholder="ex: Logan, Golf" />
+                        <span asp-validation-for="ModelMasina" class="text-danger" style="font-size:12px;"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="AnFabricatie" class="form-label">An fabricație</label>
+                        <input asp-for="AnFabricatie" class="form-control" placeholder="ex: 2020" />
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="NrInmatriculare" class="form-label">Nr. înmatriculare *</label>
+                        <input asp-for="NrInmatriculare" class="form-control" placeholder="ex: CJ 01 ABC" />
+                        <span asp-validation-for="NrInmatriculare" class="text-danger" style="font-size:12px;"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="KmActuali" class="form-label">Km actuali</label>
+                        <input asp-for="KmActuali" class="form-control" placeholder="ex: 45000" value="" />
+                    </div>
+                    <div class="col-12">
+                        <label asp-for="Vin" class="form-label">VIN</label>
+                        <input asp-for="Vin" class="form-control" placeholder="ex: WVWZZZAUZ12345679" />
+                    </div>
+                </div>
+                <div style="display:flex;gap:12px;margin-top:28px;">
+                    <button type="submit" class="btn-primary-custom">
+                        <i class="bi bi-check-lg"></i> Salvează mașina
+                    </button>
+                    <a asp-action="Index" class="btn-outline-custom">Anulează</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

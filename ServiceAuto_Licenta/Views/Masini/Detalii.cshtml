@@ -1,0 +1,131 @@
+﻿@model ServiceAutoLicenta.Models.Entities.Masina
+@using ServiceAutoLicenta.Models.Entities
+@{
+    ViewData["Title"] = "Detalii mașină";
+}
+
+<div class="page-header">
+    <div style="display:flex;align-items:center;gap:12px;">
+        <a asp-action="Index" class="btn-outline-custom" style="padding:8px 12px;">
+            <i class="bi bi-arrow-left"></i>
+        </a>
+        <div>
+            <h2>@Model.Marca @Model.ModelMasina</h2>
+            <p>@Model.NrInmatriculare — @Model.AnFabricatie</p>
+        </div>
+    </div>
+    <a asp-action="Editeaza" asp-route-id="@Model.Id" class="btn-outline-custom">
+        <i class="bi bi-pencil"></i> Editează
+    </a>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="content-card mb-4">
+            <div class="content-card-header"><h5>Date vehicul</h5></div>
+            <div style="padding:20px;display:flex;flex-direction:column;gap:14px;">
+                <div style="display:flex;justify-content:space-between;font-size:14px;">
+                    <span style="color:var(--text-muted);">Nr. înmatriculare</span>
+                    <span style="background:#f1f5f9;padding:3px 10px;border-radius:6px;font-weight:600;font-family:monospace;">@Model.NrInmatriculare</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:14px;">
+                    <span style="color:var(--text-muted);">Marcă / Model</span>
+                    <strong>@Model.Marca @Model.ModelMasina</strong>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:14px;">
+                    <span style="color:var(--text-muted);">An fabricație</span>
+                    <span>@(Model.AnFabricatie?.ToString() ?? "-")</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:14px;">
+                    <span style="color:var(--text-muted);">Km actuali</span>
+                    <span>@(Model.KmActuali?.ToString("N0") ?? "0") km</span>
+                </div>
+                @if (!string.IsNullOrEmpty(Model.Vin))
+                {
+                    <div style="display:flex;justify-content:space-between;font-size:14px;">
+                        <span style="color:var(--text-muted);">VIN</span>
+                        <span style="font-size:12px;font-family:monospace;">@Model.Vin</span>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="content-card">
+            <div class="content-card-header"><h5>Proprietar</h5></div>
+            <div style="padding:20px;">
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+                    <div class="client-avatar" style="width:44px;height:44px;font-size:15px;">
+                        @(Model.Client.Nume.Substring(0, 1))@(Model.Client.Prenume.Substring(0, 1))
+                    </div>
+                    <div>
+                        <div style="font-weight:600;">@Model.Client.NumeComplet</div>
+                        <div style="font-size:13px;color:var(--text-muted);">@Model.Client.Telefon</div>
+                    </div>
+                </div>
+                <a asp-controller="Clienti" asp-action="Detalii" asp-route-id="@Model.ClientId"
+                   class="btn-outline-custom" style="width:100%;justify-content:center;">
+                    <i class="bi bi-eye"></i> Vezi client
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="content-card">
+            <div class="content-card-header">
+                <div>
+                    <h5>Programări (@Model.Programari.Count)</h5>
+                    <p>Istoricul service-ului</p>
+                </div>
+                <a asp-controller="Programari" asp-action="Adauga" asp-route-masinaId="@Model.Id"
+                   class="btn-primary-custom">
+                    <i class="bi bi-plus-lg"></i> Programare nouă
+                </a>
+            </div>
+            @if (!Model.Programari.Any())
+            {
+                <div style="text-align:center;padding:40px;color:var(--text-muted);">
+                    <i class="bi bi-calendar-x" style="font-size:2.5rem;opacity:0.3;"></i>
+                    <p style="margin-top:10px;">Nicio programare înregistrată.</p>
+                </div>
+            }
+            else
+            {
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Data intrare</th>
+                            <th>Data ieșire</th>
+                            <th>Status</th>
+                            <th>Total</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var prog in Model.Programari.OrderByDescending(p => p.DataIntrare))
+                        {
+                            <tr>
+                                <td>@prog.DataIntrare.ToString("dd.MM.yyyy")</td>
+                                <td style="color:var(--text-muted);">@(prog.DataIesire?.ToString("dd.MM.yyyy") ?? "-")</td>
+                                <td>
+                                    <span class="badge-status @(prog.Status == StatusProgramare.Finalizata ? "badge-finalizata" :
+                                                                                                            prog.Status == StatusProgramare.InLucru ? "badge-inlucru" :
+                                                                                                            prog.Status == StatusProgramare.Anulata ? "badge-anulata" : "badge-scheduled")">
+                                @prog.Status
+                            </span>
+                        </td>
+                        <td style="font-weight:600;">@prog.TotalCuTva.ToString("N2") lei</td>
+                        <td>
+                            <a asp-controller="Programari" asp-action="Detalii"
+                               asp-route-id="@prog.Id" class="btn-outline-custom" style="padding:5px 10px;">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+                                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+</div>

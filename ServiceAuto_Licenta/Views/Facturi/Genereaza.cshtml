@@ -1,0 +1,134 @@
+﻿@model ServiceAutoLicenta.Models.Entities.Factura
+@using ServiceAutoLicenta.Models.Entities
+@{
+    ViewData["Title"] = "Generează factură";
+    var programare = ViewBag.Programare as Programare;
+}
+
+<div class="page-header">
+    <div style="display:flex;align-items:center;gap:12px;">
+        <a asp-controller="Programari" asp-action="Detalii" asp-route-id="@Model.ProgramareId"
+           class="btn-outline-custom" style="padding:8px 12px;">
+            <i class="bi bi-arrow-left"></i>
+        </a>
+        <div>
+            <h2>Generează factură</h2>
+            <p>Factură pentru programarea #@Model.ProgramareId</p>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Sumar programare -->
+    <div class="col-md-5">
+        <div class="content-card">
+            <div class="content-card-header"><h5>Sumar lucrări</h5></div>
+            <div style="padding:20px;">
+                @if (programare != null)
+                {
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border-color);">
+                        <div class="client-avatar">
+                            @(programare.Masina.Client.Nume.Substring(0, 1))@(programare.Masina.Client.Prenume.Substring(0, 1))
+                        </div>
+                        <div>
+                            <div style="font-weight:600;">@programare.Masina.Client.NumeComplet</div>
+                            <div style="font-size:13px;color:var(--text-muted);">@programare.Masina.NrInmatriculare — @programare.Masina.Marca @programare.Masina.ModelMasina</div>
+                        </div>
+                    </div>
+
+                    @foreach (var lucrare in programare.Lucrari)
+                    {
+                        <div style="margin-bottom:12px;">
+                            <div style="display:flex;justify-content:space-between;font-size:14px;font-weight:500;margin-bottom:4px;">
+                                <span>@lucrare.Denumire</span>
+                                <span>@lucrare.Manopera.ToString("N2") lei</span>
+                            </div>
+                            @foreach (var lp in lucrare.LucrarePiese)
+                            {
+                                <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted);padding-left:12px;">
+                                    <span>@lp.Piesa.Denumire × @lp.Cantitate</span>
+                                    <span>@lp.Subtotal.ToString("N2") lei</span>
+                                </div>
+                            }
+                        </div>
+                    }
+
+                    <div style="border-top:1px solid var(--border-color);padding-top:12px;margin-top:8px;">
+                        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;">
+                            <span style="color:var(--text-muted);">Subtotal</span>
+                            <span>@programare.TotalFaraTva.ToString("N2") lei</span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:10px;">
+                            <span style="color:var(--text-muted);">TVA (19%)</span>
+                            <span>@programare.Tva.ToString("N2") lei</span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;font-size:18px;font-weight:700;">
+                            <span>Total</span>
+                            <span style="color:#2563eb;">@programare.TotalCuTva.ToString("N2") lei</span>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Formular factură -->
+    <div class="col-md-7">
+        <div class="form-card">
+            <div style="font-weight:600;font-size:15px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border-color);">
+                <i class="bi bi-file-earmark-text me-2" style="color:#2563eb;"></i>Date factură
+            </div>
+            <form asp-action="Genereaza" asp-controller="Facturi" method="post">
+                <input type="hidden" asp-for="ProgramareId" />
+                <input type="hidden" asp-for="Subtotal" />
+                <input type="hidden" asp-for="TvaValoare" />
+                <input type="hidden" asp-for="Total" />
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="SerieNumar" class="form-label">Serie / Număr *</label>
+                        <input asp-for="SerieNumar" class="form-control" style="font-family:monospace;" />
+                        <span asp-validation-for="SerieNumar" class="text-danger" style="font-size:12px;"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="DataEmitere" class="form-label">Data emitere</label>
+                        <input asp-for="DataEmitere" type="date" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="DataScadenta" class="form-label">Data scadență</label>
+                        <input asp-for="DataScadenta" type="date" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="StatusPlata" class="form-label">Status plată</label>
+                        <select asp-for="StatusPlata" class="form-select"
+                                asp-items="Html.GetEnumSelectList<ServiceAutoLicenta.Models.Entities.StatusPlata>()">
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="MetodaPlata" class="form-label">Metodă plată</label>
+                        <select asp-for="MetodaPlata" class="form-select"
+                                asp-items="Html.GetEnumSelectList<ServiceAutoLicenta.Models.Entities.MetodaPlata>()">
+                            <option value="">-- Selectează --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display:flex;gap:12px;margin-top:28px;">
+                    <button type="submit" class="btn-primary-custom">
+                        <i class="bi bi-file-earmark-check"></i> Generează factura
+                    </button>
+                    <a asp-controller="Programari" asp-action="Detalii"
+                       asp-route-id="@Model.ProgramareId" class="btn-outline-custom">
+                        Anulează
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
