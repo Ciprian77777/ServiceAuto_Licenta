@@ -1,25 +1,33 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ServiceAutoLicenta.Data;
 using ServiceAutoLicenta.Models.Entities;
+
 namespace ServiceAutoLicenta.Controllers
 {
+    [Authorize]
     public class ProgramariController : Controller
     {
         private readonly ServiceAutoLicentaContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public ProgramariController(ServiceAutoLicentaContext context)
+        public ProgramariController(ServiceAutoLicentaContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
-        // GET: /Programari
+        private string GetUserId() => _userManager.GetUserId(User)!;
+
         public async Task<IActionResult> Index(string? cautare, string? status)
         {
+            var userId = GetUserId();
             var programari = _context.Programari
-                .Include(p => p.Masina)
-                    .ThenInclude(m => m.Client)
+                .Include(p => p.Masina).ThenInclude(m => m.Client)
+                .Where(p => p.Masina.Client.UserId == userId)
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(cautare))
@@ -32,52 +40,42 @@ namespace ServiceAutoLicenta.Controllers
             }
 
             if (!string.IsNullOrEmpty(status) && Enum.TryParse<StatusProgramare>(status, out var statusEnum))
-            {
                 programari = programari.Where(p => p.Status == statusEnum);
-            }
 
             ViewBag.Cautare = cautare;
             ViewBag.Status = status;
-            ViewBag.StatusList = new SelectList(Enum.GetValues(typeof(StatusProgramare)).Cast<StatusProgramare>()
-                .Select(s => new { Value = s.ToString(), Text = s.ToString() }), "Value", "Text", status);
 
             return View(await programari.OrderByDescending(p => p.DataIntrare).ToListAsync());
         }
 
-        // GET: /Programari/Detalii/5
         public async Task<IActionResult> Detalii(int? id)
         {
             if (id == null) return NotFound();
 
             var programare = await _context.Programari
-                .Include(p => p.Masina)
-                    .ThenInclude(m => m.Client)
-                .Include(p => p.Lucrari)
-                    .ThenInclude(l => l.LucrarePiese)
-                        .ThenInclude(lp => lp.Piesa)
+                .Include(p => p.Masina).ThenInclude(m => m.Client)
+                .Include(p => p.Lucrari).ThenInclude(l => l.LucrarePiese).ThenInclude(lp => lp.Piesa)
                 .Include(p => p.Factura)
-                .FirstOrDefaultAsync(p => p.Id == id);
+                .FirstOrDefaultAsync(p => p.Id == id && p.Masina.Client.UserId == GetUserId());
 
             if (programare == null) return NotFound();
-            ViewBag.Piese = await _context.Piese.Where(p => p.StocCurent > 0).OrderBy(p => p.Denumire).ToListAsync();
+
+            ViewBag.Piese = await _context.Piese
+                .Where(p => p.UserId == GetUserId() && p.StocCurent > 0)
+                .OrderBy(p => p.Denumire)
+                .ToListAsync();
 
             return View(programare);
         }
 
-        // GET: /Programari/Adauga?masinaId=5
         public async Task<IActionResult> Adauga(int? masinaId)
         {
             await PopulateMasiniDropdown(masinaId);
-            var programare = new Programare
-            {
-                DataIntrare = DateTime.Today
-            };
-            if (masinaId.HasValue)
-                programare.MasinaId = masinaId.Value;
+            var programare = new Programare { DataIntrare = DateTime.Today };
+            if (masinaId.HasValue) programare.MasinaId = masinaId.Value;
             return View(programare);
         }
 
-        // POST: /Programari/Adauga
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Adauga([Bind("MasinaId,DataIntrare,DataIesire,Status,Observatii")] Programare programare)
@@ -88,34 +86,37 @@ namespace ServiceAutoLicenta.Controllers
 
             if (ModelState.IsValid)
             {
+                // verificam ca masina apartine userului
+                var masina = await _context.Masini
+                    .Include(m => m.Client)
+                    .FirstOrDefaultAsync(m => m.Id == programare.MasinaId && m.Client.UserId == GetUserId());
+                if (masina == null) return NotFound();
+
                 _context.Add(programare);
                 await _context.SaveChangesAsync();
-                TempData["Succes"] = "Programarea a fost adaugata cu succes!";
+                TempData["Succes"] = "Programarea a fost adaugata!";
                 return RedirectToAction(nameof(Detalii), new { id = programare.Id });
             }
             await PopulateMasiniDropdown(programare.MasinaId);
             return View(programare);
         }
 
-        // GET: /Programari/Editeaza/5
         public async Task<IActionResult> Editeaza(int? id)
         {
             if (id == null) return NotFound();
-
-            var programare = await _context.Programari.FindAsync(id);
+            var programare = await _context.Programari
+                .Include(p => p.Masina).ThenInclude(m => m.Client)
+                .FirstOrDefaultAsync(p => p.Id == id && p.Masina.Client.UserId == GetUserId());
             if (programare == null) return NotFound();
-
             await PopulateMasiniDropdown(programare.MasinaId);
             return View(programare);
         }
 
-        // POST: /Programari/Editeaza/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Editeaza(int id, [Bind("Id,MasinaId,DataIntrare,DataIesire,Status,Observatii")] Programare programare)
         {
             if (id != programare.Id) return NotFound();
-
             ModelState.Remove("Masina");
             ModelState.Remove("Lucrari");
             ModelState.Remove("Factura");
@@ -124,7 +125,6 @@ namespace ServiceAutoLicenta.Controllers
             {
                 try
                 {
-                    // Recalculează totalurile
                     var lucrari = await _context.Lucrari
                         .Include(l => l.LucrarePiese)
                         .Where(l => l.ProgramareId == id)
@@ -143,8 +143,7 @@ namespace ServiceAutoLicenta.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!_context.Programari.Any(p => p.Id == programare.Id))
-                        return NotFound();
+                    if (!_context.Programari.Any(p => p.Id == programare.Id)) return NotFound();
                     throw;
                 }
                 return RedirectToAction(nameof(Detalii), new { id = programare.Id });
@@ -153,32 +152,27 @@ namespace ServiceAutoLicenta.Controllers
             return View(programare);
         }
 
-        // GET: /Programari/Sterge/5
         public async Task<IActionResult> Sterge(int? id)
         {
             if (id == null) return NotFound();
-
             var programare = await _context.Programari
-                .Include(p => p.Masina)
-                    .ThenInclude(m => m.Client)
+                .Include(p => p.Masina).ThenInclude(m => m.Client)
                 .Include(p => p.Lucrari)
                 .Include(p => p.Factura)
-                .FirstOrDefaultAsync(p => p.Id == id);
-
+                .FirstOrDefaultAsync(p => p.Id == id && p.Masina.Client.UserId == GetUserId());
             if (programare == null) return NotFound();
-
             return View(programare);
         }
 
-        // POST: /Programari/Sterge/5
         [HttpPost, ActionName("Sterge")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmaStergere(int id)
         {
             var programare = await _context.Programari
+                .Include(p => p.Masina).ThenInclude(m => m.Client)
                 .Include(p => p.Lucrari)
                 .Include(p => p.Factura)
-                .FirstOrDefaultAsync(p => p.Id == id);
+                .FirstOrDefaultAsync(p => p.Id == id && p.Masina.Client.UserId == GetUserId());
 
             if (programare == null) return NotFound();
 
@@ -190,15 +184,19 @@ namespace ServiceAutoLicenta.Controllers
 
             _context.Programari.Remove(programare);
             await _context.SaveChangesAsync();
-            TempData["Succes"] = "Programarea a fost stearsa cu succes!";
+            TempData["Succes"] = "Programarea a fost stearsa!";
             return RedirectToAction(nameof(Index));
         }
 
-        // POST: /Programari/AdaugaLucrare
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AdaugaLucrare(int programareId, string denumire, string? descriere, decimal manopera, decimal durataOre)
         {
+            var programare = await _context.Programari
+                .Include(p => p.Masina).ThenInclude(m => m.Client)
+                .FirstOrDefaultAsync(p => p.Id == programareId && p.Masina.Client.UserId == GetUserId());
+            if (programare == null) return NotFound();
+
             var lucrare = new Lucrare
             {
                 ProgramareId = programareId,
@@ -216,7 +214,6 @@ namespace ServiceAutoLicenta.Controllers
             return RedirectToAction(nameof(Detalii), new { id = programareId });
         }
 
-        // POST: /Programari/StergeluCrare
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> StergeLucrare(int lucrareId, int programareId)
@@ -232,12 +229,13 @@ namespace ServiceAutoLicenta.Controllers
             return RedirectToAction(nameof(Detalii), new { id = programareId });
         }
 
-        // POST: /Programari/AdaugaPiesa
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AdaugaPiesa(int lucrareId, int programareId, int piesaId, int cantitate)
         {
-            var piesa = await _context.Piese.FindAsync(piesaId);
+            var piesa = await _context.Piese
+                .FirstOrDefaultAsync(p => p.Id == piesaId && p.UserId == GetUserId());
+
             if (piesa == null)
             {
                 TempData["Eroare"] = "Piesa nu a fost gasita!";
@@ -259,7 +257,6 @@ namespace ServiceAutoLicenta.Controllers
             };
 
             piesa.StocCurent -= cantitate;
-
             _context.LucrarePiese.Add(lucrarePiesa);
             await _context.SaveChangesAsync();
             await RecalculeazaTotal(programareId);
@@ -268,12 +265,10 @@ namespace ServiceAutoLicenta.Controllers
             return RedirectToAction(nameof(Detalii), new { id = programareId });
         }
 
-        // Helper: recalculează totalul programării
         private async Task RecalculeazaTotal(int programareId)
         {
             var programare = await _context.Programari
-                .Include(p => p.Lucrari)
-                    .ThenInclude(l => l.LucrarePiese)
+                .Include(p => p.Lucrari).ThenInclude(l => l.LucrarePiese)
                 .FirstOrDefaultAsync(p => p.Id == programareId);
 
             if (programare == null) return;
@@ -288,11 +283,12 @@ namespace ServiceAutoLicenta.Controllers
             await _context.SaveChangesAsync();
         }
 
-        // Helper: populează dropdown mașini
         private async Task PopulateMasiniDropdown(int? selectedMasinaId = null)
         {
+            var userId = GetUserId();
             var masini = await _context.Masini
                 .Include(m => m.Client)
+                .Where(m => m.Client.UserId == userId)
                 .OrderBy(m => m.NrInmatriculare)
                 .Select(m => new
                 {

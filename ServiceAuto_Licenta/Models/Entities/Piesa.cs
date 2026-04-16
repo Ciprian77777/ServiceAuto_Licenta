@@ -5,6 +5,7 @@ namespace ServiceAutoLicenta.Models.Entities
     public class Piesa
     {
         public int Id { get; set; }
+        public string UserId { get; set; } = string.Empty;
 
         [Required, MaxLength(50)]
         [Display(Name = "Cod piesă")]

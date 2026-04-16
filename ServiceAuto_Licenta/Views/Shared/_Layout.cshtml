@@ -492,6 +492,7 @@
             flex-shrink: 0;
         }
 
+
         /* ── Progress bar stoc ── */
         .stock-bar {
             height: 6px;
@@ -690,6 +691,12 @@
                     <span>Service Manager</span>
                 </div>
             </div>
+            <form asp-controller="Landing" asp-action="Logout" method="post" style="margin:0;">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="topbar-icon-btn" title="Logout">
+                    <i class="bi bi-box-arrow-right"></i>
+                </button>
+            </form>
         </div>
     </header>
 

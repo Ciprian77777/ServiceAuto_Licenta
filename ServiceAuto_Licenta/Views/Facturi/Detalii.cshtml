@@ -9,6 +9,10 @@
         <a asp-action="Index" class="btn-outline-custom" style="padding:8px 12px;">
             <i class="bi bi-arrow-left"></i>
         </a>
+        <a asp-action="Print" asp-route-id="@Model.Id"
+           target="_blank" class="btn-outline-custom">
+            <i class="bi bi-printer"></i> Printeaza
+        </a>
         <div>
             <h2 style="font-family:monospace;">@Model.SerieNumar</h2>
             <p>Emisă pe @Model.DataEmitere.ToString("dd MMMM yyyy")</p>

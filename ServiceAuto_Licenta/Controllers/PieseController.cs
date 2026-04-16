@@ -1,22 +1,33 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ServiceAutoLicenta.Data;
 using ServiceAutoLicenta.Models.Entities;
+
 namespace ServiceAutoLicenta.Controllers
 {
+    [Authorize]
     public class PieseController : Controller
     {
         private readonly ServiceAutoLicentaContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public PieseController(ServiceAutoLicentaContext context)
+        public PieseController(ServiceAutoLicentaContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
+
+        private string GetUserId() => _userManager.GetUserId(User)!;
 
         // GET: /Piese
         public async Task<IActionResult> Index(string? cautare, bool? stocScazut)
         {
-            var piese = _context.Piese.AsQueryable();
+            var userId = GetUserId();
+            var piese = _context.Piese
+                .Where(p => p.UserId == userId)
+                .AsQueryable();
 
             if (!string.IsNullOrEmpty(cautare))
             {
@@ -32,7 +43,8 @@ namespace ServiceAutoLicenta.Controllers
 
             ViewBag.Cautare = cautare;
             ViewBag.StocScazut = stocScazut;
-            ViewBag.NrAlerte = await _context.Piese.CountAsync(p => p.StocCurent <= p.StocMinim);
+            ViewBag.NrAlerte = await _context.Piese
+                .CountAsync(p => p.UserId == userId && p.StocCurent <= p.StocMinim);
 
             return View(await piese.OrderBy(p => p.Denumire).ToListAsync());
         }
@@ -48,7 +60,7 @@ namespace ServiceAutoLicenta.Controllers
                         .ThenInclude(l => l.Programare)
                             .ThenInclude(pr => pr.Masina)
                                 .ThenInclude(m => m.Client)
-                .FirstOrDefaultAsync(p => p.Id == id);
+                .FirstOrDefaultAsync(p => p.Id == id && p.UserId == GetUserId());
 
             if (piesa == null) return NotFound();
 
@@ -56,21 +68,20 @@ namespace ServiceAutoLicenta.Controllers
         }
 
         // GET: /Piese/Adauga
-        public IActionResult Adauga()
-        {
-            return View();
-        }
+        public IActionResult Adauga() => View();
 
         // POST: /Piese/Adauga
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Adauga([Bind("CodPiesa,Denumire,Producator,PretAchizitie,PretVanzare,StocCurent,StocMinim")] Piesa piesa)
         {
+            ModelState.Remove("UserId");
             if (ModelState.IsValid)
             {
+                piesa.UserId = GetUserId();
                 _context.Add(piesa);
                 await _context.SaveChangesAsync();
-                TempData["Succes"] = $"Piesa '{piesa.Denumire}' a fost adăugată cu succes!";
+                TempData["Succes"] = $"Piesa '{piesa.Denumire}' a fost adăugată!";
                 return RedirectToAction(nameof(Index));
             }
             return View(piesa);
@@ -80,10 +91,9 @@ namespace ServiceAutoLicenta.Controllers
         public async Task<IActionResult> Editeaza(int? id)
         {
             if (id == null) return NotFound();
-
-            var piesa = await _context.Piese.FindAsync(id);
+            var piesa = await _context.Piese
+                .FirstOrDefaultAsync(p => p.Id == id && p.UserId == GetUserId());
             if (piesa == null) return NotFound();
-
             return View(piesa);
         }
 
@@ -94,17 +104,19 @@ namespace ServiceAutoLicenta.Controllers
         {
             if (id != piesa.Id) return NotFound();
 
+            ModelState.Remove("UserId");
             if (ModelState.IsValid)
             {
                 try
                 {
+                    piesa.UserId = GetUserId();
                     _context.Update(piesa);
                     await _context.SaveChangesAsync();
-                    TempData["Succes"] = "Piesa a fost actualizată cu succes!";
+                    TempData["Succes"] = "Piesa a fost actualizată!";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!_context.Piese.Any(p => p.Id == piesa.Id))
+                    if (!_context.Piese.Any(p => p.Id == piesa.Id && p.UserId == GetUserId()))
                         return NotFound();
                     throw;
                 }
@@ -117,13 +129,10 @@ namespace ServiceAutoLicenta.Controllers
         public async Task<IActionResult> Sterge(int? id)
         {
             if (id == null) return NotFound();
-
             var piesa = await _context.Piese
                 .Include(p => p.LucrarePiese)
-                .FirstOrDefaultAsync(p => p.Id == id);
-
+                .FirstOrDefaultAsync(p => p.Id == id && p.UserId == GetUserId());
             if (piesa == null) return NotFound();
-
             return View(piesa);
         }
 
@@ -134,7 +143,7 @@ namespace ServiceAutoLicenta.Controllers
         {
             var piesa = await _context.Piese
                 .Include(p => p.LucrarePiese)
-                .FirstOrDefaultAsync(p => p.Id == id);
+                .FirstOrDefaultAsync(p => p.Id == id && p.UserId == GetUserId());
 
             if (piesa == null) return NotFound();
 
@@ -146,7 +155,7 @@ namespace ServiceAutoLicenta.Controllers
 
             _context.Piese.Remove(piesa);
             await _context.SaveChangesAsync();
-            TempData["Succes"] = "Piesa a fost ștearsă cu succes!";
+            TempData["Succes"] = "Piesa a fost ștearsă!";
             return RedirectToAction(nameof(Index));
         }
 
@@ -155,14 +164,15 @@ namespace ServiceAutoLicenta.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ActualizeazaStoc(int id, int cantitate)
         {
-            var piesa = await _context.Piese.FindAsync(id);
+            var piesa = await _context.Piese
+                .FirstOrDefaultAsync(p => p.Id == id && p.UserId == GetUserId());
             if (piesa == null) return NotFound();
 
             piesa.StocCurent += cantitate;
             if (piesa.StocCurent < 0) piesa.StocCurent = 0;
 
             await _context.SaveChangesAsync();
-            TempData["Succes"] = $"Stocul a fost actualizat! Stoc curent: {piesa.StocCurent}";
+            TempData["Succes"] = $"Stoc actualizat! Stoc curent: {piesa.StocCurent}";
             return RedirectToAction(nameof(Detalii), new { id });
         }
     }

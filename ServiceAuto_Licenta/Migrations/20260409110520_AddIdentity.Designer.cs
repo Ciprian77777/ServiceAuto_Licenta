@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ServiceAutoLicenta.Data;
 
@@ -11,9 +12,11 @@ using ServiceAutoLicenta.Data;
 namespace ServiceAutoLicenta.Migrations
 {
     [DbContext(typeof(ServiceAutoLicentaContext))]
-    partial class ServiceAutoLicentaContextModelSnapshot : ModelSnapshot
+    [Migration("20260409110520_AddIdentity")]
+    partial class AddIdentity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -258,10 +261,6 @@ namespace ServiceAutoLicenta.Migrations
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("Cnp")
@@ -274,22 +273,20 @@ namespace ServiceAutoLicenta.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2026, 4, 12, 19, 31, 2, 829, DateTimeKind.Local).AddTicks(6111),
+                            CreatedAt = new DateTime(2026, 4, 9, 14, 5, 18, 631, DateTimeKind.Local).AddTicks(6754),
                             Email = "ion.banea@email.ro",
                             Nume = "Banea",
                             Prenume = "Ion",
-                            Telefon = "0722111222",
-                            UserId = ""
+                            Telefon = "0722111222"
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2026, 4, 12, 19, 31, 2, 829, DateTimeKind.Local).AddTicks(6168),
+                            CreatedAt = new DateTime(2026, 4, 9, 14, 5, 18, 631, DateTimeKind.Local).AddTicks(6827),
                             Email = "cristi.nicula1@email.ro",
                             Nume = "Nicula",
                             Prenume = "Cristian",
-                            Telefon = "0733222333",
-                            UserId = ""
+                            Telefon = "0733222333"
                         });
                 });
 
@@ -496,10 +493,6 @@ namespace ServiceAutoLicenta.Migrations
                     b.Property<int>("StocMinim")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CodPiesa")
@@ -512,40 +505,37 @@ namespace ServiceAutoLicenta.Migrations
                         {
                             Id = 1,
                             CodPiesa = "FIL-001",
-                            CreatedAt = new DateTime(2026, 4, 12, 19, 31, 2, 829, DateTimeKind.Local).AddTicks(6411),
+                            CreatedAt = new DateTime(2026, 4, 9, 14, 5, 18, 631, DateTimeKind.Local).AddTicks(7168),
                             Denumire = "Filtru ulei Dacia Logan",
                             PretAchizitie = 18.50m,
                             PretVanzare = 35.00m,
                             Producator = "Mann Filter",
                             StocCurent = 10,
-                            StocMinim = 3,
-                            UserId = ""
+                            StocMinim = 3
                         },
                         new
                         {
                             Id = 2,
                             CodPiesa = "PLQ-002",
-                            CreatedAt = new DateTime(2026, 4, 12, 19, 31, 2, 829, DateTimeKind.Local).AddTicks(6428),
+                            CreatedAt = new DateTime(2026, 4, 9, 14, 5, 18, 631, DateTimeKind.Local).AddTicks(7189),
                             Denumire = "Set placute frana fata VW Golf",
                             PretAchizitie = 65.00m,
                             PretVanzare = 120.00m,
                             Producator = "Bosch",
                             StocCurent = 4,
-                            StocMinim = 2,
-                            UserId = ""
+                            StocMinim = 2
                         },
                         new
                         {
                             Id = 3,
                             CodPiesa = "ULI-003",
-                            CreatedAt = new DateTime(2026, 4, 12, 19, 31, 2, 829, DateTimeKind.Local).AddTicks(6434),
+                            CreatedAt = new DateTime(2026, 4, 9, 14, 5, 18, 631, DateTimeKind.Local).AddTicks(7195),
                             Denumire = "Ulei motor 5W40 4L",
                             PretAchizitie = 55.00m,
                             PretVanzare = 89.00m,
                             Producator = "Castrol",
                             StocCurent = 15,
-                            StocMinim = 5,
-                            UserId = ""
+                            StocMinim = 5
                         });
                 });
 

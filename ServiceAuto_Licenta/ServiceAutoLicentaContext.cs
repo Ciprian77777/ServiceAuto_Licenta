@@ -2,10 +2,12 @@
 using ServiceAutoLicenta.Models.Entities;
 using System.Collections.Generic;
 using System.Reflection.Emit;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace ServiceAutoLicenta.Data
 {
-    public class ServiceAutoLicentaContext : DbContext
+    public class ServiceAutoLicentaContext : IdentityDbContext<IdentityUser>
     {
         public ServiceAutoLicentaContext(DbContextOptions<ServiceAutoLicentaContext> options)
             : base(options) { }
@@ -20,6 +22,7 @@ namespace ServiceAutoLicenta.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Client>()
                 .HasIndex(c => c.Cnp).IsUnique();
 

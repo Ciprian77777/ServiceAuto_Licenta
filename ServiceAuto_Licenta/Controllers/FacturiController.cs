@@ -1,26 +1,32 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ServiceAutoLicenta.Data;
 using ServiceAutoLicenta.Models.Entities;
 
 namespace ServiceAutoLicenta.Controllers
 {
+    [Authorize]
     public class FacturiController : Controller
     {
         private readonly ServiceAutoLicentaContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public FacturiController(ServiceAutoLicentaContext context)
+        public FacturiController(ServiceAutoLicentaContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
-        // GET: /Facturi
+        private string GetUserId() => _userManager.GetUserId(User)!;
+
         public async Task<IActionResult> Index(string? cautare, string? status)
         {
+            var userId = GetUserId();
             var facturi = _context.Facturi
-                .Include(f => f.Programare)
-                    .ThenInclude(p => p.Masina)
-                        .ThenInclude(m => m.Client)
+                .Include(f => f.Programare).ThenInclude(p => p.Masina).ThenInclude(m => m.Client)
+                .Where(f => f.Programare.Masina.Client.UserId == userId)
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(cautare))
@@ -39,56 +45,46 @@ namespace ServiceAutoLicenta.Controllers
             ViewBag.Cautare = cautare;
             ViewBag.Status = status;
             ViewBag.TotalIncasat = await _context.Facturi
-                .Where(f => f.StatusPlata == StatusPlata.Platita)
-                .SumAsync(f => f.Total);
+                .Where(f => f.Programare.Masina.Client.UserId == userId && f.StatusPlata == StatusPlata.Platita)
+                .SumAsync(f => (decimal?)f.Total) ?? 0;
 
             return View(await facturi.OrderByDescending(f => f.DataEmitere).ToListAsync());
         }
 
-        // GET: /Facturi/Detalii/5
         public async Task<IActionResult> Detalii(int? id)
         {
             if (id == null) return NotFound();
 
             var factura = await _context.Facturi
-                .Include(f => f.Programare)
-                    .ThenInclude(p => p.Masina)
-                        .ThenInclude(m => m.Client)
-                .Include(f => f.Programare)
-                    .ThenInclude(p => p.Lucrari)
-                        .ThenInclude(l => l.LucrarePiese)
-                            .ThenInclude(lp => lp.Piesa)
-                .FirstOrDefaultAsync(f => f.Id == id);
+                .Include(f => f.Programare).ThenInclude(p => p.Masina).ThenInclude(m => m.Client)
+                .Include(f => f.Programare).ThenInclude(p => p.Lucrari).ThenInclude(l => l.LucrarePiese).ThenInclude(lp => lp.Piesa)
+                .FirstOrDefaultAsync(f => f.Id == id && f.Programare.Masina.Client.UserId == GetUserId());
 
             if (factura == null) return NotFound();
 
             return View(factura);
         }
 
-        // GET: /Facturi/Genereaza?programareId=5
         public async Task<IActionResult> Genereaza(int? programareId)
         {
             if (programareId == null) return NotFound();
 
             var programare = await _context.Programari
-                .Include(p => p.Masina)
-                    .ThenInclude(m => m.Client)
-                .Include(p => p.Lucrari)
-                    .ThenInclude(l => l.LucrarePiese)
-                        .ThenInclude(lp => lp.Piesa)
+                .Include(p => p.Masina).ThenInclude(m => m.Client)
+                .Include(p => p.Lucrari).ThenInclude(l => l.LucrarePiese).ThenInclude(lp => lp.Piesa)
                 .Include(p => p.Factura)
-                .FirstOrDefaultAsync(p => p.Id == programareId);
+                .FirstOrDefaultAsync(p => p.Id == programareId && p.Masina.Client.UserId == GetUserId());
 
             if (programare == null) return NotFound();
 
             if (programare.Factura != null)
             {
-                TempData["Eroare"] = "Această programare are deja o factură generată!";
+                TempData["Eroare"] = "Aceasta programare are deja o factura!";
                 return RedirectToAction(nameof(Detalii), new { id = programare.Factura.Id });
             }
 
-            // Generează numărul facturii automat
             var ultimaFactura = await _context.Facturi
+                .Where(f => f.Programare.Masina.Client.UserId == GetUserId())
                 .OrderByDescending(f => f.Id)
                 .FirstOrDefaultAsync();
 
@@ -111,7 +107,6 @@ namespace ServiceAutoLicenta.Controllers
             return View(factura);
         }
 
-        // POST: /Facturi/Genereaza
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Genereaza([Bind("ProgramareId,SerieNumar,DataEmitere,DataScadenta,StatusPlata,MetodaPlata,Subtotal,TvaValoare,Total")] Factura factura)
@@ -122,7 +117,7 @@ namespace ServiceAutoLicenta.Controllers
             {
                 _context.Add(factura);
                 await _context.SaveChangesAsync();
-                TempData["Succes"] = $"Factura {factura.SerieNumar} a fost generată cu succes!";
+                TempData["Succes"] = $"Factura {factura.SerieNumar} a fost generata!";
                 return RedirectToAction(nameof(Detalii), new { id = factura.Id });
             }
 
@@ -135,12 +130,13 @@ namespace ServiceAutoLicenta.Controllers
             return View(factura);
         }
 
-        // POST: /Facturi/ActualizeazaStatus
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ActualizeazaStatus(int id, StatusPlata statusPlata, MetodaPlata? metodaPlata)
         {
-            var factura = await _context.Facturi.FindAsync(id);
+            var factura = await _context.Facturi
+                .Include(f => f.Programare).ThenInclude(p => p.Masina).ThenInclude(m => m.Client)
+                .FirstOrDefaultAsync(f => f.Id == id && f.Programare.Masina.Client.UserId == GetUserId());
             if (factura == null) return NotFound();
 
             factura.StatusPlata = statusPlata;
@@ -151,53 +147,13 @@ namespace ServiceAutoLicenta.Controllers
             return RedirectToAction(nameof(Detalii), new { id });
         }
 
-        // GET: /Facturi/Sterge/5
-        public async Task<IActionResult> Sterge(int? id)
-        {
-            if (id == null) return NotFound();
-
-            var factura = await _context.Facturi
-                .Include(f => f.Programare)
-                    .ThenInclude(p => p.Masina)
-                        .ThenInclude(m => m.Client)
-                .FirstOrDefaultAsync(f => f.Id == id);
-
-            if (factura == null) return NotFound();
-
-            return View(factura);
-        }
-
-        // POST: /Facturi/Sterge/5
-        [HttpPost, ActionName("Sterge")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ConfirmaStergere(int id)
-        {
-            var factura = await _context.Facturi.FindAsync(id);
-            if (factura == null) return NotFound();
-
-            if (factura.StatusPlata == StatusPlata.Platita)
-            {
-                TempData["Eroare"] = "Factura plătită nu poate fi ștearsă!";
-                return RedirectToAction(nameof(Index));
-            }
-
-            _context.Facturi.Remove(factura);
-            await _context.SaveChangesAsync();
-            TempData["Succes"] = "Factura a fost ștearsă cu succes!";
-            return RedirectToAction(nameof(Index));
-        }
-
-        
-        // GET: /Facturi/PlataCard/5
         public async Task<IActionResult> PlataCard(int? id)
         {
             if (id == null) return NotFound();
 
             var factura = await _context.Facturi
-                .Include(f => f.Programare)
-                    .ThenInclude(p => p.Masina)
-                        .ThenInclude(m => m.Client)
-                .FirstOrDefaultAsync(f => f.Id == id);
+                .Include(f => f.Programare).ThenInclude(p => p.Masina).ThenInclude(m => m.Client)
+                .FirstOrDefaultAsync(f => f.Id == id && f.Programare.Masina.Client.UserId == GetUserId());
 
             if (factura == null) return NotFound();
 
@@ -210,16 +166,16 @@ namespace ServiceAutoLicenta.Controllers
             return View(factura);
         }
 
-        // POST: /Facturi/PlataCard/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> PlataCard(int id, string numarCard, string titular, string expirare, string cvv)
         {
-            var factura = await _context.Facturi.FindAsync(id);
+            var factura = await _context.Facturi
+                .Include(f => f.Programare).ThenInclude(p => p.Masina).ThenInclude(m => m.Client)
+                .FirstOrDefaultAsync(f => f.Id == id && f.Programare.Masina.Client.UserId == GetUserId());
             if (factura == null) return NotFound();
 
-            // Simulare procesare — generăm un ID de tranzacție
-            await Task.Delay(1500); // simulăm timpul de procesare
+            await Task.Delay(1500);
 
             string idTranzactie = $"TRX-{DateTime.Now:yyyyMMddHHmmss}-{Guid.NewGuid().ToString()[..8].ToUpper()}";
 
@@ -228,9 +184,56 @@ namespace ServiceAutoLicenta.Controllers
 
             await _context.SaveChangesAsync();
 
-            TempData["Succes"] = $"Plata a fost procesata cu succes! ID tranzactie: {idTranzactie}";
-            TempData["IdTranzactie"] = idTranzactie;
+            TempData["Succes"] = $"Plata procesata! ID tranzactie: {idTranzactie}";
             return RedirectToAction(nameof(Detalii), new { id });
+        }
+
+        public async Task<IActionResult> Sterge(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var factura = await _context.Facturi
+                .Include(f => f.Programare).ThenInclude(p => p.Masina).ThenInclude(m => m.Client)
+                .FirstOrDefaultAsync(f => f.Id == id && f.Programare.Masina.Client.UserId == GetUserId());
+
+            if (factura == null) return NotFound();
+            return View(factura);
+        }
+
+        [HttpPost, ActionName("Sterge")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ConfirmaStergere(int id)
+        {
+            var factura = await _context.Facturi
+                .Include(f => f.Programare).ThenInclude(p => p.Masina).ThenInclude(m => m.Client)
+                .FirstOrDefaultAsync(f => f.Id == id && f.Programare.Masina.Client.UserId == GetUserId());
+
+            if (factura == null) return NotFound();
+
+            if (factura.StatusPlata == StatusPlata.Platita)
+            {
+                TempData["Eroare"] = "Factura platita nu poate fi stearsa!";
+                return RedirectToAction(nameof(Index));
+            }
+
+            _context.Facturi.Remove(factura);
+            await _context.SaveChangesAsync();
+            TempData["Succes"] = "Factura a fost stearsa!";
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Print(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var factura = await _context.Facturi
+                .Include(f => f.Programare).ThenInclude(p => p.Masina).ThenInclude(m => m.Client)
+                .Include(f => f.Programare).ThenInclude(p => p.Lucrari).ThenInclude(l => l.LucrarePiese).ThenInclude(lp => lp.Piesa)
+                .FirstOrDefaultAsync(f => f.Id == id && f.Programare.Masina.Client.UserId == GetUserId());
+
+            if (factura == null) return NotFound();
+
+            return View(factura);
         }
     }
 }

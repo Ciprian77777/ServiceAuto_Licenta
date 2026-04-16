@@ -5,6 +5,7 @@ namespace ServiceAutoLicenta.Models.Entities
     public class Client
     {
         public int Id { get; set; }
+        public string UserId { get; set; } = string.Empty;
         [Required, MaxLength(100)]
         [Display(Name = "Nume")]
         public string Nume { get; set; } = string.Empty;

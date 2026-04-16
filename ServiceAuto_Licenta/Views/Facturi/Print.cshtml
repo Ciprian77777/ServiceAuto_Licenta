@@ -1,0 +1,668 @@
+﻿@model ServiceAutoLicenta.Models.Entities.Factura
+@using ServiceAutoLicenta.Models.Entities
+@{
+    ViewData["Title"] = "Factura " + Model.SerieNumar;
+    Layout = null; // fara sidebar, pagina curata pentru print
+}
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Factura @Model.SerieNumar</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            font-size: 13px;
+            color: #1e293b;
+            background: #f1f5f9;
+        }
+
+        .page-wrapper {
+            max-width: 800px;
+            margin: 30px auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        /* ── Actiuni (nu se printeaza) ── */
+        .print-actions {
+            background: #0f172a;
+            padding: 14px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+            .print-actions span {
+                color: #94a3b8;
+                font-size: 13px;
+            }
+
+        .btn-print {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 9px 20px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-back {
+            background: transparent;
+            color: #94a3b8;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 9px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* ── Factura ── */
+        .invoice {
+            padding: 48px;
+        }
+
+        /* Header */
+        .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 40px;
+            padding-bottom: 32px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .company-info .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: #2563eb;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .logo-text strong {
+            display: block;
+            font-size: 18px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .logo-text span {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .company-details {
+            font-size: 12px;
+            color: #64748b;
+            line-height: 1.8;
+        }
+
+        .invoice-meta {
+            text-align: right;
+        }
+
+        .invoice-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: #2563eb;
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
+        }
+
+        .invoice-number {
+            font-size: 14px;
+            font-family: monospace;
+            background: #f1f5f9;
+            padding: 4px 12px;
+            border-radius: 6px;
+            color: #475569;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+
+        .invoice-dates {
+            font-size: 12px;
+            color: #64748b;
+            line-height: 1.8;
+        }
+
+            .invoice-dates strong {
+                color: #0f172a;
+            }
+
+        /* Status badge */
+        .status-badge {
+            display: inline-block;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .status-platita {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .status-neplata {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .status-partial {
+            background: #ffedd5;
+            color: #ea580c;
+        }
+
+        /* Parti */
+        .invoice-parties {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            margin-bottom: 40px;
+        }
+
+        .party-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .party-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #94a3b8;
+            margin-bottom: 10px;
+        }
+
+        .party-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 4px;
+        }
+
+        .party-detail {
+            font-size: 12px;
+            color: #64748b;
+            line-height: 1.8;
+        }
+
+        /* Tabel lucrari */
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 32px;
+        }
+
+            .invoice-table thead tr {
+                background: #0f172a;
+                color: white;
+            }
+
+            .invoice-table thead th {
+                padding: 12px 16px;
+                font-size: 11px;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.06em;
+                text-align: left;
+            }
+
+                .invoice-table thead th:last-child {
+                    text-align: right;
+                }
+
+            .invoice-table tbody tr.service-row {
+                background: #f8fafc;
+                border-bottom: 1px solid #e2e8f0;
+            }
+
+            .invoice-table tbody tr.part-row {
+                background: white;
+                border-bottom: 1px solid #f1f5f9;
+            }
+
+            .invoice-table tbody td {
+                padding: 12px 16px;
+                font-size: 13px;
+                color: #374151;
+            }
+
+                .invoice-table tbody td:last-child {
+                    text-align: right;
+                    font-weight: 500;
+                }
+
+        .service-name {
+            font-weight: 600;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .service-icon {
+            width: 24px;
+            height: 24px;
+            background: #dbeafe;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: #2563eb;
+            flex-shrink: 0;
+        }
+
+        .part-name {
+            padding-left: 32px;
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        .part-badge {
+            background: #f1f5f9;
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            color: #64748b;
+            margin-left: 4px;
+        }
+
+        /* Totaluri */
+        .invoice-totals {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 40px;
+        }
+
+        .totals-box {
+            width: 300px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 16px;
+            font-size: 13px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+            .total-row:last-child {
+                border-bottom: none;
+            }
+
+            .total-row.total-final {
+                background: #0f172a;
+                color: white;
+                padding: 14px 16px;
+                font-size: 16px;
+                font-weight: 700;
+            }
+
+        .total-label {
+            color: #64748b;
+        }
+
+        .total-value {
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .total-final .total-label {
+            color: #94a3b8;
+        }
+
+        .total-final .total-value {
+            color: white;
+        }
+
+        /* Plata */
+        .payment-info {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .payment-card {
+            flex: 1;
+            min-width: 180px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 16px;
+        }
+
+        .payment-card-label {
+            font-size: 11px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 6px;
+        }
+
+        .payment-card-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        /* Footer factura */
+        .invoice-footer {
+            border-top: 1px solid #e2e8f0;
+            padding-top: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .footer-note {
+            font-size: 11px;
+            color: #94a3b8;
+            line-height: 1.8;
+        }
+
+        .signature-box {
+            text-align: center;
+            min-width: 160px;
+        }
+
+        .signature-line {
+            border-top: 1px solid #cbd5e1;
+            margin-top: 40px;
+            padding-top: 6px;
+            font-size: 11px;
+            color: #94a3b8;
+        }
+
+        /* ── Print CSS ── */
+        @@media print {
+            body {
+                background: white;
+            }
+
+            .print-actions {
+                display: none !important;
+            }
+
+            .page-wrapper {
+                box-shadow: none;
+                border-radius: 0;
+                margin: 0;
+                max-width: 100%;
+            }
+
+            .invoice {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Butoane actiuni (nu se printeaza) -->
+    <div class="print-actions">
+        <a href="javascript:history.back()" class="btn-back">
+            ← Inapoi
+        </a>
+        <span>Factura @Model.SerieNumar — previzualizare print</span>
+        <button class="btn-print" onclick="window.print()">
+            🖨️ Printeaza / Salveaza PDF
+        </button>
+    </div>
+
+    <!-- Factura -->
+    <div class="page-wrapper">
+        <div class="invoice">
+
+            <!-- Header -->
+            <div class="invoice-header">
+                <div class="company-info">
+                    <div class="logo">
+                        <div class="logo-icon">AS</div>
+                        <div class="logo-text">
+                            <strong>AutoService Pro</strong>
+                            <span>Management System</span>
+                        </div>
+                    </div>
+                    <div class="company-details">
+                        Str. Mecanicilor Nr. 1<br>
+                        Cluj-Napoca, Romania<br>
+                        Tel: 0264 123 456<br>
+                        Email: office@autoservice.ro<br>
+                        CUI: RO12345678
+                    </div>
+                </div>
+
+                <div class="invoice-meta">
+                    <div class="invoice-title">FACTURA</div>
+                    <div class="invoice-number">@Model.SerieNumar</div>
+                    <div class="invoice-dates">
+                        <div><strong>Data emitere:</strong> @Model.DataEmitere.ToString("dd.MM.yyyy")</div>
+                        @if (Model.DataScadenta.HasValue)
+                        {
+                            <div><strong>Scadenta:</strong> @Model.DataScadenta.Value.ToString("dd.MM.yyyy")</div>
+                        }
+                    </div>
+                    <div>
+                        <span class="status-badge @(Model.StatusPlata == StatusPlata.Platita ? "status-platita" :
+                                                                              Model.StatusPlata == StatusPlata.Partial ? "status-partial" : "status-neplata")">
+                            @(Model.StatusPlata == StatusPlata.Platita ? "✓ PLATITA" :
+                                                        Model.StatusPlata == StatusPlata.Partial ? "~ PARTIAL" : "⚠ NEPLATITA")
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Parti -->
+            <div class="invoice-parties">
+                <div class="party-card">
+                    <div class="party-label">Furnizor</div>
+                    <div class="party-name">AutoService Pro SRL</div>
+                    <div class="party-detail">
+                        Str. Mecanicilor Nr. 1, Cluj-Napoca<br>
+                        CUI: RO12345678<br>
+                        Nr. Reg. Com: J12/1234/2020<br>
+                        IBAN: RO49AAAA1B31007593840000
+                    </div>
+                </div>
+                <div class="party-card">
+                    <div class="party-label">Client</div>
+                    <div class="party-name">@Model.Programare.Masina.Client.NumeComplet</div>
+                    <div class="party-detail">
+                        @if (!string.IsNullOrEmpty(Model.Programare.Masina.Client.Adresa))
+                        {
+                            @Model.Programare.Masina.Client.Adresa
+                        
+                            <text><br></text>
+                        }
+                        Tel: @Model.Programare.Masina.Client.Telefon<br>
+                        @if (!string.IsNullOrEmpty(Model.Programare.Masina.Client.Email))
+                        {
+                            @Model.Programare.Masina.Client.Email
+                        
+                            <text><br></text>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.Programare.Masina.Client.Cnp))
+                        {
+                            <text>CNP: @Model.Programare.Masina.Client.Cnp</text>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vehicul -->
+            <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 16px;margin-bottom:24px;display:flex;gap:24px;align-items:center;">
+                <div>
+                    <div style="font-size:11px;color:#2563eb;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;">Vehicul</div>
+                    <div style="font-size:14px;font-weight:700;color:#1e40af;">@Model.Programare.Masina.Marca @Model.Programare.Masina.ModelMasina</div>
+                </div>
+                <div>
+                    <div style="font-size:11px;color:#2563eb;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;">Nr. Inmatriculare</div>
+                    <div style="font-size:14px;font-weight:700;color:#1e40af;font-family:monospace;">@Model.Programare.Masina.NrInmatriculare</div>
+                </div>
+                @if (Model.Programare.Masina.AnFabricatie.HasValue)
+                {
+                    <div>
+                        <div style="font-size:11px;color:#2563eb;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;">An Fabricatie</div>
+                        <div style="font-size:14px;font-weight:700;color:#1e40af;">@Model.Programare.Masina.AnFabricatie</div>
+                    </div>
+                }
+                <div>
+                    <div style="font-size:11px;color:#2563eb;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;">Data Service</div>
+                    <div style="font-size:14px;font-weight:700;color:#1e40af;">@Model.Programare.DataIntrare.ToString("dd.MM.yyyy")</div>
+                </div>
+            </div>
+
+            <!-- Tabel lucrari -->
+            <table class="invoice-table">
+                <thead>
+                    <tr>
+                        <th style="width:50%;">Descriere</th>
+                        <th style="text-align:center;">Cantitate</th>
+                        <th style="text-align:right;">Pret unitar</th>
+                        <th style="text-align:right;">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var lucrare in Model.Programare.Lucrari)
+                    {
+                        <tr class="service-row">
+                            <td>
+                                <div class="service-name">
+                                    <span class="service-icon">⚙</span>
+                                    @lucrare.Denumire
+                                </div>
+                                @if (!string.IsNullOrEmpty(lucrare.Descriere))
+                                {
+                                    <div style="font-size:11px;color:#64748b;margin-top:2px;padding-left:32px;">@lucrare.Descriere</div>
+                                }
+                            </td>
+                            <td style="text-align:center;">
+                                @if (lucrare.DurataOre > 0)
+                                {
+                                    <span>@lucrare.DurataOre ore</span>
+                                }
+                                else
+                                {
+                                    <span>1 buc.</span>
+                                }
+                            </td>
+                            <td style="text-align:right;">@lucrare.Manopera.ToString("N2") lei</td>
+                            <td style="text-align:right;font-weight:600;">@lucrare.Manopera.ToString("N2") lei</td>
+                        </tr>
+                        @foreach (var lp in lucrare.LucrarePiese)
+                        {
+                            <tr class="part-row">
+                                <td class="part-name">
+                                    @lp.Piesa.Denumire
+                                    <span class="part-badge">@lp.Piesa.CodPiesa</span>
+                                </td>
+                                <td style="text-align:center;font-size:12px;color:#64748b;">@lp.Cantitate buc.</td>
+                                <td style="text-align:right;font-size:12px;color:#64748b;">@lp.PretUnitar.ToString("N2") lei</td>
+                                <td style="text-align:right;font-size:12px;">@lp.Subtotal.ToString("N2") lei</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+
+            <!-- Totaluri -->
+            <div class="invoice-totals">
+                <div class="totals-box">
+                    <div class="total-row">
+                        <span class="total-label">Subtotal (fara TVA)</span>
+                        <span class="total-value">@Model.Subtotal.ToString("N2") lei</span>
+                    </div>
+                    <div class="total-row">
+                        <span class="total-label">TVA (19%)</span>
+                        <span class="total-value">@Model.TvaValoare.ToString("N2") lei</span>
+                    </div>
+                    <div class="total-row total-final">
+                        <span class="total-label">TOTAL DE PLATA</span>
+                        <span class="total-value">@Model.Total.ToString("N2") lei</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info plata -->
+            <div class="payment-info">
+                <div class="payment-card">
+                    <div class="payment-card-label">Metoda de plata</div>
+                    <div class="payment-card-value">@(Model.MetodaPlata?.ToString() ?? "Nespecificata")</div>
+                </div>
+                <div class="payment-card">
+                    <div class="payment-card-label">Status plata</div>
+                    <div class="payment-card-value" style="color:@(Model.StatusPlata == StatusPlata.Platita ? "#16a34a" : "#dc2626");">
+                        @Model.StatusPlata
+                    </div>
+                </div>
+                <div class="payment-card">
+                    <div class="payment-card-label">Scadenta</div>
+                    <div class="payment-card-value">@(Model.DataScadenta?.ToString("dd.MM.yyyy") ?? "-")</div>
+                </div>
+                <div class="payment-card">
+                    <div class="payment-card-label">IBAN plata</div>
+                    <div class="payment-card-value" style="font-size:12px;font-family:monospace;">RO49AAAA1B31007593840000</div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="invoice-footer">
+                <div class="footer-note">
+                    Factura a fost generata electronic prin sistemul AutoService Pro.<br>
+                    Valabila fara semnatura si stampila conform Legii 227/2015.<br>
+                    Va multumim pentru increderea acordata!
+                </div>
+                <div class="signature-box">
+                    <div class="signature-line">Semnatura si stampila</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>

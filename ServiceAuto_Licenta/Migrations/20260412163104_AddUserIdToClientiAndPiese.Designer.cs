@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ServiceAutoLicenta.Data;
 
@@ -11,9 +12,11 @@ using ServiceAutoLicenta.Data;
 namespace ServiceAutoLicenta.Migrations
 {
     [DbContext(typeof(ServiceAutoLicentaContext))]
-    partial class ServiceAutoLicentaContextModelSnapshot : ModelSnapshot
+    [Migration("20260412163104_AddUserIdToClientiAndPiese")]
+    partial class AddUserIdToClientiAndPiese
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
