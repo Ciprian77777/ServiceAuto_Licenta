@@ -78,11 +78,20 @@ namespace ServiceAutoLicenta.Controllers
             ModelState.Remove("UserId");
             if (ModelState.IsValid)
             {
-                piesa.UserId = GetUserId();
-                _context.Add(piesa);
-                await _context.SaveChangesAsync();
-                TempData["Succes"] = $"Piesa '{piesa.Denumire}' a fost adăugată!";
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    piesa.UserId = GetUserId();
+                    _context.Add(piesa);
+                    await _context.SaveChangesAsync();
+                    TempData["Succes"] = $"Piesa '{piesa.Denumire}' a fost adăugată!";
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException)
+                {
+                    TempData["Eroare"] = "Eroare: Cod piesă duplicat!";
+                    return View(piesa);
+                }
+
             }
             return View(piesa);
         }

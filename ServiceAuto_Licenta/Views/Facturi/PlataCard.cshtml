@@ -28,8 +28,7 @@
             </div>
         </div>
 
-        @* 
-        <!-- Card preview vizual -->
+        -- Card preview vizual -->
         <div id="card-preview" class="mb-4 p-4 rounded-4 text-white"
              style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
                     min-height: 180px; position: relative; overflow: hidden;">
@@ -64,7 +63,8 @@
                     <p id="card-exp-display" class="mb-0" style="font-size:0.9rem;">MM/AA</p>
                 </div>
             </div>
-        </div> *@
+        </div>
+
 
         <!-- Formular plată -->
         <div class="card shadow-sm">
@@ -108,7 +108,8 @@
                         </div>
                     </div>
 
-                    @* <!-- Securitate -->
+
+                <!-- Securitate -->
                     <div class="d-flex align-items-center gap-2 mb-4 p-3 rounded"
                          style="background:var(--bs-success-bg-subtle)">
                         <i class="bi bi-shield-lock-fill text-success fs-5"></i>
@@ -125,9 +126,9 @@
                     <button type="submit" class="btn btn-primary w-100 py-2" id="pay-btn">
                         <i class="bi bi-lock-fill me-2"></i>
                         Plătește @Model.Total.ToString("N2") lei
-                    </button>*@
-                </form> 
-
+                    </button>
+                </form>
+                
                 <!-- Overlay procesare -->
                 <div id="processing-overlay" class="d-none text-center py-4">
                     <div class="spinner-border text-primary mb-3" role="status"></div>
@@ -137,10 +138,7 @@
             </div>
         </div>
 
-        @* <p class="text-center text-muted small mt-3">
-            <i class="bi bi-info-circle me-1"></i>
-            Aceasta este o simulare. Nicio sumă reală nu va fi debitată.
-        </p> *@
+        
     </div>
 </div>
 

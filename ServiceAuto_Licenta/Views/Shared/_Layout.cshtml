@@ -648,6 +648,10 @@
                class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Rapoarte" ? "active" : "")">
                 <i class="bi bi-bar-chart-line"></i> Rapoarte
             </a>
+            <a asp-controller="Chatbot" asp-action="Index"
+               class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Chatbot" ? "active" : "")">
+                <i class="bi bi-robot"></i> Asistent AI
+            </a>
         </nav>
 
         <div class="sidebar-bottom">
@@ -668,10 +672,12 @@
             <p>Auto Service Management System</p>
         </div>
         <div class="topbar-right">
-            <div class="topbar-search">
-                <i class="bi bi-search"></i>
-                <input type="text" placeholder="Search..." />
-            </div>
+            <form method="get" asp-controller="Cautare" asp-action="Index" style="position:relative;">
+                <i class="bi bi-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:14px;"></i>
+                <input type="text" name="q" class="topbar-search input"
+                       placeholder="Search..."
+                       style="padding:8px 16px 8px 36px;border:1px solid var(--border-color);border-radius:8px;font-size:13px;color:var(--text-primary);width:220px;outline:none;background:var(--body-bg);" />
+            </form>
             <a asp-controller="Piese" asp-action="Index" asp-route-stocScazut="true"
                class="topbar-icon-btn" title="Alerte stoc">
                 <i class="bi bi-bell"></i>
@@ -709,6 +715,9 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    @{
+        await Html.RenderPartialAsync("_Notifications");
+    }
 
 </body>
 </html>

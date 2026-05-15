@@ -19,6 +19,12 @@ namespace ServiceAutoLicenta.Controllers
             _userManager = userManager;
         }
 
+        [AllowAnonymous]
+        public IActionResult Error()
+        {
+            return View("~/Views/Shared/Error.cshtml");
+        }
+
         private string GetUserId() => _userManager.GetUserId(User)!;
 
         public async Task<IActionResult> Index()

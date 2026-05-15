@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ServiceAutoLicenta.Controllers
 {
@@ -8,7 +9,9 @@ namespace ServiceAutoLicenta.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
 
-        public LandingController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public LandingController(UserManager<IdentityUser> userManager,
+                                 SignInManager<IdentityUser> signInManager,
+                                 RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;

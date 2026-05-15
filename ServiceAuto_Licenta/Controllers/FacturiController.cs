@@ -115,10 +115,19 @@ namespace ServiceAutoLicenta.Controllers
 
             if (ModelState.IsValid)
             {
-                _context.Add(factura);
-                await _context.SaveChangesAsync();
-                TempData["Succes"] = $"Factura {factura.SerieNumar} a fost generata!";
-                return RedirectToAction(nameof(Detalii), new { id = factura.Id });
+                try
+                {
+                    _context.Add(factura);
+                    await _context.SaveChangesAsync();
+                    TempData["Succes"] = $"Factura {factura.SerieNumar} a fost generata!";
+                    return RedirectToAction(nameof(Detalii), new { id = factura.Id });
+                }
+                catch (DbUpdateException)
+                {
+                    TempData["Eroare"] = "Serie factură duplicată!";
+                    return View(factura);
+                }
+
             }
 
             var programare = await _context.Programari

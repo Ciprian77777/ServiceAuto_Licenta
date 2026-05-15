@@ -22,6 +22,7 @@ namespace ServiceAutoLicenta.Controllers
 
         private string GetUserId() => _userManager.GetUserId(User)!;
 
+        //Cauta
         public async Task<IActionResult> Index(string? cautare)
         {
             var userId = GetUserId();
@@ -45,6 +46,7 @@ namespace ServiceAutoLicenta.Controllers
             return View(await masini.Include(m => m.Programari).OrderBy(m => m.NrInmatriculare).ToListAsync());
         }
 
+        //Detalii masina service
         public async Task<IActionResult> Detalii(int? id)
         {
             if (id == null) return NotFound();
@@ -56,6 +58,7 @@ namespace ServiceAutoLicenta.Controllers
             return View(masina);
         }
 
+        //Adauga
         public async Task<IActionResult> Adauga(int? clientId)
         {
             await PopulateClientiDropdown(clientId);
@@ -71,20 +74,31 @@ namespace ServiceAutoLicenta.Controllers
             ModelState.Remove("Client");
             if (ModelState.IsValid)
             {
-                // verificam ca clientul apartine userului
-                var client = await _context.Clienti
-                    .FirstOrDefaultAsync(c => c.Id == masina.ClientId && c.UserId == GetUserId());
-                if (client == null) return NotFound();
+                try
+                {
+                    var client = await _context.Clienti
+                        .FirstOrDefaultAsync(c => c.Id == masina.ClientId && c.UserId == GetUserId());
+                    if (client == null) return NotFound();
 
-                _context.Add(masina);
-                await _context.SaveChangesAsync();
-                TempData["Succes"] = $"Masina {masina.Marca} {masina.ModelMasina} a fost adaugata!";
-                return RedirectToAction(nameof(Index));
+                    _context.Add(masina);
+                    await _context.SaveChangesAsync();
+                    TempData["Succes"] = $"Masina {masina.Marca} {masina.ModelMasina} a fost adaugata!";
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException)
+                {
+                    TempData["Eroare"] = "Eroare: Nr. de înmatriculare sau VIN dublicat!";
+                    return View(masina);
+                }
+
+
             }
+
             await PopulateClientiDropdown(masina.ClientId);
             return View(masina);
         }
 
+        //Edit
         public async Task<IActionResult> Editeaza(int? id)
         {
             if (id == null) return NotFound();
@@ -121,6 +135,7 @@ namespace ServiceAutoLicenta.Controllers
             return View(masina);
         }
 
+        //Sterge
         public async Task<IActionResult> Sterge(int? id)
         {
             if (id == null) return NotFound();

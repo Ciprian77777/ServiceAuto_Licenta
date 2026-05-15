@@ -21,7 +21,7 @@ namespace ServiceAutoLicenta.Controllers
 
         private string GetUserId() => _userManager.GetUserId(User)!;
 
-        // GET: /Clienti
+        // Detalii client
         public async Task<IActionResult> Index(string? cautare)
         {
             var userId = GetUserId();
@@ -43,7 +43,7 @@ namespace ServiceAutoLicenta.Controllers
             return View(await clienti.Include(c => c.Masini).OrderBy(c => c.Nume).ToListAsync());
         }
 
-        // GET: /Clienti/Detalii/5
+        // Detalii client service
         public async Task<IActionResult> Detalii(int? id)
         {
             if (id == null) return NotFound();
@@ -58,10 +58,10 @@ namespace ServiceAutoLicenta.Controllers
             return View(client);
         }
 
-        // GET: /Clienti/Adauga
+        // Adauga
         public IActionResult Adauga() => View();
 
-        // POST: /Clienti/Adauga
+        // Adauga client
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Adauga([Bind("Nume,Prenume,Telefon,Email,Adresa,Cnp")] Client client)
@@ -69,16 +69,24 @@ namespace ServiceAutoLicenta.Controllers
             ModelState.Remove("UserId");
             if (ModelState.IsValid)
             {
-                client.UserId = GetUserId();
-                _context.Add(client);
-                await _context.SaveChangesAsync();
-                TempData["Succes"] = $"Clientul {client.NumeComplet} a fost adăugat!";
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    client.UserId = GetUserId();
+                    _context.Add(client);
+                    await _context.SaveChangesAsync();
+                    TempData["Succes"] = $"Clientul {client.NumeComplet} a fost adăugat!";
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException)
+                {
+                    TempData["Eroare"] = "Eroare: CNP-ul introdus există deja în sistem!";
+                    return View(client);
+                }
             }
             return View(client);
         }
 
-        // GET: /Clienti/Editeaza/5
+        // Edit
         public async Task<IActionResult> Editeaza(int? id)
         {
             if (id == null) return NotFound();
@@ -88,7 +96,7 @@ namespace ServiceAutoLicenta.Controllers
             return View(client);
         }
 
-        // POST: /Clienti/Editeaza/5
+        // Edit client
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Editeaza(int id, [Bind("Id,Nume,Prenume,Telefon,Email,Adresa,Cnp")] Client client)
@@ -116,7 +124,7 @@ namespace ServiceAutoLicenta.Controllers
             return View(client);
         }
 
-        // GET: /Clienti/Sterge/5
+        // Sterge
         public async Task<IActionResult> Sterge(int? id)
         {
             if (id == null) return NotFound();
@@ -127,7 +135,8 @@ namespace ServiceAutoLicenta.Controllers
             return View(client);
         }
 
-        // POST: /Clienti/Sterge/5
+
+        // Sterge client
         [HttpPost, ActionName("Sterge")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmaStergere(int id)
@@ -149,5 +158,7 @@ namespace ServiceAutoLicenta.Controllers
             TempData["Succes"] = "Clientul a fost șters!";
             return RedirectToAction(nameof(Index));
         }
+
+
     }
 }
