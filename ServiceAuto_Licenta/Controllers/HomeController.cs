@@ -10,100 +10,62 @@ namespace ServiceAutoLicenta.Controllers
     [Authorize]
     public class HomeController : Controller
     {
-        private readonly ServiceAutoLicentaContext _context;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly ServiceAutoLicentaContext db;
+        private readonly UserManager<IdentityUser> userManager;
 
-        public HomeController(ServiceAutoLicentaContext context, UserManager<IdentityUser> userManager)
+        public HomeController(ServiceAutoLicentaContext _db, UserManager<IdentityUser> _userManager)
         {
-            _context = context;
-            _userManager = userManager;
+            db = _db;
+            userManager = _userManager;
         }
 
         [AllowAnonymous]
         public IActionResult Error()
         {
-            return View("~/Views/Shared/Error.cshtml");
+            return View();
         }
-
-        private string GetUserId() => _userManager.GetUserId(User)!;
-
         public async Task<IActionResult> Index()
         {
-            var userId = GetUserId();
-            var azi = DateTime.Today;
-            var lunaAceasta = new DateTime(azi.Year, azi.Month, 1);
+            string userId = userManager.GetUserId(User);
 
-            ViewBag.TotalClienti = await _context.Clienti.CountAsync(c => c.UserId == userId);
-            ViewBag.TotalMasini = await _context.Masini.CountAsync(m => m.Client.UserId == userId);
-            ViewBag.TotalProgramari = await _context.Programari.CountAsync(p => p.Masina.Client.UserId == userId);
-            ViewBag.TotalPiese = await _context.Piese.CountAsync(p => p.UserId == userId);
+            ViewBag.TotalClienti = await db.Clienti
+                .CountAsync(x => x.UserId == userId);
+            ViewBag.TotalMasini = await db.Masini
+                .CountAsync(x => x.Client.UserId == userId);
+            ViewBag.TotalProgramari = await db.Programari
+                .CountAsync(x => x.Masina.Client.UserId == userId);
+            ViewBag.TotalPiese = await db.Piese
+                .CountAsync(x => x.UserId == userId);
+            ViewBag.FacturiNeplatite = await db.Facturi
+                .CountAsync(x =>x.Programare.Masina.Client.UserId == userId && x.StatusPlata == StatusPlata.Neplata );
+            ViewBag.PiesePutine = await db.Piese
+                .CountAsync(x =>x.UserId == userId && x.StocCurent <= x.StocMinim);
+            ViewBag.ProgramariLucru = await db.Programari
+                .CountAsync(x =>x.Masina.Client.UserId == userId && x.Status == StatusProgramare.InLucru);
 
-            ViewBag.ProgramariInLucru = await _context.Programari
-                .CountAsync(p => p.Masina.Client.UserId == userId && p.Status == StatusProgramare.InLucru);
+            ViewBag.Venit = await db.Facturi
+                .Where(x => x.Programare.Masina.Client.UserId == userId && x.StatusPlata == StatusPlata.Platita )
+                .SumAsync(x => (decimal?)x.Total) ?? 0;
 
-            ViewBag.VenituriLuna = await _context.Facturi
-                .Where(f => f.Programare.Masina.Client.UserId == userId &&
-                            f.StatusPlata == StatusPlata.Platita &&
-                            f.DataEmitere >= lunaAceasta)
-                .SumAsync(f => (decimal?)f.Total) ?? 0;
-
-            ViewBag.VenituriLunaAnt = await _context.Facturi
-                .Where(f => f.Programare.Masina.Client.UserId == userId &&
-                            f.StatusPlata == StatusPlata.Platita &&
-                            f.DataEmitere >= lunaAceasta.AddMonths(-1) &&
-                            f.DataEmitere < lunaAceasta)
-                .SumAsync(f => (decimal?)f.Total) ?? 0;
-
-            ViewBag.FacturiNeincasate = await _context.Facturi
-                .CountAsync(f => f.Programare.Masina.Client.UserId == userId &&
-                                 f.StatusPlata == StatusPlata.Neplata);
-
-            ViewBag.AlerteStoc = await _context.Piese
-                .CountAsync(p => p.UserId == userId && p.StocCurent <= p.StocMinim);
-
-            ViewBag.NrProgramata = await _context.Programari
-                .CountAsync(p => p.Masina.Client.UserId == userId && p.Status == StatusProgramare.Programata);
-            ViewBag.NrInLucru = await _context.Programari
-                .CountAsync(p => p.Masina.Client.UserId == userId && p.Status == StatusProgramare.InLucru);
-            ViewBag.NrFinalizata = await _context.Programari
-                .CountAsync(p => p.Masina.Client.UserId == userId && p.Status == StatusProgramare.Finalizata);
-            ViewBag.NrAnulata = await _context.Programari
-                .CountAsync(p => p.Masina.Client.UserId == userId && p.Status == StatusProgramare.Anulata);
-
-            var profitLunar = await _context.Facturi
-                .Where(f => f.Programare.Masina.Client.UserId == userId &&
-                            f.StatusPlata == StatusPlata.Platita &&
-                            f.DataEmitere >= azi.AddMonths(-6))
-                .GroupBy(f => new { f.DataEmitere.Year, f.DataEmitere.Month })
-                .Select(g => new { An = g.Key.Year, Luna = g.Key.Month, Total = g.Sum(f => f.Total) })
-                .OrderBy(x => x.An).ThenBy(x => x.Luna)
+            ViewBag.UltimeProgramari = await db.Programari
+                .Include(x => x.Masina)
+                .ThenInclude(x => x.Client)
+                .Where(x => x.Masina.Client.UserId == userId)
+                .Take(5)
                 .ToListAsync();
 
-            ViewBag.ProfitLunarLabels = System.Text.Json.JsonSerializer.Serialize(
-                profitLunar.Select(x => x.Luna + "/" + x.An).ToList());
-            ViewBag.ProfitLunarDate = System.Text.Json.JsonSerializer.Serialize(
-                profitLunar.Select(x => x.Total).ToList());
+            ViewBag.UltimeFacturi = await db.Facturi
+                .Include(x => x.Programare)
+                .ThenInclude(x => x.Masina)
+                .ThenInclude(x => x.Client)
+                .Where(x => x.Programare.Masina.Client.UserId == userId)
+                .Take(5)
+                .ToListAsync();
 
-            ViewBag.UltimeProgramari = await _context.Programari
-                .Include(p => p.Masina).ThenInclude(m => m.Client)
-                .Where(p => p.Masina.Client.UserId == userId)
-                .OrderByDescending(p => p.CreatedAt)
-                .Take(5).ToListAsync();
-
-            ViewBag.UltimiFacturi = await _context.Facturi
-                .Include(f => f.Programare).ThenInclude(p => p.Masina).ThenInclude(m => m.Client)
-                .Where(f => f.Programare.Masina.Client.UserId == userId)
-                .OrderByDescending(f => f.DataEmitere)
-                .Take(5).ToListAsync();
-
-            ViewBag.PieseStocScazut = await _context.Piese
-                .Where(p => p.UserId == userId && p.StocCurent <= p.StocMinim)
-                .OrderBy(p => p.StocCurent)
-                .Take(5).ToListAsync();
-
-            ViewBag.AlerteGlobale = await _context.Piese
-                .CountAsync(p => p.UserId == userId && p.StocCurent <= p.StocMinim);
-
+            ViewBag.PieseStocMic = await db.Piese
+                .Where(x => x.UserId == userId && x.StocCurent <= x.StocMinim )
+                .Take(5)
+                .ToListAsync();
             return View();
         }
     }

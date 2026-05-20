@@ -15,7 +15,6 @@
 
 <div style="display:grid;grid-template-columns:280px 1fr;gap:20px;height:calc(100vh - 180px);">
 
-    <!-- Sidebar sugestii -->
     <div style="display:flex;flex-direction:column;gap:12px;">
         <div class="content-card" style="flex:1;overflow-y:auto;">
             <div class="content-card-header">
@@ -59,13 +58,10 @@
         </div>
     </div>
 
-    <!-- Chat principal -->
     <div class="content-card" style="display:flex;flex-direction:column;overflow:hidden;">
 
-        <!-- Mesaje -->
         <div id="chat-messages" style="flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px;">
 
-            <!-- Mesaj de bun venit -->
             <div style="display:flex;gap:12px;align-items:flex-start;">
                 <div style="width:36px;height:36px;background:#2563eb;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
                     <i class="bi bi-robot" style="color:white;font-size:16px;"></i>
@@ -85,7 +81,6 @@
 
         </div>
 
-        <!-- Indicator typing -->
         <div id="typing-indicator" style="display:none;padding:0 20px 12px;">
             <div style="display:flex;gap:12px;align-items:flex-start;">
                 <div style="width:36px;height:36px;background:#2563eb;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
@@ -101,7 +96,6 @@
             </div>
         </div>
 
-        <!-- Input -->
         <div style="padding:16px 20px;border-top:1px solid var(--border-color);">
             <div style="display:flex;gap:10px;align-items:flex-end;">
                 <div style="flex:1;position:relative;">
@@ -207,19 +201,16 @@
             const message = input.value.trim();
             if (!message) return;
 
-            // Adauga mesajul utilizatorului
             appendMessage('user', message);
             input.value = '';
             input.style.height = 'auto';
 
-            // Arata typing indicator
             isLoading = true;
             document.getElementById('typing-indicator').style.display = 'block';
             document.getElementById('send-btn').disabled = true;
             document.getElementById('send-btn').style.opacity = '0.5';
             scrollToBottom();
 
-            // Trimite la server
             fetch('/Chatbot/Ask', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -294,17 +285,13 @@
         }
 
         function formatMessage(text) {
-            // Escape HTML
             let formatted = escapeHtml(text);
 
-            // Bold **text**
             formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
 
-            // Liste cu liniuta
             formatted = formatted.replace(/^- (.+)$/gm, '<li style="margin-left:16px;margin-bottom:4px;">$1</li>');
             formatted = formatted.replace(/(<li.*<\/li>\n?)+/g, '<ul style="margin:8px 0;padding:0;">$&</ul>');
 
-            // Linii noi
             formatted = formatted.replace(/\n\n/g, '<br><br>');
             formatted = formatted.replace(/\n/g, '<br>');
 
@@ -324,7 +311,6 @@
             }, 50);
         }
 
-        // Focus pe input la incarcare
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('chat-input').focus();
         });

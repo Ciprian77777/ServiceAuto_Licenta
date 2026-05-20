@@ -11,139 +11,149 @@ namespace ServiceAutoLicenta.Controllers
     [Authorize]
     public class MasiniController : Controller
     {
-        private readonly ServiceAutoLicentaContext _context;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly ServiceAutoLicentaContext db;
+        private readonly UserManager<IdentityUser> userManager;
 
-        public MasiniController(ServiceAutoLicentaContext context, UserManager<IdentityUser> userManager)
+        public MasiniController(ServiceAutoLicentaContext _db, UserManager<IdentityUser> _userManager)
         {
-            _context = context;
-            _userManager = userManager;
+            db = _db;
+            userManager = _userManager;
         }
 
-        private string GetUserId() => _userManager.GetUserId(User)!;
-
-        //Cauta
-        public async Task<IActionResult> Index(string? cautare)
+        public async Task<IActionResult> Index(string cautare)
         {
-            var userId = GetUserId();
-            var masini = _context.Masini
-                .Include(m => m.Client)
-                .Where(m => m.Client.UserId == userId)
-                .AsQueryable();
+            string userId = userManager.GetUserId(User);
+
+            var masini = db.Masini
+                .Include(x => x.Client)
+                .Include(x => x.Programari)
+                .Where(x => x.Client.UserId == userId);
 
             if (!string.IsNullOrEmpty(cautare))
             {
                 cautare = cautare.ToLower();
-                masini = masini.Where(m =>
-                    m.NrInmatriculare.ToLower().Contains(cautare) ||
-                    m.Marca.ToLower().Contains(cautare) ||
-                    m.ModelMasina.ToLower().Contains(cautare) ||
-                    m.Client.Nume.ToLower().Contains(cautare) ||
-                    m.Client.Prenume.ToLower().Contains(cautare));
+                masini = masini.Where(x =>
+                    x.NrInmatriculare.ToLower().Contains(cautare) ||
+                    x.Marca.ToLower().Contains(cautare) ||
+                    x.ModelMasina.ToLower().Contains(cautare) ||
+                    x.Client.Nume.ToLower().Contains(cautare) ||
+                    x.Client.Prenume.ToLower().Contains(cautare));
             }
 
             ViewBag.Cautare = cautare;
-            return View(await masini.Include(m => m.Programari).OrderBy(m => m.NrInmatriculare).ToListAsync());
+            return View(await masini.OrderBy(x => x.NrInmatriculare).ToListAsync());
         }
 
-        //Detalii masina service
-        public async Task<IActionResult> Detalii(int? id)
+        public async Task<IActionResult> Detalii(int id)
         {
-            if (id == null) return NotFound();
-            var masina = await _context.Masini
-                .Include(m => m.Client)
-                .Include(m => m.Programari)
-                .FirstOrDefaultAsync(m => m.Id == id && m.Client.UserId == GetUserId());
+            string userId = userManager.GetUserId(User);
+
+            var masina = await db.Masini
+                .Include(x => x.Client)
+                .Include(x => x.Programari)
+                .FirstOrDefaultAsync(x => x.Id == id && x.Client.UserId == userId);
+
             if (masina == null) return NotFound();
+
             return View(masina);
         }
 
-        //Adauga
         public async Task<IActionResult> Adauga(int? clientId)
         {
-            await PopulateClientiDropdown(clientId);
+            string userId = userManager.GetUserId(User);
+            await PopulareDropdownClienti(userId, clientId);
+
             var masina = new Masina();
-            if (clientId.HasValue) masina.ClientId = clientId.Value;
+            if (clientId.HasValue)
+                masina.ClientId = clientId.Value;
+
             return View(masina);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Adauga([Bind("ClientId,Marca,ModelMasina,AnFabricatie,NrInmatriculare,Vin,KmActuali")] Masina masina)
+        public async Task<IActionResult> Adauga(Masina masina)
         {
+            string userId = userManager.GetUserId(User);
             ModelState.Remove("Client");
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var client = await _context.Clienti
-                        .FirstOrDefaultAsync(c => c.Id == masina.ClientId && c.UserId == GetUserId());
+                    var client = await db.Clienti
+                        .FirstOrDefaultAsync(x => x.Id == masina.ClientId && x.UserId == userId);
+
                     if (client == null) return NotFound();
 
-                    _context.Add(masina);
-                    await _context.SaveChangesAsync();
-                    TempData["Succes"] = $"Masina {masina.Marca} {masina.ModelMasina} a fost adaugata!";
-                    return RedirectToAction(nameof(Index));
+                    db.Masini.Add(masina);
+                    await db.SaveChangesAsync();
+                    TempData["Succes"] = "Masina a fost adaugata cu succes!";
+                    return RedirectToAction("Index");
                 }
-                catch (DbUpdateException)
+                catch (Exception)
                 {
-                    TempData["Eroare"] = "Eroare: Nr. de înmatriculare sau VIN dublicat!";
-                    return View(masina);
+                    TempData["Eroare"] = "A aparut o eroare. Verificati datele introduse.";
                 }
-
-
             }
 
-            await PopulateClientiDropdown(masina.ClientId);
+            await PopulareDropdownClienti(userId, masina.ClientId);
             return View(masina);
         }
 
-        //Edit
-        public async Task<IActionResult> Editeaza(int? id)
+        public async Task<IActionResult> Editeaza(int id)
         {
-            if (id == null) return NotFound();
-            var masina = await _context.Masini
-                .Include(m => m.Client)
-                .FirstOrDefaultAsync(m => m.Id == id && m.Client.UserId == GetUserId());
+            string userId = userManager.GetUserId(User);
+
+            var masina = await db.Masini
+                .Include(x => x.Client)
+                .FirstOrDefaultAsync(x => x.Id == id && x.Client.UserId == userId);
+
             if (masina == null) return NotFound();
-            await PopulateClientiDropdown(masina.ClientId);
+
+            await PopulareDropdownClienti(userId, masina.ClientId);
             return View(masina);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Editeaza(int id, [Bind("Id,ClientId,Marca,ModelMasina,AnFabricatie,NrInmatriculare,Vin,KmActuali")] Masina masina)
+        public async Task<IActionResult> Editeaza(int id, Masina masina)
         {
-            if (id != masina.Id) return NotFound();
+            string userId = userManager.GetUserId(User);
             ModelState.Remove("Client");
+
+            if (id != masina.Id) return NotFound();
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(masina);
-                    await _context.SaveChangesAsync();
+                    db.Masini.Update(masina);
+                    await db.SaveChangesAsync();
                     TempData["Succes"] = "Masina a fost actualizata!";
+                    return RedirectToAction("Index");
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception)
                 {
-                    if (!_context.Masini.Any(m => m.Id == masina.Id)) return NotFound();
-                    throw;
+                    TempData["Eroare"] = "A aparut o eroare la salvare.";
                 }
-                return RedirectToAction(nameof(Index));
             }
-            await PopulateClientiDropdown(masina.ClientId);
+
+            await PopulareDropdownClienti(userId, masina.ClientId);
             return View(masina);
         }
 
-        //Sterge
-        public async Task<IActionResult> Sterge(int? id)
+        public async Task<IActionResult> Sterge(int id)
         {
-            if (id == null) return NotFound();
-            var masina = await _context.Masini
-                .Include(m => m.Client)
-                .Include(m => m.Programari)
-                .FirstOrDefaultAsync(m => m.Id == id && m.Client.UserId == GetUserId());
+            string userId = userManager.GetUserId(User);
+
+            var masina = await db.Masini
+                .Include(x => x.Client)
+                .Include(x => x.Programari)
+                .FirstOrDefaultAsync(x => x.Id == id && x.Client.UserId == userId);
+
             if (masina == null) return NotFound();
+
             return View(masina);
         }
 
@@ -151,31 +161,36 @@ namespace ServiceAutoLicenta.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmaStergere(int id)
         {
-            var masina = await _context.Masini
-                .Include(m => m.Client)
-                .Include(m => m.Programari)
-                .FirstOrDefaultAsync(m => m.Id == id && m.Client.UserId == GetUserId());
+            string userId = userManager.GetUserId(User);
+
+            var masina = await db.Masini
+                .Include(x => x.Client)
+                .Include(x => x.Programari)
+                .FirstOrDefaultAsync(x => x.Id == id && x.Client.UserId == userId);
+
             if (masina == null) return NotFound();
+
             if (masina.Programari.Any())
             {
                 TempData["Eroare"] = "Masina nu poate fi stearsa deoarece are programari!";
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index");
             }
-            _context.Masini.Remove(masina);
-            await _context.SaveChangesAsync();
+
+            db.Masini.Remove(masina);
+            await db.SaveChangesAsync();
             TempData["Succes"] = "Masina a fost stearsa!";
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index");
         }
 
-        private async Task PopulateClientiDropdown(int? selectedClientId = null)
+        private async Task PopulareDropdownClienti(string userId, int? selectedId = null)
         {
-            var userId = GetUserId();
-            var clienti = await _context.Clienti
-                .Where(c => c.UserId == userId)
-                .OrderBy(c => c.Nume)
-                .Select(c => new { c.Id, NumeComplet = c.Nume + " " + c.Prenume })
+            var clienti = await db.Clienti
+                .Where(x => x.UserId == userId)
+                .OrderBy(x => x.Nume)
+                .Select(x => new { x.Id, Nume = x.Nume + " " + x.Prenume })
                 .ToListAsync();
-            ViewBag.ClientId = new SelectList(clienti, "Id", "NumeComplet", selectedClientId);
+
+            ViewBag.ClientId = new SelectList(clienti, "Id", "Nume", selectedId);
         }
     }
 }

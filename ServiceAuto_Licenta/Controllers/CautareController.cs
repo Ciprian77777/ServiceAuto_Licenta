@@ -10,97 +10,66 @@ namespace ServiceAutoLicenta.Controllers
     [Authorize]
     public class CautareController : Controller
     {
-        private readonly ServiceAutoLicentaContext _context;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly ServiceAutoLicentaContext db;
+        private readonly UserManager<IdentityUser> userManager;
 
-        public CautareController(ServiceAutoLicentaContext context, UserManager<IdentityUser> userManager)
+        public CautareController(ServiceAutoLicentaContext _db, UserManager<IdentityUser> _userManager)
         {
-            _context = context;
-            _userManager = userManager;
+            db = _db;
+            userManager = _userManager;
         }
-
-        private string GetUserId() => _userManager.GetUserId(User)!;
-
-        public async Task<IActionResult> Index(string? q)
+        public async Task<IActionResult> Index(string q)
         {
-            if (string.IsNullOrWhiteSpace(q))
-                return View(new SearchResult { Query = "" });
+            SearchResult r = new SearchResult();
+            if (string.IsNullOrEmpty(q))
+                return View(r);
 
-            var userId = GetUserId();
-            var query = q.ToLower().Trim();
-
-            var result = new SearchResult { Query = q };
-
-            // Clienti
-            result.Clienti = await _context.Clienti
-                .Include(c => c.Masini)
-                .Where(c => c.UserId == userId && (
-                    c.Nume.ToLower().Contains(query) ||
-                    c.Prenume.ToLower().Contains(query) ||
-                    c.Telefon.Contains(query) ||
-                    (c.Email != null && c.Email.ToLower().Contains(query)) ||
-                    (c.Cnp != null && c.Cnp.Contains(query))))
+            string userId = userManager.GetUserId(User);
+            q = q.ToLower();
+            r.Query = q;
+            r.Clienti = await db.Clienti
+                .Include(x => x.Masini)
+                .Where(x =>x.UserId == userId &&(x.Nume.ToLower().Contains(q) || x.Prenume.ToLower().Contains(q) || x.Telefon.Contains(q)))
                 .Take(5)
                 .ToListAsync();
 
-            // Masini
-            result.Masini = await _context.Masini
-                .Include(m => m.Client)
-                .Where(m => m.Client.UserId == userId && (
-                    m.NrInmatriculare.ToLower().Contains(query) ||
-                    m.Marca.ToLower().Contains(query) ||
-                    m.ModelMasina.ToLower().Contains(query) ||
-                    (m.Vin != null && m.Vin.ToLower().Contains(query))))
+            r.Masini = await db.Masini
+                .Include(x => x.Client)
+                .Where(x =>x.Client.UserId == userId &&(x.Marca.ToLower().Contains(q) || x.ModelMasina.ToLower().Contains(q) ||x.NrInmatriculare.ToLower().Contains(q) ))
                 .Take(5)
                 .ToListAsync();
 
-            // Programari
-            result.Programari = await _context.Programari
-                .Include(p => p.Masina).ThenInclude(m => m.Client)
-                .Where(p => p.Masina.Client.UserId == userId && (
-                    p.Masina.NrInmatriculare.ToLower().Contains(query) ||
-                    p.Masina.Client.Nume.ToLower().Contains(query) ||
-                    p.Masina.Client.Prenume.ToLower().Contains(query) ||
-                    (p.Observatii != null && p.Observatii.ToLower().Contains(query))))
-                .OrderByDescending(p => p.DataIntrare)
+            r.Programari = await db.Programari
+                .Include(x => x.Masina)
+                .ThenInclude(x => x.Client)
+                .Where(x => x.Masina.Client.UserId == userId && (  x.Masina.NrInmatriculare.ToLower().Contains(q) ||  x.Masina.Client.Nume.ToLower().Contains(q) ))
                 .Take(5)
                 .ToListAsync();
 
-            // Piese
-            result.Piese = await _context.Piese
-                .Where(p => p.UserId == userId && (
-                    p.Denumire.ToLower().Contains(query) ||
-                    p.CodPiesa.ToLower().Contains(query) ||
-                    (p.Producator != null && p.Producator.ToLower().Contains(query))))
+            r.Piese = await db.Piese
+                .Where(x => x.UserId == userId && (  x.Denumire.ToLower().Contains(q) ||  x.CodPiesa.ToLower().Contains(q) ))
                 .Take(5)
                 .ToListAsync();
 
-            // Facturi
-            result.Facturi = await _context.Facturi
-                .Include(f => f.Programare).ThenInclude(p => p.Masina).ThenInclude(m => m.Client)
-                .Where(f => f.Programare.Masina.Client.UserId == userId && (
-                    f.SerieNumar.ToLower().Contains(query) ||
-                    f.Programare.Masina.Client.Nume.ToLower().Contains(query) ||
-                    f.Programare.Masina.Client.Prenume.ToLower().Contains(query) ||
-                    f.Programare.Masina.NrInmatriculare.ToLower().Contains(query)))
-                .OrderByDescending(f => f.DataEmitere)
+            r.Facturi = await db.Facturi
+                .Include(x => x.Programare)
+                .ThenInclude(x => x.Masina)
+                .ThenInclude(x => x.Client)
+                .Where(x => x.Programare.Masina.Client.UserId == userId &&( x.SerieNumar.ToLower().Contains(q) ||x.Programare.Masina.NrInmatriculare.ToLower().Contains(q) ))
                 .Take(5)
                 .ToListAsync();
-
-            return View(result);
+            return View(r);
         }
     }
 
     public class SearchResult
     {
-        public string Query { get; set; } = "";
-        public List<Client> Clienti { get; set; } = new();
-        public List<Masina> Masini { get; set; } = new();
-        public List<Programare> Programari { get; set; } = new();
-        public List<Piesa> Piese { get; set; } = new();
-        public List<Factura> Facturi { get; set; } = new();
-
-        public int TotalRezultate =>
-            Clienti.Count + Masini.Count + Programari.Count + Piese.Count + Facturi.Count;
+        public string Query { get; set; }
+        public List<Client> Clienti { get; set; } = new List<Client>();
+        public List<Masina> Masini { get; set; } = new List<Masina>();
+        public List<Programare> Programari { get; set; } = new List<Programare>();
+        public List<Piesa> Piese { get; set; } = new List<Piesa>();
+        public List<Factura> Facturi { get; set; } = new List<Factura>();
+        public int TotalRezultate => Clienti.Count + Masini.Count + Programari.Count + Piese.Count + Facturi.Count;
     }
 }

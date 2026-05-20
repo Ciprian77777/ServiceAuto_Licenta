@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using ServiceAutoLicenta.Data;
 
 var builder = WebApplication.CreateBuilder(args);
-
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ServiceAutoLicentaContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("ServiceAutoDb")));
@@ -22,7 +21,6 @@ builder.Services.ConfigureApplicationCookie(options => {
 });
 
 var app = builder.Build();
-
 app.UseExceptionHandler("/Home/Error");
 app.UseStatusCodePagesWithReExecute("/Home/Error");
 app.UseHttpsRedirection();

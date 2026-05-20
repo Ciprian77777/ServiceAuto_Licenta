@@ -26,11 +26,9 @@
             --orange: #ea580c;
             --purple: #7c3aed;
         }
-
         * {
             box-sizing: border-box;
         }
-
         body {
             margin: 0;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -38,7 +36,7 @@
             color: var(--text-primary);
         }
 
-        /* ── Sidebar ── */
+
         .sidebar {
             position: fixed;
             top: 0;
@@ -77,13 +75,12 @@
             line-height: 1.2;
         }
 
-            .sidebar-logo-text strong {
+        .sidebar-logo-text strong {
                 color: #f1f5f9;
                 font-size: 15px;
                 display: block;
             }
-
-            .sidebar-logo-text span {
+        .sidebar-logo-text span {
                 color: #2563eb;
                 font-size: 12px;
             }
@@ -100,7 +97,6 @@
         .sidebar-nav {
             padding: 0 12px;
         }
-
         .sidebar-link {
             display: flex;
             align-items: center;
@@ -119,18 +115,15 @@
                 background: rgba(255,255,255,0.07);
                 color: var(--sidebar-text-hover);
             }
-
             .sidebar-link.active {
                 background: var(--sidebar-active-bg);
                 color: #ffffff;
             }
-
             .sidebar-link i {
                 font-size: 16px;
                 width: 20px;
                 text-align: center;
             }
-
         .sidebar-bottom {
             margin-top: auto;
             padding: 16px 12px;
@@ -141,7 +134,7 @@
                 margin-bottom: 0;
             }
 
-        /* ── Topbar ── */
+        
         .topbar {
             position: fixed;
             top: 0;
@@ -156,26 +149,22 @@
             padding: 0 28px;
             z-index: 99;
         }
-
         .topbar-left h1 {
             font-size: 18px;
             font-weight: 600;
             margin: 0;
             color: var(--text-primary);
         }
-
         .topbar-left p {
             font-size: 13px;
             color: var(--text-muted);
             margin: 0;
         }
-
         .topbar-right {
             display: flex;
             align-items: center;
             gap: 16px;
         }
-
         .topbar-search {
             position: relative;
         }
@@ -246,7 +235,6 @@
             gap: 10px;
             cursor: pointer;
         }
-
         .topbar-avatar {
             width: 36px;
             height: 36px;
@@ -259,19 +247,17 @@
             font-size: 14px;
             font-weight: 600;
         }
-
         .topbar-user-info strong {
             font-size: 13px;
             display: block;
             color: var(--text-primary);
         }
-
         .topbar-user-info span {
             font-size: 12px;
             color: var(--text-muted);
         }
 
-        /* ── Main content ── */
+        
         .main-content {
             margin-left: var(--sidebar-width);
             margin-top: var(--topbar-height);
@@ -279,7 +265,7 @@
             min-height: calc(100vh - var(--topbar-height));
         }
 
-        /* ── Cards ── */
+        
         .stat-card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -291,7 +277,6 @@
             .stat-card:hover {
                 box-shadow: 0 4px 12px rgba(0,0,0,0.08);
             }
-
             .stat-card .stat-icon {
                 width: 44px;
                 height: 44px;
@@ -302,7 +287,6 @@
                 font-size: 20px;
                 margin-bottom: 12px;
             }
-
             .stat-card .stat-value {
                 font-size: 28px;
                 font-weight: 700;
@@ -310,18 +294,15 @@
                 line-height: 1;
                 margin-bottom: 4px;
             }
-
             .stat-card .stat-label {
                 font-size: 13px;
                 color: var(--text-muted);
             }
-
             .stat-card .stat-change {
                 font-size: 12px;
                 font-weight: 500;
                 margin-top: 8px;
             }
-
         .stat-change.up {
             color: var(--green);
         }
@@ -330,14 +311,13 @@
             color: #ef4444;
         }
 
-        /* ── Content cards ── */
+        
         .content-card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 12px;
             overflow: hidden;
         }
-
         .content-card-header {
             padding: 16px 20px;
             border-bottom: 1px solid var(--border-color);
@@ -345,21 +325,19 @@
             align-items: center;
             justify-content: space-between;
         }
-
             .content-card-header h5 {
                 font-size: 15px;
                 font-weight: 600;
                 margin: 0;
                 color: var(--text-primary);
             }
-
             .content-card-header p {
                 font-size: 12px;
                 color: var(--text-muted);
                 margin: 2px 0 0;
             }
 
-        /* ── Badges ── */
+
         .badge-status {
             padding: 4px 10px;
             border-radius: 20px;
@@ -371,7 +349,6 @@
             background: #eff6ff;
             color: #2563eb;
         }
-
         .badge-inlucru {
             background: #fff7ed;
             color: #ea580c;
@@ -391,18 +368,15 @@
             background: #f0fdf4;
             color: #16a34a;
         }
-
         .badge-neplata {
             background: #fef2f2;
             color: #dc2626;
         }
-
         .badge-partial {
             background: #fff7ed;
             color: #ea580c;
         }
 
-        /* ── Buttons ── */
         .btn-primary-custom {
             background: var(--blue);
             color: white;
@@ -418,12 +392,10 @@
             gap: 6px;
             transition: background 0.15s;
         }
-
             .btn-primary-custom:hover {
                 background: #1d4ed8;
                 color: white;
             }
-
         .btn-outline-custom {
             background: transparent;
             color: var(--text-muted);
@@ -439,13 +411,11 @@
             gap: 6px;
             transition: all 0.15s;
         }
-
             .btn-outline-custom:hover {
                 border-color: var(--blue);
                 color: var(--blue);
             }
 
-        /* ── Tables ── */
         .custom-table {
             width: 100%;
             border-collapse: collapse;
@@ -461,23 +431,18 @@
                 border-bottom: 1px solid var(--border-color);
                 background: #f8fafc;
             }
-
             .custom-table td {
                 padding: 14px 16px;
                 font-size: 14px;
                 border-bottom: 1px solid var(--border-color);
                 color: var(--text-primary);
             }
-
             .custom-table tr:last-child td {
                 border-bottom: none;
             }
-
             .custom-table tr:hover td {
                 background: #f8fafc;
             }
-
-        /* ── Avatar initiale client ── */
         .client-avatar {
             width: 36px;
             height: 36px;
@@ -492,8 +457,6 @@
             flex-shrink: 0;
         }
 
-
-        /* ── Progress bar stoc ── */
         .stock-bar {
             height: 6px;
             background: #e2e8f0;
@@ -503,13 +466,10 @@
             display: inline-block;
             vertical-align: middle;
         }
-
         .stock-bar-fill {
             height: 100%;
             border-radius: 3px;
         }
-
-        /* ── Alerts ── */
         .alert-warning-custom {
             background: #fffbeb;
             border: 1px solid #fcd34d;
@@ -521,22 +481,18 @@
             font-size: 14px;
             color: #92400e;
         }
-
-        /* ── Form styling ── */
         .form-card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 28px;
         }
-
         .form-label {
             font-size: 13px;
             font-weight: 500;
             color: var(--text-primary);
             margin-bottom: 6px;
         }
-
         .form-control, .form-select {
             border: 1px solid var(--border-color);
             border-radius: 8px;
@@ -546,50 +502,40 @@
             background: var(--card-bg);
             transition: border-color 0.15s;
         }
-
             .form-control:focus, .form-select:focus {
                 border-color: var(--blue);
                 box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
                 outline: none;
             }
-
-        /* ── Page header ── */
         .page-header {
             display: flex;
             align-items: flex-start;
             justify-content: space-between;
             margin-bottom: 24px;
         }
-
             .page-header h2 {
                 font-size: 22px;
                 font-weight: 700;
                 margin: 0 0 4px;
                 color: var(--text-primary);
             }
-
             .page-header p {
                 font-size: 14px;
                 color: var(--text-muted);
                 margin: 0;
             }
-
-        /* ── Alerts Bootstrap override ── */
         .alert {
             border-radius: 10px;
             font-size: 14px;
         }
 
-        /* ── Responsive ── */
         @@media (max-width: 768px) {
             .sidebar {
                 transform: translateX(-100%);
             }
-
             .main-content {
                 margin-left: 0;
             }
-
             .topbar {
                 left: 0;
             }
@@ -598,7 +544,6 @@
 </head>
 <body>
 
-    <!-- Sidebar -->
     <aside class="sidebar">
         <div class="sidebar-logo">
             <div class="sidebar-logo-icon">
@@ -665,7 +610,6 @@
         </div>
     </aside>
 
-    <!-- Topbar -->
     <header class="topbar">
         <div class="topbar-left">
             <h1>@ViewData["Title"]</h1>
@@ -705,8 +649,6 @@
             </form>
         </div>
     </header>
-
-    <!-- Main content -->
     <main class="main-content">
         @RenderBody()
     </main>

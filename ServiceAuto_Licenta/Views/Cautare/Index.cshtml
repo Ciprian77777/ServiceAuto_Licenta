@@ -27,7 +27,6 @@
     </div>
 </div>
 
-<!-- Bara de cautare mare -->
 <div class="content-card mb-4" style="padding:20px;">
     <form method="get" asp-controller="Cautare" asp-action="Index">
         <div style="display:flex;gap:10px;">
@@ -52,7 +51,6 @@
 
 @if (string.IsNullOrEmpty(Model.Query))
 {
-    <!-- Stare initiala -->
     <div style="text-align:center;padding:60px 20px;color:var(--text-muted);">
         <i class="bi bi-search" style="font-size:3rem;opacity:0.2;"></i>
         <p style="margin-top:16px;font-size:15px;">Cauta in toata aplicatia</p>
@@ -68,7 +66,6 @@
 }
 else if (Model.TotalRezultate == 0)
 {
-    <!-- Niciun rezultat -->
     <div style="text-align:center;padding:60px 20px;color:var(--text-muted);">
         <i class="bi bi-emoji-frown" style="font-size:3rem;opacity:0.2;"></i>
         <p style="margin-top:16px;font-size:15px;">Niciun rezultat pentru „@Model.Query"</p>
@@ -79,7 +76,6 @@ else
 {
     <div style="display:flex;flex-direction:column;gap:20px;">
 
-        <!-- Clienti -->
         @if (Model.Clienti.Any())
         {
             <div class="content-card">
@@ -130,7 +126,6 @@ else
             </div>
         }
 
-        <!-- Masini -->
         @if (Model.Masini.Any())
         {
             <div class="content-card">
@@ -174,7 +169,6 @@ else
             </div>
         }
 
-        <!-- Programari -->
         @if (Model.Programari.Any())
         {
             <div class="content-card">
@@ -221,7 +215,6 @@ else
             </div>
         }
 
-        <!-- Piese -->
         @if (Model.Piese.Any())
         {
             <div class="content-card">
@@ -275,7 +268,6 @@ else
             </div>
         }
 
-        <!-- Facturi -->
         @if (Model.Facturi.Any())
         {
             <div class="content-card">

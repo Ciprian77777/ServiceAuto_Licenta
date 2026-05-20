@@ -10,179 +10,183 @@ namespace ServiceAutoLicenta.Controllers
     [Authorize]
     public class PieseController : Controller
     {
-        private readonly ServiceAutoLicentaContext _context;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly ServiceAutoLicentaContext db;
+        private readonly UserManager<IdentityUser> userManager;
 
-        public PieseController(ServiceAutoLicentaContext context, UserManager<IdentityUser> userManager)
+        public PieseController(ServiceAutoLicentaContext _db, UserManager<IdentityUser> _userManager)
         {
-            _context = context;
-            _userManager = userManager;
+            db = _db;
+            userManager = _userManager;
         }
 
-        private string GetUserId() => _userManager.GetUserId(User)!;
-
-        // GET: /Piese
-        public async Task<IActionResult> Index(string? cautare, bool? stocScazut)
+        public async Task<IActionResult> Index(string cautare, bool stocScazut)
         {
-            var userId = GetUserId();
-            var piese = _context.Piese
-                .Where(p => p.UserId == userId)
-                .AsQueryable();
+            string userId = userManager.GetUserId(User);
+
+            var piese = db.Piese.Where(x => x.UserId == userId);
 
             if (!string.IsNullOrEmpty(cautare))
             {
                 cautare = cautare.ToLower();
-                piese = piese.Where(p =>
-                    p.Denumire.ToLower().Contains(cautare) ||
-                    p.CodPiesa.ToLower().Contains(cautare) ||
-                    (p.Producator != null && p.Producator.ToLower().Contains(cautare)));
+                piese = piese.Where(x =>
+                    x.Denumire.ToLower().Contains(cautare) ||
+                    x.CodPiesa.ToLower().Contains(cautare) ||
+                    x.Producator.ToLower().Contains(cautare));
             }
 
-            if (stocScazut == true)
-                piese = piese.Where(p => p.StocCurent <= p.StocMinim);
+            if (stocScazut)
+                piese = piese.Where(x => x.StocCurent <= x.StocMinim);
 
             ViewBag.Cautare = cautare;
             ViewBag.StocScazut = stocScazut;
-            ViewBag.NrAlerte = await _context.Piese
-                .CountAsync(p => p.UserId == userId && p.StocCurent <= p.StocMinim);
+            ViewBag.NrAlerte = await db.Piese
+                .CountAsync(x => x.UserId == userId && x.StocCurent <= x.StocMinim);
 
-            return View(await piese.OrderBy(p => p.Denumire).ToListAsync());
+            return View(await piese.OrderBy(x => x.Denumire).ToListAsync());
         }
 
-        // GET: /Piese/Detalii/5
-        public async Task<IActionResult> Detalii(int? id)
+        public async Task<IActionResult> Detalii(int id)
         {
-            if (id == null) return NotFound();
+            string userId = userManager.GetUserId(User);
 
-            var piesa = await _context.Piese
-                .Include(p => p.LucrarePiese)
-                    .ThenInclude(lp => lp.Lucrare)
-                        .ThenInclude(l => l.Programare)
-                            .ThenInclude(pr => pr.Masina)
-                                .ThenInclude(m => m.Client)
-                .FirstOrDefaultAsync(p => p.Id == id && p.UserId == GetUserId());
+            var piesa = await db.Piese
+                .Include(x => x.LucrarePiese)
+                    .ThenInclude(x => x.Lucrare)
+                        .ThenInclude(x => x.Programare)
+                            .ThenInclude(x => x.Masina)
+                                .ThenInclude(x => x.Client)
+                .FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
 
             if (piesa == null) return NotFound();
 
             return View(piesa);
         }
 
-        // GET: /Piese/Adauga
-        public IActionResult Adauga() => View();
+        public IActionResult Adauga()
+        {
+            return View();
+        }
 
-        // POST: /Piese/Adauga
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Adauga([Bind("CodPiesa,Denumire,Producator,PretAchizitie,PretVanzare,StocCurent,StocMinim")] Piesa piesa)
+        public async Task<IActionResult> Adauga(Piesa piesa)
         {
+            string userId = userManager.GetUserId(User);
             ModelState.Remove("UserId");
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    piesa.UserId = GetUserId();
-                    _context.Add(piesa);
-                    await _context.SaveChangesAsync();
-                    TempData["Succes"] = $"Piesa '{piesa.Denumire}' a fost adăugată!";
-                    return RedirectToAction(nameof(Index));
+                    piesa.UserId = userId;
+                    db.Piese.Add(piesa);
+                    await db.SaveChangesAsync();
+                    TempData["Succes"] = "Piesa a fost adaugata cu succes!";
+                    return RedirectToAction("Index");
                 }
-                catch (DbUpdateException)
+                catch (Exception)
                 {
-                    TempData["Eroare"] = "Eroare: Cod piesă duplicat!";
-                    return View(piesa);
+                    TempData["Eroare"] = "A aparut o eroare. Verificati codul piesei.";
                 }
-
             }
+
             return View(piesa);
         }
 
-        // GET: /Piese/Editeaza/5
-        public async Task<IActionResult> Editeaza(int? id)
+        public async Task<IActionResult> Editeaza(int id)
         {
-            if (id == null) return NotFound();
-            var piesa = await _context.Piese
-                .FirstOrDefaultAsync(p => p.Id == id && p.UserId == GetUserId());
+            string userId = userManager.GetUserId(User);
+
+            var piesa = await db.Piese
+                .FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
+
             if (piesa == null) return NotFound();
+
             return View(piesa);
         }
 
-        // POST: /Piese/Editeaza/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Editeaza(int id, [Bind("Id,CodPiesa,Denumire,Producator,PretAchizitie,PretVanzare,StocCurent,StocMinim")] Piesa piesa)
+        public async Task<IActionResult> Editeaza(int id, Piesa piesa)
         {
+            string userId = userManager.GetUserId(User);
+            ModelState.Remove("UserId");
+
             if (id != piesa.Id) return NotFound();
 
-            ModelState.Remove("UserId");
             if (ModelState.IsValid)
             {
                 try
                 {
-                    piesa.UserId = GetUserId();
-                    _context.Update(piesa);
-                    await _context.SaveChangesAsync();
-                    TempData["Succes"] = "Piesa a fost actualizată!";
+                    piesa.UserId = userId;
+                    db.Piese.Update(piesa);
+                    await db.SaveChangesAsync();
+                    TempData["Succes"] = "Piesa a fost actualizata!";
+                    return RedirectToAction("Index");
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception)
                 {
-                    if (!_context.Piese.Any(p => p.Id == piesa.Id && p.UserId == GetUserId()))
-                        return NotFound();
-                    throw;
+                    TempData["Eroare"] = "A aparut o eroare la salvare.";
                 }
-                return RedirectToAction(nameof(Index));
             }
+
             return View(piesa);
         }
 
-        // GET: /Piese/Sterge/5
-        public async Task<IActionResult> Sterge(int? id)
+        public async Task<IActionResult> Sterge(int id)
         {
-            if (id == null) return NotFound();
-            var piesa = await _context.Piese
-                .Include(p => p.LucrarePiese)
-                .FirstOrDefaultAsync(p => p.Id == id && p.UserId == GetUserId());
+            string userId = userManager.GetUserId(User);
+
+            var piesa = await db.Piese
+                .Include(x => x.LucrarePiese)
+                .FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
+
             if (piesa == null) return NotFound();
+
             return View(piesa);
         }
 
-        // POST: /Piese/Sterge/5
         [HttpPost, ActionName("Sterge")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmaStergere(int id)
         {
-            var piesa = await _context.Piese
-                .Include(p => p.LucrarePiese)
-                .FirstOrDefaultAsync(p => p.Id == id && p.UserId == GetUserId());
+            string userId = userManager.GetUserId(User);
+
+            var piesa = await db.Piese
+                .Include(x => x.LucrarePiese)
+                .FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
 
             if (piesa == null) return NotFound();
 
             if (piesa.LucrarePiese.Any())
             {
-                TempData["Eroare"] = "Piesa nu poate fi ștearsă deoarece a fost utilizată în lucrări!";
-                return RedirectToAction(nameof(Index));
+                TempData["Eroare"] = "Piesa nu poate fi stearsa deoarece a fost folosita in lucrari!";
+                return RedirectToAction("Index");
             }
 
-            _context.Piese.Remove(piesa);
-            await _context.SaveChangesAsync();
-            TempData["Succes"] = "Piesa a fost ștearsă!";
-            return RedirectToAction(nameof(Index));
+            db.Piese.Remove(piesa);
+            await db.SaveChangesAsync();
+            TempData["Succes"] = "Piesa a fost stearsa!";
+            return RedirectToAction("Index");
         }
 
-        // POST: /Piese/ActualizeazaStoc
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ActualizeazaStoc(int id, int cantitate)
         {
-            var piesa = await _context.Piese
-                .FirstOrDefaultAsync(p => p.Id == id && p.UserId == GetUserId());
+            string userId = userManager.GetUserId(User);
+
+            var piesa = await db.Piese
+                .FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
+
             if (piesa == null) return NotFound();
 
             piesa.StocCurent += cantitate;
             if (piesa.StocCurent < 0) piesa.StocCurent = 0;
 
-            await _context.SaveChangesAsync();
+            await db.SaveChangesAsync();
             TempData["Succes"] = $"Stoc actualizat! Stoc curent: {piesa.StocCurent}";
-            return RedirectToAction(nameof(Detalii), new { id });
+            return RedirectToAction("Detalii", new { id });
         }
     }
 }

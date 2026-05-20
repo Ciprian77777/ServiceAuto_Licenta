@@ -10,91 +10,92 @@ namespace ServiceAutoLicenta.Controllers
     [Authorize]
     public class FacturiController : Controller
     {
-        private readonly ServiceAutoLicentaContext _context;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly ServiceAutoLicentaContext db;
+        private readonly UserManager<IdentityUser> userManager;
 
-        public FacturiController(ServiceAutoLicentaContext context, UserManager<IdentityUser> userManager)
+        public FacturiController(ServiceAutoLicentaContext _db, UserManager<IdentityUser> _userManager)
         {
-            _context = context;
-            _userManager = userManager;
+            db = _db;
+            userManager = _userManager;
         }
 
-        private string GetUserId() => _userManager.GetUserId(User)!;
-
-        public async Task<IActionResult> Index(string? cautare, string? status)
+        public async Task<IActionResult> Index(string cautare, string status)
         {
-            var userId = GetUserId();
-            var facturi = _context.Facturi
-                .Include(f => f.Programare).ThenInclude(p => p.Masina).ThenInclude(m => m.Client)
-                .Where(f => f.Programare.Masina.Client.UserId == userId)
-                .AsQueryable();
+            string userId = userManager.GetUserId(User);
+
+            var facturi = db.Facturi
+                .Include(x => x.Programare)
+                    .ThenInclude(x => x.Masina)
+                        .ThenInclude(x => x.Client)
+                .Where(x => x.Programare.Masina.Client.UserId == userId);
 
             if (!string.IsNullOrEmpty(cautare))
             {
                 cautare = cautare.ToLower();
-                facturi = facturi.Where(f =>
-                    f.SerieNumar.ToLower().Contains(cautare) ||
-                    f.Programare.Masina.Client.Nume.ToLower().Contains(cautare) ||
-                    f.Programare.Masina.Client.Prenume.ToLower().Contains(cautare) ||
-                    f.Programare.Masina.NrInmatriculare.ToLower().Contains(cautare));
+                facturi = facturi.Where(x =>
+                    x.SerieNumar.ToLower().Contains(cautare) ||
+                    x.Programare.Masina.Client.Nume.ToLower().Contains(cautare) ||
+                    x.Programare.Masina.Client.Prenume.ToLower().Contains(cautare) ||
+                    x.Programare.Masina.NrInmatriculare.ToLower().Contains(cautare));
             }
 
             if (!string.IsNullOrEmpty(status) && Enum.TryParse<StatusPlata>(status, out var statusEnum))
-                facturi = facturi.Where(f => f.StatusPlata == statusEnum);
+                facturi = facturi.Where(x => x.StatusPlata == statusEnum);
 
             ViewBag.Cautare = cautare;
             ViewBag.Status = status;
-            ViewBag.TotalIncasat = await _context.Facturi
-                .Where(f => f.Programare.Masina.Client.UserId == userId && f.StatusPlata == StatusPlata.Platita)
-                .SumAsync(f => (decimal?)f.Total) ?? 0;
+            ViewBag.TotalIncasat = await db.Facturi
+                .Where(x => x.Programare.Masina.Client.UserId == userId && x.StatusPlata == StatusPlata.Platita)
+                .SumAsync(x => (decimal?)x.Total) ?? 0;
 
-            return View(await facturi.OrderByDescending(f => f.DataEmitere).ToListAsync());
+            return View(await facturi.OrderByDescending(x => x.DataEmitere).ToListAsync());
         }
 
-        public async Task<IActionResult> Detalii(int? id)
+        public async Task<IActionResult> Detalii(int id)
         {
-            if (id == null) return NotFound();
+            string userId = userManager.GetUserId(User);
 
-            var factura = await _context.Facturi
-                .Include(f => f.Programare).ThenInclude(p => p.Masina).ThenInclude(m => m.Client)
-                .Include(f => f.Programare).ThenInclude(p => p.Lucrari).ThenInclude(l => l.LucrarePiese).ThenInclude(lp => lp.Piesa)
-                .FirstOrDefaultAsync(f => f.Id == id && f.Programare.Masina.Client.UserId == GetUserId());
+            var factura = await db.Facturi
+                .Include(x => x.Programare)
+                    .ThenInclude(x => x.Masina).ThenInclude(x => x.Client)
+                .Include(x => x.Programare)
+                    .ThenInclude(x => x.Lucrari).ThenInclude(x => x.LucrarePiese).ThenInclude(x => x.Piesa)
+                .FirstOrDefaultAsync(x => x.Id == id && x.Programare.Masina.Client.UserId == userId);
 
             if (factura == null) return NotFound();
 
             return View(factura);
         }
 
-        public async Task<IActionResult> Genereaza(int? programareId)
+        public async Task<IActionResult> Genereaza(int programareId)
         {
-            if (programareId == null) return NotFound();
+            string userId = userManager.GetUserId(User);
 
-            var programare = await _context.Programari
-                .Include(p => p.Masina).ThenInclude(m => m.Client)
-                .Include(p => p.Lucrari).ThenInclude(l => l.LucrarePiese).ThenInclude(lp => lp.Piesa)
-                .Include(p => p.Factura)
-                .FirstOrDefaultAsync(p => p.Id == programareId && p.Masina.Client.UserId == GetUserId());
+            var programare = await db.Programari
+                .Include(x => x.Masina).ThenInclude(x => x.Client)
+                .Include(x => x.Lucrari).ThenInclude(x => x.LucrarePiese).ThenInclude(x => x.Piesa)
+                .Include(x => x.Factura)
+                .FirstOrDefaultAsync(x => x.Id == programareId && x.Masina.Client.UserId == userId);
 
             if (programare == null) return NotFound();
 
             if (programare.Factura != null)
             {
                 TempData["Eroare"] = "Aceasta programare are deja o factura!";
-                return RedirectToAction(nameof(Detalii), new { id = programare.Factura.Id });
+                return RedirectToAction("Detalii", new { id = programare.Factura.Id });
             }
 
-            var ultimaFactura = await _context.Facturi
-                .Where(f => f.Programare.Masina.Client.UserId == GetUserId())
-                .OrderByDescending(f => f.Id)
+            var ultimaFactura = await db.Facturi
+                .Where(x => x.Programare.Masina.Client.UserId == userId)
+                .OrderByDescending(x => x.Id)
                 .FirstOrDefaultAsync();
 
-            int numarNou = (ultimaFactura?.Id ?? 0) + 1;
-            string serieNumar = $"SA-{DateTime.Now.Year}-{numarNou:D4}";
+            int numar = (ultimaFactura?.Id ?? 0) + 1;
 
             var factura = new Factura
             {
                 ProgramareId = programare.Id,
-                SerieNumar = serieNumar,
+                SerieNumar = $"SA-{DateTime.Now.Year}-{numar:D4}",
                 DataEmitere = DateTime.Today,
                 DataScadenta = DateTime.Today.AddDays(30),
                 StatusPlata = StatusPlata.Neplata,
@@ -109,31 +110,23 @@ namespace ServiceAutoLicenta.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Genereaza([Bind("ProgramareId,SerieNumar,DataEmitere,DataScadenta,StatusPlata,MetodaPlata,Subtotal,TvaValoare,Total")] Factura factura)
+        public async Task<IActionResult> Genereaza(Factura factura)
         {
             ModelState.Remove("Programare");
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Add(factura);
-                    await _context.SaveChangesAsync();
-                    TempData["Succes"] = $"Factura {factura.SerieNumar} a fost generata!";
-                    return RedirectToAction(nameof(Detalii), new { id = factura.Id });
-                }
-                catch (DbUpdateException)
-                {
-                    TempData["Eroare"] = "Serie factură duplicată!";
-                    return View(factura);
-                }
-
+                db.Facturi.Add(factura);
+                await db.SaveChangesAsync();
+                TempData["Succes"] = $"Factura {factura.SerieNumar} a fost generata!";
+                return RedirectToAction("Detalii", new { id = factura.Id });
             }
 
-            var programare = await _context.Programari
-                .Include(p => p.Masina).ThenInclude(m => m.Client)
-                .Include(p => p.Lucrari).ThenInclude(l => l.LucrarePiese).ThenInclude(lp => lp.Piesa)
-                .FirstOrDefaultAsync(p => p.Id == factura.ProgramareId);
+            string userId = userManager.GetUserId(User);
+            var programare = await db.Programari
+                .Include(x => x.Masina).ThenInclude(x => x.Client)
+                .Include(x => x.Lucrari).ThenInclude(x => x.LucrarePiese).ThenInclude(x => x.Piesa)
+                .FirstOrDefaultAsync(x => x.Id == factura.ProgramareId);
 
             ViewBag.Programare = programare;
             return View(factura);
@@ -143,33 +136,36 @@ namespace ServiceAutoLicenta.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ActualizeazaStatus(int id, StatusPlata statusPlata, MetodaPlata? metodaPlata)
         {
-            var factura = await _context.Facturi
-                .Include(f => f.Programare).ThenInclude(p => p.Masina).ThenInclude(m => m.Client)
-                .FirstOrDefaultAsync(f => f.Id == id && f.Programare.Masina.Client.UserId == GetUserId());
+            string userId = userManager.GetUserId(User);
+
+            var factura = await db.Facturi
+                .Include(x => x.Programare).ThenInclude(x => x.Masina).ThenInclude(x => x.Client)
+                .FirstOrDefaultAsync(x => x.Id == id && x.Programare.Masina.Client.UserId == userId);
+
             if (factura == null) return NotFound();
 
             factura.StatusPlata = statusPlata;
             factura.MetodaPlata = metodaPlata;
-            await _context.SaveChangesAsync();
+            await db.SaveChangesAsync();
 
             TempData["Succes"] = "Statusul facturii a fost actualizat!";
-            return RedirectToAction(nameof(Detalii), new { id });
+            return RedirectToAction("Detalii", new { id });
         }
 
-        public async Task<IActionResult> PlataCard(int? id)
+        public async Task<IActionResult> PlataCard(int id)
         {
-            if (id == null) return NotFound();
+            string userId = userManager.GetUserId(User);
 
-            var factura = await _context.Facturi
-                .Include(f => f.Programare).ThenInclude(p => p.Masina).ThenInclude(m => m.Client)
-                .FirstOrDefaultAsync(f => f.Id == id && f.Programare.Masina.Client.UserId == GetUserId());
+            var factura = await db.Facturi
+                .Include(x => x.Programare).ThenInclude(x => x.Masina).ThenInclude(x => x.Client)
+                .FirstOrDefaultAsync(x => x.Id == id && x.Programare.Masina.Client.UserId == userId);
 
             if (factura == null) return NotFound();
 
             if (factura.StatusPlata == StatusPlata.Platita)
             {
                 TempData["Eroare"] = "Factura este deja platita!";
-                return RedirectToAction(nameof(Detalii), new { id });
+                return RedirectToAction("Detalii", new { id });
             }
 
             return View(factura);
@@ -179,9 +175,12 @@ namespace ServiceAutoLicenta.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> PlataCard(int id, string numarCard, string titular, string expirare, string cvv)
         {
-            var factura = await _context.Facturi
-                .Include(f => f.Programare).ThenInclude(p => p.Masina).ThenInclude(m => m.Client)
-                .FirstOrDefaultAsync(f => f.Id == id && f.Programare.Masina.Client.UserId == GetUserId());
+            string userId = userManager.GetUserId(User);
+
+            var factura = await db.Facturi
+                .Include(x => x.Programare).ThenInclude(x => x.Masina).ThenInclude(x => x.Client)
+                .FirstOrDefaultAsync(x => x.Id == id && x.Programare.Masina.Client.UserId == userId);
+
             if (factura == null) return NotFound();
 
             await Task.Delay(1500);
@@ -190,22 +189,36 @@ namespace ServiceAutoLicenta.Controllers
 
             factura.StatusPlata = StatusPlata.Platita;
             factura.MetodaPlata = MetodaPlata.Card;
+            await db.SaveChangesAsync();
 
-            await _context.SaveChangesAsync();
-
-            TempData["Succes"] = $"Plata procesata! ID tranzactie: {idTranzactie}";
-            return RedirectToAction(nameof(Detalii), new { id });
+            TempData["Succes"] = $"Plata procesata cu succes! ID tranzactie: {idTranzactie}";
+            return RedirectToAction("Detalii", new { id });
         }
 
-        public async Task<IActionResult> Sterge(int? id)
+        public async Task<IActionResult> Print(int id)
         {
-            if (id == null) return NotFound();
+            string userId = userManager.GetUserId(User);
 
-            var factura = await _context.Facturi
-                .Include(f => f.Programare).ThenInclude(p => p.Masina).ThenInclude(m => m.Client)
-                .FirstOrDefaultAsync(f => f.Id == id && f.Programare.Masina.Client.UserId == GetUserId());
+            var factura = await db.Facturi
+                .Include(x => x.Programare).ThenInclude(x => x.Masina).ThenInclude(x => x.Client)
+                .Include(x => x.Programare).ThenInclude(x => x.Lucrari).ThenInclude(x => x.LucrarePiese).ThenInclude(x => x.Piesa)
+                .FirstOrDefaultAsync(x => x.Id == id && x.Programare.Masina.Client.UserId == userId);
 
             if (factura == null) return NotFound();
+
+            return View(factura);
+        }
+
+        public async Task<IActionResult> Sterge(int id)
+        {
+            string userId = userManager.GetUserId(User);
+
+            var factura = await db.Facturi
+                .Include(x => x.Programare).ThenInclude(x => x.Masina).ThenInclude(x => x.Client)
+                .FirstOrDefaultAsync(x => x.Id == id && x.Programare.Masina.Client.UserId == userId);
+
+            if (factura == null) return NotFound();
+
             return View(factura);
         }
 
@@ -213,36 +226,24 @@ namespace ServiceAutoLicenta.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmaStergere(int id)
         {
-            var factura = await _context.Facturi
-                .Include(f => f.Programare).ThenInclude(p => p.Masina).ThenInclude(m => m.Client)
-                .FirstOrDefaultAsync(f => f.Id == id && f.Programare.Masina.Client.UserId == GetUserId());
+            string userId = userManager.GetUserId(User);
+
+            var factura = await db.Facturi
+                .Include(x => x.Programare).ThenInclude(x => x.Masina).ThenInclude(x => x.Client)
+                .FirstOrDefaultAsync(x => x.Id == id && x.Programare.Masina.Client.UserId == userId);
 
             if (factura == null) return NotFound();
 
             if (factura.StatusPlata == StatusPlata.Platita)
             {
                 TempData["Eroare"] = "Factura platita nu poate fi stearsa!";
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index");
             }
 
-            _context.Facturi.Remove(factura);
-            await _context.SaveChangesAsync();
+            db.Facturi.Remove(factura);
+            await db.SaveChangesAsync();
             TempData["Succes"] = "Factura a fost stearsa!";
-            return RedirectToAction(nameof(Index));
-        }
-
-        public async Task<IActionResult> Print(int? id)
-        {
-            if (id == null) return NotFound();
-
-            var factura = await _context.Facturi
-                .Include(f => f.Programare).ThenInclude(p => p.Masina).ThenInclude(m => m.Client)
-                .Include(f => f.Programare).ThenInclude(p => p.Lucrari).ThenInclude(l => l.LucrarePiese).ThenInclude(lp => lp.Piesa)
-                .FirstOrDefaultAsync(f => f.Id == id && f.Programare.Masina.Client.UserId == GetUserId());
-
-            if (factura == null) return NotFound();
-
-            return View(factura);
+            return RedirectToAction("Index");
         }
     }
 }
