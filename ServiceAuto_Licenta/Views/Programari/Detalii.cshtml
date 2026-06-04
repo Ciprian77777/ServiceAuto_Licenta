@@ -1,7 +1,7 @@
 ﻿@model ServiceAutoLicenta.Models.Entities.Programare
 @using ServiceAutoLicenta.Models.Entities
 @{
-    ViewData["Title"] = "Programare #" + Model.Id;
+    ViewData["Title"]="Programare #" + Model.Id;
 }
 
 <div class="page-header">
@@ -15,9 +15,9 @@
         </div>
     </div>
     <div style="display:flex;gap:8px;align-items:center;">
-        <span class="badge-status @(Model.Status == StatusProgramare.Finalizata ? "badge-finalizata" :
-                                                   Model.Status == StatusProgramare.InLucru ? "badge-inlucru" :
-                                                   Model.Status == StatusProgramare.Anulata ? "badge-anulata" : "badge-scheduled")"
+        <span class="badge-status @(Model.Status==StatusProgramare.Finalizata? "badge-finalizata" :
+                                                   Model.Status==StatusProgramare.InLucru? "badge-inlucru" :
+                                                   Model.Status==StatusProgramare.Anulata? "badge-anulata" : "badge-scheduled")"
               style="font-size:13px;padding:6px 14px;">
             @Model.Status
         </span>
@@ -27,14 +27,14 @@
     </div>
 </div>
 
-@if (TempData["Succes"] != null)
+@if(TempData["Succes"]!=null)
 {
     <div class="alert alert-success alert-dismissible fade show mb-4">
         <i class="bi bi-check-circle me-2"></i>@TempData["Succes"]
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 }
-@if (TempData["Eroare"] != null)
+@if(TempData["Eroare"]!=null)
 {
     <div class="alert alert-danger alert-dismissible fade show mb-4">
         <i class="bi bi-exclamation-circle me-2"></i>@TempData["Eroare"]
@@ -44,7 +44,6 @@
 
 <div class="row g-4">
     <div class="col-md-4">
-        <!-- Info programare -->
         <div class="content-card mb-4">
             <div class="content-card-header"><h5>Detalii programare</h5></div>
             <div style="padding:20px;display:flex;flex-direction:column;gap:12px;">
@@ -54,9 +53,9 @@
                 </div>
                 <div style="display:flex;justify-content:space-between;font-size:14px;">
                     <span style="color:var(--text-muted);">Data ieșire</span>
-                    <span>@(Model.DataIesire?.ToString("dd.MM.yyyy") ?? "-")</span>
+                    <span>@(Model.DataIesire?.ToString("dd.MM.yyyy")??"-")</span>
                 </div>
-                @if (!string.IsNullOrEmpty(Model.Observatii))
+                @if(!string.IsNullOrEmpty(Model.Observatii))
                 {
                     <div style="font-size:14px;">
                         <span style="color:var(--text-muted);display:block;margin-bottom:4px;">Observații</span>
@@ -66,12 +65,11 @@
             </div>
         </div>
 
-        <!-- Mașină + Client -->
         <div class="content-card mb-4">
             <div class="content-card-header"><h5>Vehicul & Client</h5></div>
             <div style="padding:20px;">
                 <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
-                    <div style="width:44px;height:44px;background:#f1f5f9;border-radius:10px;display:flex;align-items:center;justify-content:center;">
+                    <div style="width:44px;height:44px;background:rgba(255,255,255,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;">
                         <i class="bi bi-car-front" style="font-size:20px;color:var(--text-muted);"></i>
                     </div>
                     <div>
@@ -91,10 +89,9 @@
             </div>
         </div>
 
-        <!-- Total + Factură -->
         <div class="content-card" style="border:1.5px solid #2563eb;">
-            <div class="content-card-header" style="background:#eff6ff;">
-                <h5 style="color:#1d4ed8;">Total programare</h5>
+            <div class="content-card-header" style="background:rgba(37,99,235,0.15);">
+                <h5 style="color:#93c5fd;">Total programare</h5>
             </div>
             <div style="padding:20px;">
                 <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:8px;">
@@ -110,14 +107,14 @@
                     <span style="color:#2563eb;">@Model.TotalCuTva.ToString("N2") lei</span>
                 </div>
 
-                @if (Model.Factura == null && Model.Status == StatusProgramare.Finalizata)
+                @if(Model.Factura==null&&Model.Status==StatusProgramare.Finalizata)
                 {
                     <a asp-controller="Facturi" asp-action="Genereaza" asp-route-programareId="@Model.Id"
                        class="btn-primary-custom" style="width:100%;justify-content:center;margin-top:16px;">
                         <i class="bi bi-file-earmark-text"></i> Generează factură
                     </a>
                 }
-                @if (Model.Factura != null)
+                @if(Model.Factura!=null)
                 {
                     <a asp-controller="Facturi" asp-action="Detalii" asp-route-id="@Model.Factura.Id"
                        class="btn-outline-custom" style="width:100%;justify-content:center;margin-top:16px;color:#16a34a;border-color:#86efac;">
@@ -128,7 +125,6 @@
         </div>
     </div>
 
-    <!-- Lucrări -->
     <div class="col-md-8">
         <div class="content-card">
             <div class="content-card-header">
@@ -139,17 +135,17 @@
             </div>
             <div style="padding:20px;display:flex;flex-direction:column;gap:16px;">
 
-                @foreach (var lucrare in Model.Lucrari)
+                @foreach(var lucrare in Model.Lucrari)
                 {
                     <div style="border:1px solid var(--border-color);border-radius:10px;overflow:hidden;">
-                        <div style="padding:14px 16px;background:#f8fafc;display:flex;justify-content:space-between;align-items:center;">
+                        <div style="padding:14px 16px;background:rgba(0,0,0,0.15);display:flex;justify-content:space-between;align-items:center;">
                             <div style="display:flex;align-items:center;gap:10px;">
-                                <div style="width:32px;height:32px;background:#eff6ff;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                                <div style="width:32px;height:32px;background:rgba(37,99,235,0.25);border-radius:8px;display:flex;align-items:center;justify-content:center;">
                                     <i class="bi bi-wrench" style="color:#2563eb;font-size:14px;"></i>
                                 </div>
                                 <div>
                                     <div style="font-weight:600;font-size:14px;">@lucrare.Denumire</div>
-                                    @if (!string.IsNullOrEmpty(lucrare.Descriere))
+                                    @if(!string.IsNullOrEmpty(lucrare.Descriere))
                                     {
                                         <div style="font-size:12px;color:var(--text-muted);">@lucrare.Descriere</div>
                                     }
@@ -172,7 +168,7 @@
                             </div>
                         </div>
 
-                        @if (lucrare.LucrarePiese.Any())
+                        @if(lucrare.LucrarePiese.Any())
                         {
                             <div style="padding:0 16px;">
                                 <table style="width:100%;border-collapse:collapse;">
@@ -184,7 +180,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach (var lp in lucrare.LucrarePiese)
+                                        @foreach(var lp in lucrare.LucrarePiese)
                                         {
                                             <tr style="border-bottom:1px solid var(--border-color);">
                                                 <td style="padding:10px 0;font-size:13px;">@lp.Piesa.Denumire</td>
@@ -197,15 +193,14 @@
                             </div>
                         }
 
-                        <!-- Adaugă piesă -->
-                        <div style="padding:12px 16px;background:#fafafa;border-top:1px solid var(--border-color);">
+                        <div style="padding:12px 16px;background:rgba(0,0,0,0.15);border-top:1px solid var(--border-color);">
                             <form asp-action="AdaugaPiesa" method="post">
                                 <input type="hidden" name="lucrareId" value="@lucrare.Id" />
                                 <input type="hidden" name="programareId" value="@Model.Id" />
                                 <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
                                     <select name="piesaId" style="flex:2;min-width:180px;padding:7px 10px;border:1px solid var(--border-color);border-radius:8px;font-size:13px;">
                                         <option value="">-- Selectează piesa --</option>
-                                        @foreach (var piesa in ViewBag.Piese as IEnumerable<ServiceAutoLicenta.Models.Entities.Piesa> ?? new List<ServiceAutoLicenta.Models.Entities.Piesa>())
+                                        @foreach(var piesa in ViewBag.Piese as IEnumerable<ServiceAutoLicenta.Models.Entities.Piesa>??new List<ServiceAutoLicenta.Models.Entities.Piesa>())
                                         {
                                             <option value="@piesa.Id">@piesa.Denumire (stoc: @piesa.StocCurent)</option>
                                         }
@@ -221,7 +216,6 @@
                     </div>
                 }
 
-                <!-- Formular lucrare nouă -->
                 <div style="border:2px dashed var(--border-color);border-radius:10px;padding:16px;">
                     <div style="font-weight:600;font-size:14px;margin-bottom:12px;color:var(--text-muted);">
                         <i class="bi bi-plus-circle me-2"></i>Adaugă lucrare nouă

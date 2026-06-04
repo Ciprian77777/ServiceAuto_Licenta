@@ -1,260 +1,60 @@
-﻿@if (TempData["Succes"] != null || TempData["Eroare"] != null || TempData["Info"] != null)
+@if(TempData["Succes"]!=null||TempData["Eroare"]!=null||TempData["Info"]!=null)
 {
-    <div id="toast-container" style="
-            position: fixed;
-            top: 24px;
-            right: 24px;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-width: 380px;
-        ">
-        @if (TempData["Succes"] != null)
+    <div id="notif-container" style="position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;max-width:360px;">
+        @if(TempData["Succes"]!=null)
         {
-            <div class="toast-notification toast-success" data-autohide="true">
-                <div class="toast-icon">
-                    <i class="bi bi-check-circle-fill"></i>
-                </div>
-                <div class="toast-body">
-                    <div class="toast-title">Succes</div>
-                    <div class="toast-message">@TempData["Succes"]</div>
-                </div>
-                <button class="toast-close" onclick="closeToast(this)">
-                    <i class="bi bi-x-lg"></i>
-                </button>
-                <div class="toast-progress"></div>
+            <div class="notif notif-succes">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>@TempData["Succes"]</span>
+                <button onclick="this.parentElement.remove()"><i class="bi bi-x"></i></button>
             </div>
         }
-        @if (TempData["Eroare"] != null)
+        @if(TempData["Eroare"]!=null)
         {
-            <div class="toast-notification toast-error" data-autohide="true">
-                <div class="toast-icon">
-                    <i class="bi bi-exclamation-circle-fill"></i>
-                </div>
-                <div class="toast-body">
-                    <div class="toast-title">Eroare</div>
-                    <div class="toast-message">@TempData["Eroare"]</div>
-                </div>
-                <button class="toast-close" onclick="closeToast(this)">
-                    <i class="bi bi-x-lg"></i>
-                </button>
-                <div class="toast-progress toast-progress-error"></div>
+            <div class="notif notif-eroare">
+                <i class="bi bi-exclamation-circle-fill"></i>
+                <span>@TempData["Eroare"]</span>
+                <button onclick="this.parentElement.remove()"><i class="bi bi-x"></i></button>
             </div>
         }
-        @if (TempData["Info"] != null)
+        @if(TempData["Info"]!=null)
         {
-            <div class="toast-notification toast-info" data-autohide="true">
-                <div class="toast-icon">
-                    <i class="bi bi-info-circle-fill"></i>
-                </div>
-                <div class="toast-body">
-                    <div class="toast-title">Informatie</div>
-                    <div class="toast-message">@TempData["Info"]</div>
-                </div>
-                <button class="toast-close" onclick="closeToast(this)">
-                    <i class="bi bi-x-lg"></i>
-                </button>
-                <div class="toast-progress toast-progress-info"></div>
+            <div class="notif notif-info">
+                <i class="bi bi-info-circle-fill"></i>
+                <span>@TempData["Info"]</span>
+                <button onclick="this.parentElement.remove()"><i class="bi bi-x"></i></button>
             </div>
         }
     </div>
+    <style>
+        .notif {
+            display:flex;
+            align-items:center;
+            gap:10px;
+            padding:12px 14px;
+            border-radius:10px;
+            font-size:13px;
+            box-shadow:0 4px 16px rgba(0,0,0,0.25);
+        }
+        .notif span { flex:1; }
+        .notif button {
+            background:none;
+            border:none;
+            cursor:pointer;
+            font-size:16px;
+            opacity:0.6;
+            padding:0;
+            line-height:1;
+        }
+        .notif button:hover { opacity:1; }
+        .notif-succes { background:rgba(22,163,74,0.2);border:1px solid rgba(22,163,74,0.4);color:#86efac; }
+        .notif-eroare { background:rgba(220,38,38,0.2);border:1px solid rgba(220,38,38,0.4);color:#fca5a5; }
+        .notif-info { background:rgba(37,99,235,0.2);border:1px solid rgba(37,99,235,0.4);color:#93c5fd; }
+    </style>
+    <script>
+        setTimeout(function(){
+            var c=document.getElementById('notif-container');
+            if(c) c.remove();
+        }, 4000);
+    </script>
 }
-
-<style>
-    .toast-notification {
-        display: flex;
-        align-items: flex-start;
-        gap: 12px;
-        padding: 16px;
-        border-radius: 12px;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-        position: relative;
-        overflow: hidden;
-        animation: slideIn 0.3s ease forwards;
-        min-width: 320px;
-    }
-
-    .toast-success {
-        background: #f0fdf4;
-        border: 1px solid #86efac;
-    }
-
-    .toast-error {
-        background: #fef2f2;
-        border: 1px solid #fca5a5;
-    }
-
-    .toast-info {
-        background: #eff6ff;
-        border: 1px solid #93c5fd;
-    }
-
-    .toast-icon {
-        font-size: 20px;
-        flex-shrink: 0;
-        margin-top: 1px;
-    }
-
-    .toast-success .toast-icon {
-        color: #16a34a;
-    }
-
-    .toast-error .toast-icon {
-        color: #dc2626;
-    }
-
-    .toast-info .toast-icon {
-        color: #2563eb;
-    }
-
-    .toast-body {
-        flex: 1;
-        min-width: 0;
-    }
-
-    .toast-title {
-        font-size: 13px;
-        font-weight: 700;
-        margin-bottom: 2px;
-    }
-
-    .toast-success .toast-title {
-        color: #15803d;
-    }
-
-    .toast-error .toast-title {
-        color: #b91c1c;
-    }
-
-    .toast-info .toast-title {
-        color: #1d4ed8;
-    }
-
-    .toast-message {
-        font-size: 13px;
-        line-height: 1.5;
-    }
-
-    .toast-success .toast-message {
-        color: #166534;
-    }
-
-    .toast-error .toast-message {
-        color: #991b1b;
-    }
-
-    .toast-info .toast-message {
-        color: #1e40af;
-    }
-
-    .toast-close {
-        background: transparent;
-        border: none;
-        cursor: pointer;
-        font-size: 12px;
-        padding: 2px;
-        flex-shrink: 0;
-        opacity: 0.5;
-        transition: opacity 0.15s;
-    }
-
-    .toast-success .toast-close {
-        color: #16a34a;
-    }
-
-    .toast-error .toast-close {
-        color: #dc2626;
-    }
-
-    .toast-info .toast-close {
-        color: #2563eb;
-    }
-
-    .toast-close:hover {
-        opacity: 1;
-    }
-
-    /* Bara de progres */
-    .toast-progress {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        height: 3px;
-        background: #16a34a;
-        border-radius: 0 0 12px 12px;
-        animation: progress 4s linear forwards;
-    }
-
-    .toast-progress-error {
-        background: #dc2626;
-    }
-
-    .toast-progress-info {
-        background: #2563eb;
-    }
-
-    /* Animatii */
-    @@keyframes slideIn {
-        from {
-            opacity: 0;
-            transform: translateX(100%);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-
-    @@keyframes slideOut {
-        from {
-            opacity: 1;
-            transform: translateX(0);
-            max-height: 200px;
-            margin-bottom: 0;
-        }
-
-        to {
-            opacity: 0;
-            transform: translateX(100%);
-            max-height: 0;
-            margin-bottom: -10px;
-        }
-    }
-
-    @@keyframes progress {
-        from {
-            width: 100%;
-        }
-
-        to {
-            width: 0%;
-        }
-    }
-
-    .toast-hiding {
-        animation: slideOut 0.3s ease forwards !important;
-    }
-</style>
-
-<script>
-    function closeToast(btn) {
-        const toast = btn.closest('.toast-notification');
-        toast.classList.add('toast-hiding');
-        setTimeout(() => toast.remove(), 300);
-    }
-
-    // Auto-hide dupa 4 secunde
-    document.addEventListener('DOMContentLoaded', function () {
-        const toasts = document.querySelectorAll('.toast-notification[data-autohide="true"]');
-        toasts.forEach(function (toast) {
-            setTimeout(function () {
-                if (toast && toast.parentNode) {
-                    toast.classList.add('toast-hiding');
-                    setTimeout(() => toast.remove(), 300);
-                }
-            }, 4000);
-        });
-    });
-</script>

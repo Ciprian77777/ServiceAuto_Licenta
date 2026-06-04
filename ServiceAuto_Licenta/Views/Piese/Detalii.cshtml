@@ -1,6 +1,6 @@
 ﻿@model ServiceAutoLicenta.Models.Entities.Piesa
 @{
-    ViewData["Title"] = "Detalii piesă";
+    ViewData["Title"]="Detalii piesă";
 }
 
 <div class="page-header">
@@ -18,7 +18,7 @@
     </a>
 </div>
 
-@if (TempData["Succes"] != null)
+@if(TempData["Succes"]!=null)
 {
     <div class="alert alert-success alert-dismissible fade show mb-4">
         <i class="bi bi-check-circle me-2"></i>@TempData["Succes"]
@@ -28,17 +28,16 @@
 
 <div class="row g-4">
     <div class="col-md-4">
-        <!-- Date piesă -->
         <div class="content-card mb-4">
             <div class="content-card-header"><h5>Date piesă</h5></div>
             <div style="padding:20px;display:flex;flex-direction:column;gap:12px;">
                 <div style="display:flex;justify-content:space-between;font-size:14px;">
                     <span style="color:var(--text-muted);">Cod</span>
-                    <span style="font-family:monospace;font-weight:600;background:#f1f5f9;padding:2px 8px;border-radius:4px;">@Model.CodPiesa</span>
+                    <span style="font-family:monospace;font-weight:600;background:rgba(255,255,255,0.12);padding:2px 8px;border-radius:4px;">@Model.CodPiesa</span>
                 </div>
                 <div style="display:flex;justify-content:space-between;font-size:14px;">
                     <span style="color:var(--text-muted);">Producător</span>
-                    <span>@(Model.Producator ?? "-")</span>
+                    <span>@(Model.Producator??"-")</span>
                 </div>
                 <div style="display:flex;justify-content:space-between;font-size:14px;">
                     <span style="color:var(--text-muted);">Preț achiziție</span>
@@ -55,25 +54,24 @@
             </div>
         </div>
 
-        <!-- Stoc -->
-        <div class="content-card" style="border:1.5px solid @(Model.StocScazut ? "#fca5a5" : "#86efac");">
-            <div class="content-card-header" style="background:@(Model.StocScazut ? "#fef2f2" : "#f0fdf4");">
-                <h5 style="color:@(Model.StocScazut ? "#dc2626" : "#16a34a");">
+        <div class="content-card" style="border:1.5px solid @(Model.StocScazut? "#fca5a5" : "#86efac");">
+            <div class="content-card-header" style="background:@(Model.StocScazut? "#fef2f2" : "#f0fdf4");">
+                <h5 style="color:@(Model.StocScazut? "#dc2626" : "#16a34a");">
                     <i class="bi bi-box-seam me-2"></i>Stoc
                 </h5>
             </div>
             <div style="padding:20px;text-align:center;">
-                <div style="font-size:48px;font-weight:700;color:@(Model.StocScazut ? "#ef4444" : "#16a34a");">
+                <div style="font-size:48px;font-weight:700;color:@(Model.StocScazut? "#ef4444" : "#16a34a");">
                     @Model.StocCurent
                 </div>
                 <div style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">
                     bucăți disponibile (min. @Model.StocMinim)
                 </div>
                 @{
-                    int proc = Model.StocMinim > 0 ? Math.Min(100, (int)((double)Model.StocCurent / Model.StocMinim * 100)) : 100;
+                    int proc=Model.StocMinim > 0? Math.Min(100, (int)((double)Model.StocCurent / Model.StocMinim * 100)) : 100;
                 }
                 <div style="background:#e2e8f0;border-radius:4px;height:8px;margin-bottom:20px;">
-                    <div style="width:@(Math.Min(proc, 100))%;height:100%;border-radius:4px;background:@(Model.StocScazut ? "#ef4444" : "#16a34a");"></div>
+                    <div style="width:@(Math.Min(proc, 100))%;height:100%;border-radius:4px;background:@(Model.StocScazut? "#ef4444" : "#16a34a");"></div>
                 </div>
                 <form asp-action="ActualizeazaStoc" method="post">
                     <input type="hidden" name="id" value="@Model.Id" />
@@ -86,14 +84,13 @@
                         </button>
                     </div>
                     <small style="font-size:11px;color:var(--text-muted);margin-top:4px;display:block;">
-                        Pozitiv = intrare stoc, negativ = ieșire stoc
+                        Pozitiv=intrare stoc, negativ=ieșire stoc
                     </small>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- Istoric utilizare -->
     <div class="col-md-8">
         <div class="content-card">
             <div class="content-card-header">
@@ -102,7 +99,7 @@
                     <p>@Model.LucrarePiese.Count utilizări înregistrate</p>
                 </div>
             </div>
-            @if (!Model.LucrarePiese.Any())
+            @if(!Model.LucrarePiese.Any())
             {
                 <div style="text-align:center;padding:40px;color:var(--text-muted);">
                     <i class="bi bi-clock-history" style="font-size:2.5rem;opacity:0.3;"></i>
@@ -123,12 +120,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var lp in Model.LucrarePiese.OrderByDescending(x => x.Lucrare.Programare.DataIntrare))
+                        @foreach(var lp in Model.LucrarePiese.OrderByDescending(x=>x.Lucrare.Programare.DataIntrare))
                         {
                             <tr>
                                 <td style="font-size:13px;">@lp.Lucrare.Programare.DataIntrare.ToString("dd.MM.yyyy")</td>
                                 <td>
-                                    <span style="font-family:monospace;background:#f1f5f9;padding:2px 8px;border-radius:4px;font-size:12px;">
+                                    <span style="font-family:monospace;background:rgba(255,255,255,0.12);padding:2px 8px;border-radius:4px;font-size:12px;">
                                         @lp.Lucrare.Programare.Masina.NrInmatriculare
                                     </span>
                                 </td>

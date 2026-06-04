@@ -12,13 +12,13 @@ namespace ServiceAutoLicenta.Controllers
             UserManager<IdentityUser> _userManager,
             SignInManager<IdentityUser> _signInManager)
         {
-            userManager = _userManager;
-            signInManager = _signInManager;
+            userManager=_userManager;
+            signInManager=_signInManager;
         }
 
         public IActionResult Index()
         {
-            if (signInManager.IsSignedIn(User))
+            if(signInManager.IsSignedIn(User))
                 return RedirectToAction("Index", "Home");
             return View();
         }
@@ -26,19 +26,19 @@ namespace ServiceAutoLicenta.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(string email, string password)
         {
-            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
+            if(string.IsNullOrEmpty(email)||string.IsNullOrEmpty(password))
                 return RedirectToAction("Index");
-            var user = await userManager.FindByEmailAsync(email);
-            if (user == null)
+            var user=await userManager.FindByEmailAsync(email);
+            if(user==null)
                 return RedirectToAction("Index");
-            var result = await signInManager.PasswordSignInAsync(
+            var result=await signInManager.PasswordSignInAsync(
                 user,
                 password,
                 false,
                 false
             );
 
-            if (result.Succeeded)
+            if(result.Succeeded)
                 return RedirectToAction("Index", "Home");
             return RedirectToAction("Index");
         }
@@ -50,21 +50,21 @@ namespace ServiceAutoLicenta.Controllers
             string password,
             string confirmPassword)
         {
-            if (password != confirmPassword)
+            if(password!=confirmPassword)
                 return RedirectToAction("Index");
-            var userExist = await userManager.FindByEmailAsync(email);
+            var userExist=await userManager.FindByEmailAsync(email);
 
-            if (userExist != null)
+            if(userExist!=null)
                 return RedirectToAction("Index");
 
-            IdentityUser user = new IdentityUser();
+            IdentityUser user=new IdentityUser();
 
-            user.UserName = email;
-            user.Email = email;
+            user.UserName=email;
+            user.Email=email;
 
-            var result = await userManager.CreateAsync(user, password);
+            var result=await userManager.CreateAsync(user, password);
 
-            if (result.Succeeded)
+            if(result.Succeeded)
             {
                 await signInManager.SignInAsync(user, false);
                 return RedirectToAction("Index", "Home");

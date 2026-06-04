@@ -1,7 +1,7 @@
 ﻿@model ServiceAutoLicenta.Models.Entities.Masina
 @using ServiceAutoLicenta.Models.Entities
 @{
-    ViewData["Title"] = "Detalii mașină";
+    ViewData["Title"]="Detalii mașină";
 }
 
 <div class="page-header">
@@ -26,7 +26,7 @@
             <div style="padding:20px;display:flex;flex-direction:column;gap:14px;">
                 <div style="display:flex;justify-content:space-between;font-size:14px;">
                     <span style="color:var(--text-muted);">Nr. înmatriculare</span>
-                    <span style="background:#f1f5f9;padding:3px 10px;border-radius:6px;font-weight:600;font-family:monospace;">@Model.NrInmatriculare</span>
+                    <span style="background:rgba(255,255,255,0.12);padding:3px 10px;border-radius:6px;font-weight:600;font-family:monospace;">@Model.NrInmatriculare</span>
                 </div>
                 <div style="display:flex;justify-content:space-between;font-size:14px;">
                     <span style="color:var(--text-muted);">Marcă / Model</span>
@@ -34,13 +34,13 @@
                 </div>
                 <div style="display:flex;justify-content:space-between;font-size:14px;">
                     <span style="color:var(--text-muted);">An fabricație</span>
-                    <span>@(Model.AnFabricatie?.ToString() ?? "-")</span>
+                    <span>@(Model.AnFabricatie?.ToString()??"-")</span>
                 </div>
                 <div style="display:flex;justify-content:space-between;font-size:14px;">
                     <span style="color:var(--text-muted);">Km actuali</span>
-                    <span>@(Model.KmActuali?.ToString("N0") ?? "0") km</span>
+                    <span>@(Model.KmActuali?.ToString("N0")??"0") km</span>
                 </div>
-                @if (!string.IsNullOrEmpty(Model.Vin))
+                @if(!string.IsNullOrEmpty(Model.Vin))
                 {
                     <div style="display:flex;justify-content:space-between;font-size:14px;">
                         <span style="color:var(--text-muted);">VIN</span>
@@ -82,7 +82,7 @@
                     <i class="bi bi-plus-lg"></i> Programare nouă
                 </a>
             </div>
-            @if (!Model.Programari.Any())
+            @if(!Model.Programari.Any())
             {
                 <div style="text-align:center;padding:40px;color:var(--text-muted);">
                     <i class="bi bi-calendar-x" style="font-size:2.5rem;opacity:0.3;"></i>
@@ -102,15 +102,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var prog in Model.Programari.OrderByDescending(p => p.DataIntrare))
+                        @foreach(var prog in Model.Programari.OrderByDescending(p=>p.DataIntrare))
                         {
                             <tr>
                                 <td>@prog.DataIntrare.ToString("dd.MM.yyyy")</td>
-                                <td style="color:var(--text-muted);">@(prog.DataIesire?.ToString("dd.MM.yyyy") ?? "-")</td>
+                                <td style="color:var(--text-muted);">@(prog.DataIesire?.ToString("dd.MM.yyyy")??"-")</td>
                                 <td>
-                                    <span class="badge-status @(prog.Status == StatusProgramare.Finalizata ? "badge-finalizata" :
-                                                                                                            prog.Status == StatusProgramare.InLucru ? "badge-inlucru" :
-                                                                                                            prog.Status == StatusProgramare.Anulata ? "badge-anulata" : "badge-scheduled")">
+                                    <span class="badge-status @(prog.Status==StatusProgramare.Finalizata? "badge-finalizata" :
+                                                                                                            prog.Status==StatusProgramare.InLucru? "badge-inlucru" :
+                                                                                                            prog.Status==StatusProgramare.Anulata? "badge-anulata" : "badge-scheduled")">
                                 @prog.Status
                             </span>
                         </td>

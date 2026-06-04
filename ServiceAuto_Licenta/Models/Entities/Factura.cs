@@ -12,33 +12,33 @@ namespace ServiceAutoLicenta.Models.Entities
         public int ProgramareId { get; set; }
 
         [Required, MaxLength(20)]
-        [Display(Name = "Serie/Numar")]
-        public string SerieNumar { get; set; } = string.Empty;
+        [Display(Name="Serie/Numar")]
+        public string SerieNumar { get; set; }=string.Empty;
 
         [Required]
-        [Display(Name = "Data emitere")]
+        [Display(Name="Data emitere")]
         public DateTime DataEmitere { get; set; }
 
-        [Display(Name = "Data scadenta")]
+        [Display(Name="Data scadenta")]
         public DateTime? DataScadenta { get; set; }
 
-        [Display(Name = "Status plata")]
-        public StatusPlata StatusPlata { get; set; } = StatusPlata.Neplata;
+        [Display(Name="Status plata")]
+        public StatusPlata StatusPlata { get; set; }=StatusPlata.Neplata;
 
-        [Display(Name = "Metoda plata")]
+        [Display(Name="Metoda plata")]
         public MetodaPlata? MetodaPlata { get; set; }
 
-        [Column(TypeName = "decimal(10,2)")]
+        [Column(TypeName="decimal(10,2)")]
         public decimal Subtotal { get; set; }
 
-        [Column(TypeName = "decimal(10,2)")]
+        [Column(TypeName="decimal(10,2)")]
         public decimal TvaValoare { get; set; }
 
-        [Column(TypeName = "decimal(10,2)")]
+        [Column(TypeName="decimal(10,2)")]
         public decimal Total { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; }=DateTime.Now;
 
-        public Programare Programare { get; set; } = null!;
+        public Programare Programare { get; set; }=null!;
     }
 }

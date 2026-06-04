@@ -16,23 +16,23 @@ namespace ServiceAutoLicenta.Controllers
 
         public MasiniController(ServiceAutoLicentaContext _db, UserManager<IdentityUser> _userManager)
         {
-            db = _db;
-            userManager = _userManager;
+            db=_db;
+            userManager=_userManager;
         }
 
         public async Task<IActionResult> Index(string cautare)
         {
-            string userId = userManager.GetUserId(User);
+            string userId=userManager.GetUserId(User);
 
-            var masini = db.Masini
-                .Include(x => x.Client)
-                .Include(x => x.Programari)
-                .Where(x => x.Client.UserId == userId);
+            var masini=db.Masini
+                .Include(x=>x.Client)
+                .Include(x=>x.Programari)
+                .Where(x=>x.Client.UserId==userId);
 
-            if (!string.IsNullOrEmpty(cautare))
+            if(!string.IsNullOrEmpty(cautare))
             {
-                cautare = cautare.ToLower();
-                masini = masini.Where(x =>
+                cautare=cautare.ToLower();
+                masini=masini.Where(x=>
                     x.NrInmatriculare.ToLower().Contains(cautare) ||
                     x.Marca.ToLower().Contains(cautare) ||
                     x.ModelMasina.ToLower().Contains(cautare) ||
@@ -40,32 +40,32 @@ namespace ServiceAutoLicenta.Controllers
                     x.Client.Prenume.ToLower().Contains(cautare));
             }
 
-            ViewBag.Cautare = cautare;
-            return View(await masini.OrderBy(x => x.NrInmatriculare).ToListAsync());
+            ViewBag.Cautare=cautare;
+            return View(await masini.OrderBy(x=>x.NrInmatriculare).ToListAsync());
         }
 
         public async Task<IActionResult> Detalii(int id)
         {
-            string userId = userManager.GetUserId(User);
+            string userId=userManager.GetUserId(User);
 
-            var masina = await db.Masini
-                .Include(x => x.Client)
-                .Include(x => x.Programari)
-                .FirstOrDefaultAsync(x => x.Id == id && x.Client.UserId == userId);
+            var masina=await db.Masini
+                .Include(x=>x.Client)
+                .Include(x=>x.Programari)
+                .FirstOrDefaultAsync(x=>x.Id==id&&x.Client.UserId==userId);
 
-            if (masina == null) return NotFound();
+            if(masina==null) return NotFound();
 
             return View(masina);
         }
 
         public async Task<IActionResult> Adauga(int? clientId)
         {
-            string userId = userManager.GetUserId(User);
+            string userId=userManager.GetUserId(User);
             await PopulareDropdownClienti(userId, clientId);
 
-            var masina = new Masina();
-            if (clientId.HasValue)
-                masina.ClientId = clientId.Value;
+            var masina=new Masina();
+            if(clientId.HasValue)
+                masina.ClientId=clientId.Value;
 
             return View(masina);
         }
@@ -74,26 +74,26 @@ namespace ServiceAutoLicenta.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Adauga(Masina masina)
         {
-            string userId = userManager.GetUserId(User);
+            string userId=userManager.GetUserId(User);
             ModelState.Remove("Client");
 
-            if (ModelState.IsValid)
+            if(ModelState.IsValid)
             {
                 try
                 {
-                    var client = await db.Clienti
-                        .FirstOrDefaultAsync(x => x.Id == masina.ClientId && x.UserId == userId);
+                    var client=await db.Clienti
+                        .FirstOrDefaultAsync(x=>x.Id==masina.ClientId&&x.UserId==userId);
 
-                    if (client == null) return NotFound();
+                    if(client==null) return NotFound();
 
                     db.Masini.Add(masina);
                     await db.SaveChangesAsync();
-                    TempData["Succes"] = "Masina a fost adaugata cu succes!";
+                    TempData["Succes"]="Masina a fost adaugata cu succes!";
                     return RedirectToAction("Index");
                 }
-                catch (Exception)
+                catch(Exception)
                 {
-                    TempData["Eroare"] = "A aparut o eroare. Verificati datele introduse.";
+                    TempData["Eroare"]="A aparut o eroare. Verificati datele introduse.";
                 }
             }
 
@@ -103,13 +103,13 @@ namespace ServiceAutoLicenta.Controllers
 
         public async Task<IActionResult> Editeaza(int id)
         {
-            string userId = userManager.GetUserId(User);
+            string userId=userManager.GetUserId(User);
 
-            var masina = await db.Masini
-                .Include(x => x.Client)
-                .FirstOrDefaultAsync(x => x.Id == id && x.Client.UserId == userId);
+            var masina=await db.Masini
+                .Include(x=>x.Client)
+                .FirstOrDefaultAsync(x=>x.Id==id&&x.Client.UserId==userId);
 
-            if (masina == null) return NotFound();
+            if(masina==null) return NotFound();
 
             await PopulareDropdownClienti(userId, masina.ClientId);
             return View(masina);
@@ -119,23 +119,23 @@ namespace ServiceAutoLicenta.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Editeaza(int id, Masina masina)
         {
-            string userId = userManager.GetUserId(User);
+            string userId=userManager.GetUserId(User);
             ModelState.Remove("Client");
 
-            if (id != masina.Id) return NotFound();
+            if(id!=masina.Id) return NotFound();
 
-            if (ModelState.IsValid)
+            if(ModelState.IsValid)
             {
                 try
                 {
                     db.Masini.Update(masina);
                     await db.SaveChangesAsync();
-                    TempData["Succes"] = "Masina a fost actualizata!";
+                    TempData["Succes"]="Masina a fost actualizata!";
                     return RedirectToAction("Index");
                 }
-                catch (Exception)
+                catch(Exception)
                 {
-                    TempData["Eroare"] = "A aparut o eroare la salvare.";
+                    TempData["Eroare"]="A aparut o eroare la salvare.";
                 }
             }
 
@@ -145,14 +145,14 @@ namespace ServiceAutoLicenta.Controllers
 
         public async Task<IActionResult> Sterge(int id)
         {
-            string userId = userManager.GetUserId(User);
+            string userId=userManager.GetUserId(User);
 
-            var masina = await db.Masini
-                .Include(x => x.Client)
-                .Include(x => x.Programari)
-                .FirstOrDefaultAsync(x => x.Id == id && x.Client.UserId == userId);
+            var masina=await db.Masini
+                .Include(x=>x.Client)
+                .Include(x=>x.Programari)
+                .FirstOrDefaultAsync(x=>x.Id==id&&x.Client.UserId==userId);
 
-            if (masina == null) return NotFound();
+            if(masina==null) return NotFound();
 
             return View(masina);
         }
@@ -161,36 +161,36 @@ namespace ServiceAutoLicenta.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmaStergere(int id)
         {
-            string userId = userManager.GetUserId(User);
+            string userId=userManager.GetUserId(User);
 
-            var masina = await db.Masini
-                .Include(x => x.Client)
-                .Include(x => x.Programari)
-                .FirstOrDefaultAsync(x => x.Id == id && x.Client.UserId == userId);
+            var masina=await db.Masini
+                .Include(x=>x.Client)
+                .Include(x=>x.Programari)
+                .FirstOrDefaultAsync(x=>x.Id==id&&x.Client.UserId==userId);
 
-            if (masina == null) return NotFound();
+            if(masina==null) return NotFound();
 
-            if (masina.Programari.Any())
+            if(masina.Programari.Any())
             {
-                TempData["Eroare"] = "Masina nu poate fi stearsa deoarece are programari!";
+                TempData["Eroare"]="Masina nu poate fi stearsa deoarece are programari!";
                 return RedirectToAction("Index");
             }
 
             db.Masini.Remove(masina);
             await db.SaveChangesAsync();
-            TempData["Succes"] = "Masina a fost stearsa!";
+            TempData["Succes"]="Masina a fost stearsa!";
             return RedirectToAction("Index");
         }
 
-        private async Task PopulareDropdownClienti(string userId, int? selectedId = null)
+        private async Task PopulareDropdownClienti(string userId, int? selectedId=null)
         {
-            var clienti = await db.Clienti
-                .Where(x => x.UserId == userId)
-                .OrderBy(x => x.Nume)
-                .Select(x => new { x.Id, Nume = x.Nume + " " + x.Prenume })
+            var clienti=await db.Clienti
+                .Where(x=>x.UserId==userId)
+                .OrderBy(x=>x.Nume)
+                .Select(x=>new { x.Id, Nume=x.Nume + " " + x.Prenume })
                 .ToListAsync();
 
-            ViewBag.ClientId = new SelectList(clienti, "Id", "Nume", selectedId);
+            ViewBag.ClientId=new SelectList(clienti, "Id", "Nume", selectedId);
         }
     }
 }

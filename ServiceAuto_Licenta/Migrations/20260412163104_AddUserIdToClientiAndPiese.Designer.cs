@@ -25,7 +25,7 @@ namespace ServiceAutoLicenta.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b=>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -52,7 +52,7 @@ namespace ServiceAutoLicenta.Migrations
                     b.ToTable("AspNetRoles", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b=>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -77,7 +77,7 @@ namespace ServiceAutoLicenta.Migrations
                     b.ToTable("AspNetRoleClaims", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b=>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -142,7 +142,7 @@ namespace ServiceAutoLicenta.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b=>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -167,7 +167,7 @@ namespace ServiceAutoLicenta.Migrations
                     b.ToTable("AspNetUserClaims", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b=>
                 {
                     b.Property<string>("LoginProvider")
                         .HasColumnType("nvarchar(450)");
@@ -189,7 +189,7 @@ namespace ServiceAutoLicenta.Migrations
                     b.ToTable("AspNetUserLogins", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b=>
                 {
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
@@ -204,7 +204,7 @@ namespace ServiceAutoLicenta.Migrations
                     b.ToTable("AspNetUserRoles", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b=>
                 {
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
@@ -223,7 +223,7 @@ namespace ServiceAutoLicenta.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Client", b =>
+            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Client", b=>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -296,7 +296,7 @@ namespace ServiceAutoLicenta.Migrations
                         });
                 });
 
-            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Factura", b =>
+            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Factura", b=>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -348,7 +348,7 @@ namespace ServiceAutoLicenta.Migrations
                     b.ToTable("Facturi");
                 });
 
-            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Lucrare", b =>
+            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Lucrare", b=>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -380,7 +380,7 @@ namespace ServiceAutoLicenta.Migrations
                     b.ToTable("Lucrari");
                 });
 
-            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.LucrarePiesa", b =>
+            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.LucrarePiesa", b=>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -409,7 +409,7 @@ namespace ServiceAutoLicenta.Migrations
                     b.ToTable("LucrarePiese");
                 });
 
-            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Masina", b =>
+            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Masina", b=>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -462,7 +462,7 @@ namespace ServiceAutoLicenta.Migrations
                     b.ToTable("Masini");
                 });
 
-            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Piesa", b =>
+            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Piesa", b=>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -552,7 +552,7 @@ namespace ServiceAutoLicenta.Migrations
                         });
                 });
 
-            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Programare", b =>
+            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Programare", b=>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -595,7 +595,7 @@ namespace ServiceAutoLicenta.Migrations
                     b.ToTable("Programari");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b=>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
@@ -604,7 +604,7 @@ namespace ServiceAutoLicenta.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b=>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
@@ -613,7 +613,7 @@ namespace ServiceAutoLicenta.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b=>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
@@ -622,7 +622,7 @@ namespace ServiceAutoLicenta.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b=>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
@@ -637,7 +637,7 @@ namespace ServiceAutoLicenta.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b=>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
@@ -646,7 +646,7 @@ namespace ServiceAutoLicenta.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Factura", b =>
+            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Factura", b=>
                 {
                     b.HasOne("ServiceAutoLicenta.Models.Entities.Programare", "Programare")
                         .WithOne("Factura")
@@ -657,7 +657,7 @@ namespace ServiceAutoLicenta.Migrations
                     b.Navigation("Programare");
                 });
 
-            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Lucrare", b =>
+            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Lucrare", b=>
                 {
                     b.HasOne("ServiceAutoLicenta.Models.Entities.Programare", "Programare")
                         .WithMany("Lucrari")
@@ -668,7 +668,7 @@ namespace ServiceAutoLicenta.Migrations
                     b.Navigation("Programare");
                 });
 
-            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.LucrarePiesa", b =>
+            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.LucrarePiesa", b=>
                 {
                     b.HasOne("ServiceAutoLicenta.Models.Entities.Lucrare", "Lucrare")
                         .WithMany("LucrarePiese")
@@ -687,7 +687,7 @@ namespace ServiceAutoLicenta.Migrations
                     b.Navigation("Piesa");
                 });
 
-            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Masina", b =>
+            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Masina", b=>
                 {
                     b.HasOne("ServiceAutoLicenta.Models.Entities.Client", "Client")
                         .WithMany("Masini")
@@ -698,7 +698,7 @@ namespace ServiceAutoLicenta.Migrations
                     b.Navigation("Client");
                 });
 
-            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Programare", b =>
+            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Programare", b=>
                 {
                     b.HasOne("ServiceAutoLicenta.Models.Entities.Masina", "Masina")
                         .WithMany("Programari")
@@ -709,27 +709,27 @@ namespace ServiceAutoLicenta.Migrations
                     b.Navigation("Masina");
                 });
 
-            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Client", b =>
+            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Client", b=>
                 {
                     b.Navigation("Masini");
                 });
 
-            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Lucrare", b =>
+            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Lucrare", b=>
                 {
                     b.Navigation("LucrarePiese");
                 });
 
-            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Masina", b =>
+            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Masina", b=>
                 {
                     b.Navigation("Programari");
                 });
 
-            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Piesa", b =>
+            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Piesa", b=>
                 {
                     b.Navigation("LucrarePiese");
                 });
 
-            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Programare", b =>
+            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Programare", b=>
                 {
                     b.Navigation("Factura");
 

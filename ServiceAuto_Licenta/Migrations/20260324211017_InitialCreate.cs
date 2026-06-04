@@ -15,7 +15,7 @@ namespace ServiceAutoLicenta.Migrations
         {
             migrationBuilder.CreateTable(
                 name: "Clienti",
-                columns: table => new
+                columns: table=>new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
@@ -27,14 +27,14 @@ namespace ServiceAutoLicenta.Migrations
                     Cnp = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
-                constraints: table =>
+                constraints: table=>
                 {
-                    table.PrimaryKey("PK_Clienti", x => x.Id);
+                    table.PrimaryKey("PK_Clienti", x=>x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Piese",
-                columns: table => new
+                columns: table=>new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
@@ -47,14 +47,14 @@ namespace ServiceAutoLicenta.Migrations
                     StocMinim = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
-                constraints: table =>
+                constraints: table=>
                 {
-                    table.PrimaryKey("PK_Piese", x => x.Id);
+                    table.PrimaryKey("PK_Piese", x=>x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Masini",
-                columns: table => new
+                columns: table=>new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
@@ -67,12 +67,12 @@ namespace ServiceAutoLicenta.Migrations
                     KmActuali = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
-                constraints: table =>
+                constraints: table=>
                 {
-                    table.PrimaryKey("PK_Masini", x => x.Id);
+                    table.PrimaryKey("PK_Masini", x=>x.Id);
                     table.ForeignKey(
                         name: "FK_Masini_Clienti_ClientId",
-                        column: x => x.ClientId,
+                        column: x=>x.ClientId,
                         principalTable: "Clienti",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -80,7 +80,7 @@ namespace ServiceAutoLicenta.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Programari",
-                columns: table => new
+                columns: table=>new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
@@ -94,12 +94,12 @@ namespace ServiceAutoLicenta.Migrations
                     TotalCuTva = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
-                constraints: table =>
+                constraints: table=>
                 {
-                    table.PrimaryKey("PK_Programari", x => x.Id);
+                    table.PrimaryKey("PK_Programari", x=>x.Id);
                     table.ForeignKey(
                         name: "FK_Programari_Masini_MasinaId",
-                        column: x => x.MasinaId,
+                        column: x=>x.MasinaId,
                         principalTable: "Masini",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -107,7 +107,7 @@ namespace ServiceAutoLicenta.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Facturi",
-                columns: table => new
+                columns: table=>new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
@@ -122,12 +122,12 @@ namespace ServiceAutoLicenta.Migrations
                     Total = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
-                constraints: table =>
+                constraints: table=>
                 {
-                    table.PrimaryKey("PK_Facturi", x => x.Id);
+                    table.PrimaryKey("PK_Facturi", x=>x.Id);
                     table.ForeignKey(
                         name: "FK_Facturi_Programari_ProgramareId",
-                        column: x => x.ProgramareId,
+                        column: x=>x.ProgramareId,
                         principalTable: "Programari",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -135,7 +135,7 @@ namespace ServiceAutoLicenta.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Lucrari",
-                columns: table => new
+                columns: table=>new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
@@ -145,12 +145,12 @@ namespace ServiceAutoLicenta.Migrations
                     Manopera = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     DurataOre = table.Column<decimal>(type: "decimal(5,2)", nullable: false)
                 },
-                constraints: table =>
+                constraints: table=>
                 {
-                    table.PrimaryKey("PK_Lucrari", x => x.Id);
+                    table.PrimaryKey("PK_Lucrari", x=>x.Id);
                     table.ForeignKey(
                         name: "FK_Lucrari_Programari_ProgramareId",
-                        column: x => x.ProgramareId,
+                        column: x=>x.ProgramareId,
                         principalTable: "Programari",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -158,7 +158,7 @@ namespace ServiceAutoLicenta.Migrations
 
             migrationBuilder.CreateTable(
                 name: "LucrarePiese",
-                columns: table => new
+                columns: table=>new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
@@ -167,18 +167,18 @@ namespace ServiceAutoLicenta.Migrations
                     Cantitate = table.Column<int>(type: "int", nullable: false),
                     PretUnitar = table.Column<decimal>(type: "decimal(10,2)", nullable: false)
                 },
-                constraints: table =>
+                constraints: table=>
                 {
-                    table.PrimaryKey("PK_LucrarePiese", x => x.Id);
+                    table.PrimaryKey("PK_LucrarePiese", x=>x.Id);
                     table.ForeignKey(
                         name: "FK_LucrarePiese_Lucrari_LucrareId",
-                        column: x => x.LucrareId,
+                        column: x=>x.LucrareId,
                         principalTable: "Lucrari",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_LucrarePiese_Piese_PiesaId",
-                        column: x => x.PiesaId,
+                        column: x=>x.PiesaId,
                         principalTable: "Piese",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);

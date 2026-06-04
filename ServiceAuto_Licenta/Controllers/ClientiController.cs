@@ -15,42 +15,42 @@ namespace ServiceAutoLicenta.Controllers
 
         public ClientiController(ServiceAutoLicentaContext _db, UserManager<IdentityUser> _userManager)
         {
-            db = _db;
-            userManager = _userManager;
+            db=_db;
+            userManager=_userManager;
         }
 
         public async Task<IActionResult> Index(string cautare)
         {
-            string userId = userManager.GetUserId(User);
+            string userId=userManager.GetUserId(User);
 
-            var clienti = db.Clienti
-                .Include(x => x.Masini)
-                .Where(x => x.UserId == userId);
+            var clienti=db.Clienti
+                .Include(x=>x.Masini)
+                .Where(x=>x.UserId==userId);
 
-            if (!string.IsNullOrEmpty(cautare))
+            if(!string.IsNullOrEmpty(cautare))
             {
-                cautare = cautare.ToLower();
-                clienti = clienti.Where(x =>
+                cautare=cautare.ToLower();
+                clienti=clienti.Where(x=>
                     x.Nume.ToLower().Contains(cautare) ||
                     x.Prenume.ToLower().Contains(cautare) ||
                     x.Telefon.Contains(cautare) ||
                     x.Email.ToLower().Contains(cautare));
             }
 
-            ViewBag.Cautare = cautare;
-            return View(await clienti.OrderBy(x => x.Nume).ToListAsync());
+            ViewBag.Cautare=cautare;
+            return View(await clienti.OrderBy(x=>x.Nume).ToListAsync());
         }
 
         public async Task<IActionResult> Detalii(int id)
         {
-            string userId = userManager.GetUserId(User);
+            string userId=userManager.GetUserId(User);
 
-            var client = await db.Clienti
-                .Include(x => x.Masini)
-                    .ThenInclude(x => x.Programari)
-                .FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
+            var client=await db.Clienti
+                .Include(x=>x.Masini)
+                    .ThenInclude(x=>x.Programari)
+                .FirstOrDefaultAsync(x=>x.Id==id&&x.UserId==userId);
 
-            if (client == null) return NotFound();
+            if(client==null) return NotFound();
 
             return View(client);
         }
@@ -64,22 +64,22 @@ namespace ServiceAutoLicenta.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Adauga(Client client)
         {
-            string userId = userManager.GetUserId(User);
+            string userId=userManager.GetUserId(User);
             ModelState.Remove("UserId");
 
-            if (ModelState.IsValid)
+            if(ModelState.IsValid)
             {
                 try
                 {
-                    client.UserId = userId;
+                    client.UserId=userId;
                     db.Clienti.Add(client);
                     await db.SaveChangesAsync();
-                    TempData["Succes"] = "Clientul a fost adaugat cu succes!";
+                    TempData["Succes"]="Clientul a fost adaugat cu succes!";
                     return RedirectToAction("Index");
                 }
-                catch (Exception)
+                catch(Exception)
                 {
-                    TempData["Eroare"] = "A aparut o eroare la salvare. Verificati datele introduse.";
+                    TempData["Eroare"]="A aparut o eroare la salvare. Verificati datele introduse.";
                 }
             }
 
@@ -88,12 +88,12 @@ namespace ServiceAutoLicenta.Controllers
 
         public async Task<IActionResult> Editeaza(int id)
         {
-            string userId = userManager.GetUserId(User);
+            string userId=userManager.GetUserId(User);
 
-            var client = await db.Clienti
-                .FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
+            var client=await db.Clienti
+                .FirstOrDefaultAsync(x=>x.Id==id&&x.UserId==userId);
 
-            if (client == null) return NotFound();
+            if(client==null) return NotFound();
 
             return View(client);
         }
@@ -102,24 +102,24 @@ namespace ServiceAutoLicenta.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Editeaza(int id, Client client)
         {
-            string userId = userManager.GetUserId(User);
+            string userId=userManager.GetUserId(User);
             ModelState.Remove("UserId");
 
-            if (id != client.Id) return NotFound();
+            if(id!=client.Id) return NotFound();
 
-            if (ModelState.IsValid)
+            if(ModelState.IsValid)
             {
                 try
                 {
-                    client.UserId = userId;
+                    client.UserId=userId;
                     db.Clienti.Update(client);
                     await db.SaveChangesAsync();
-                    TempData["Succes"] = "Clientul a fost actualizat!";
+                    TempData["Succes"]="Clientul a fost actualizat!";
                     return RedirectToAction("Index");
                 }
-                catch (Exception)
+                catch(Exception)
                 {
-                    TempData["Eroare"] = "A aparut o eroare la salvare.";
+                    TempData["Eroare"]="A aparut o eroare la salvare.";
                 }
             }
 
@@ -128,13 +128,13 @@ namespace ServiceAutoLicenta.Controllers
 
         public async Task<IActionResult> Sterge(int id)
         {
-            string userId = userManager.GetUserId(User);
+            string userId=userManager.GetUserId(User);
 
-            var client = await db.Clienti
-                .Include(x => x.Masini)
-                .FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
+            var client=await db.Clienti
+                .Include(x=>x.Masini)
+                .FirstOrDefaultAsync(x=>x.Id==id&&x.UserId==userId);
 
-            if (client == null) return NotFound();
+            if(client==null) return NotFound();
 
             return View(client);
         }
@@ -143,23 +143,23 @@ namespace ServiceAutoLicenta.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmaStergere(int id)
         {
-            string userId = userManager.GetUserId(User);
+            string userId=userManager.GetUserId(User);
 
-            var client = await db.Clienti
-                .Include(x => x.Masini)
-                .FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
+            var client=await db.Clienti
+                .Include(x=>x.Masini)
+                .FirstOrDefaultAsync(x=>x.Id==id&&x.UserId==userId);
 
-            if (client == null) return NotFound();
+            if(client==null) return NotFound();
 
-            if (client.Masini.Any())
+            if(client.Masini.Any())
             {
-                TempData["Eroare"] = "Clientul nu poate fi sters deoarece are masini inregistrate!";
+                TempData["Eroare"]="Clientul nu poate fi sters deoarece are masini inregistrate!";
                 return RedirectToAction("Index");
             }
 
             db.Clienti.Remove(client);
             await db.SaveChangesAsync();
-            TempData["Succes"] = "Clientul a fost sters!";
+            TempData["Succes"]="Clientul a fost sters!";
             return RedirectToAction("Index");
         }
     }

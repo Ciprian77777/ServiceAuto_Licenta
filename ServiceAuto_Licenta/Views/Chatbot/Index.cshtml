@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Asistent AI";
+    ViewData["Title"]="Asistent AI";
 }
 
 <div class="page-header">
@@ -22,20 +22,20 @@
             </div>
             <div style="padding:12px;display:flex;flex-direction:column;gap:6px;">
                 @{
-                    var sugestii = new[]
+                    var sugestii=new[]
                     {
-                                new { icon = "bi-people", text = "Cati clienti am inregistrati?" },
-                                new { icon = "bi-car-front", text = "Ce masini am in sistem?" },
-                                new { icon = "bi-calendar-check", text = "Ce programari sunt in lucru acum?" },
-                                new { icon = "bi-receipt", text = "Ce facturi neincasate am?" },
-                                new { icon = "bi-gear", text = "Ce piese au stoc scazut?" },
-                                new { icon = "bi-cash-stack", text = "Care sunt veniturile mele?" },
-                                new { icon = "bi-person-fill", text = "Arata-mi detalii despre un client" },
-                                new { icon = "bi-clock-history", text = "Care e ultima programare?" },
-                                new { icon = "bi-bar-chart", text = "Rezuma activitatea service-ului" },
+                                new { icon="bi-people", text="Cati clienti am inregistrati?" },
+                                new { icon="bi-car-front", text="Ce masini am in sistem?" },
+                                new { icon="bi-calendar-check", text="Ce programari sunt in lucru acum?" },
+                                new { icon="bi-receipt", text="Ce facturi neincasate am?" },
+                                new { icon="bi-gear", text="Ce piese au stoc scazut?" },
+                                new { icon="bi-cash-stack", text="Care sunt veniturile mele?" },
+                                new { icon="bi-person-fill", text="Arata-mi detalii despre un client" },
+                                new { icon="bi-clock-history", text="Care e ultima programare?" },
+                                new { icon="bi-bar-chart", text="Rezuma activitatea service-ului" },
                                 };
                 }
-                @foreach (var s in sugestii)
+                @foreach(var s in sugestii)
                 {
                     <button onclick="sendSuggestion(this.dataset.text)"
                             data-text="@s.text"
@@ -175,40 +175,40 @@
 
 @section Scripts {
     <script>
-        let isLoading = false;
+        let isLoading=false;
 
-        function handleKeyDown(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
+        function handleKeyDown(e){
+            if(e.key === 'Enter'&&!e.shiftKey){
                 e.preventDefault();
                 sendMessage();
             }
         }
 
-        function autoResize(el) {
-            el.style.height = 'auto';
-            el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+        function autoResize(el){
+            el.style.height='auto';
+            el.style.height=Math.min(el.scrollHeight, 120) + 'px';
         }
 
-        function sendSuggestion(text) {
-            document.getElementById('chat-input').value = text;
+        function sendSuggestion(text){
+            document.getElementById('chat-input').value=text;
             sendMessage();
         }
 
-        function sendMessage() {
-            if (isLoading) return;
+        function sendMessage(){
+            if(isLoading) return;
 
-            const input = document.getElementById('chat-input');
-            const message = input.value.trim();
-            if (!message) return;
+            const input=document.getElementById('chat-input');
+            const message=input.value.trim();
+            if(!message) return;
 
             appendMessage('user', message);
-            input.value = '';
-            input.style.height = 'auto';
+            input.value='';
+            input.style.height='auto';
 
-            isLoading = true;
-            document.getElementById('typing-indicator').style.display = 'block';
-            document.getElementById('send-btn').disabled = true;
-            document.getElementById('send-btn').style.opacity = '0.5';
+            isLoading=true;
+            document.getElementById('typing-indicator').style.display='block';
+            document.getElementById('send-btn').disabled=true;
+            document.getElementById('send-btn').style.opacity='0.5';
             scrollToBottom();
 
             fetch('/Chatbot/Ask', {
@@ -216,33 +216,33 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ message: message })
             })
-            .then(r => r.json())
-            .then(data => {
-                document.getElementById('typing-indicator').style.display = 'none';
-                isLoading = false;
-                document.getElementById('send-btn').disabled = false;
-                document.getElementById('send-btn').style.opacity = '1';
+            .then(r=>r.json())
+            .then(data=>{
+                document.getElementById('typing-indicator').style.display='none';
+                isLoading=false;
+                document.getElementById('send-btn').disabled=false;
+                document.getElementById('send-btn').style.opacity='1';
 
-                if (data.success) {
+                if(data.success){
                     appendMessage('assistant', data.message);
-                } else {
-                    appendMessage('error', data.message || 'A aparut o eroare. Incearca din nou.');
+                } else{
+                    appendMessage('error', data.message||'A aparut o eroare. Incearca din nou.');
                 }
             })
-            .catch(() => {
-                document.getElementById('typing-indicator').style.display = 'none';
-                isLoading = false;
-                document.getElementById('send-btn').disabled = false;
-                document.getElementById('send-btn').style.opacity = '1';
+            .catch(()=>{
+                document.getElementById('typing-indicator').style.display='none';
+                isLoading=false;
+                document.getElementById('send-btn').disabled=false;
+                document.getElementById('send-btn').style.opacity='1';
                 appendMessage('error', 'Nu am putut contacta serverul. Verifica conexiunea.');
             });
         }
 
-        function appendMessage(role, text) {
-            const container = document.getElementById('chat-messages');
-            const now = new Date().toLocaleTimeString('ro-RO', { hour: '2-digit', minute: '2-digit' });
+        function appendMessage(role, text){
+            const container=document.getElementById('chat-messages');
+            const now=new Date().toLocaleTimeString('ro-RO', { hour: '2-digit', minute: '2-digit' });
 
-            if (role === 'user') {
+            if(role === 'user'){
                 container.insertAdjacentHTML('beforeend', `
                     <div class="chat-message-new" style="display:flex;justify-content:flex-end;gap:12px;align-items:flex-start;">
                         <div style="max-width:70%;">
@@ -256,8 +256,8 @@
                         </div>
                     </div>
                 `);
-            } else if (role === 'assistant') {
-                const formattedText = formatMessage(text);
+            } else if(role === 'assistant'){
+                const formattedText=formatMessage(text);
                 container.insertAdjacentHTML('beforeend', `
                     <div class="chat-message-new" style="display:flex;gap:12px;align-items:flex-start;">
                         <div style="width:36px;height:36px;background:#2563eb;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
@@ -271,10 +271,10 @@
                         </div>
                     </div>
                 `);
-            } else {
+            } else{
                 container.insertAdjacentHTML('beforeend', `
                     <div class="chat-message-new" style="display:flex;justify-content:center;">
-                        <div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:10px 16px;font-size:13px;color:#dc2626;">
+                        <div style="background:rgba(220,38,38,0.15);border:1px solid rgba(220,38,38,0.3);border-radius:8px;padding:10px 16px;font-size:13px;color:#fca5a5;">
                             <i class="bi bi-exclamation-circle me-2"></i>${escapeHtml(text)}
                         </div>
                     </div>
@@ -284,34 +284,34 @@
             scrollToBottom();
         }
 
-        function formatMessage(text) {
-            let formatted = escapeHtml(text);
+        function formatMessage(text){
+            let formatted=escapeHtml(text);
 
-            formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            formatted=formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
 
-            formatted = formatted.replace(/^- (.+)$/gm, '<li style="margin-left:16px;margin-bottom:4px;">$1</li>');
-            formatted = formatted.replace(/(<li.*<\/li>\n?)+/g, '<ul style="margin:8px 0;padding:0;">$&</ul>');
+            formatted=formatted.replace(/^- (.+)$/gm, '<li style="margin-left:16px;margin-bottom:4px;">$1</li>');
+            formatted=formatted.replace(/(<li.*<\/li>\n?)+/g, '<ul style="margin:8px 0;padding:0;">$&</ul>');
 
-            formatted = formatted.replace(/\n\n/g, '<br><br>');
-            formatted = formatted.replace(/\n/g, '<br>');
+            formatted=formatted.replace(/\n\n/g, '<br><br>');
+            formatted=formatted.replace(/\n/g, '<br>');
 
             return formatted;
         }
 
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
+        function escapeHtml(text){
+            const div=document.createElement('div');
+            div.textContent=text;
             return div.innerHTML;
         }
 
-        function scrollToBottom() {
-            const container = document.getElementById('chat-messages');
-            setTimeout(() => {
-                container.scrollTop = container.scrollHeight;
+        function scrollToBottom(){
+            const container=document.getElementById('chat-messages');
+            setTimeout(()=>{
+                container.scrollTop=container.scrollHeight;
             }, 50);
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', ()=>{
             document.getElementById('chat-input').focus();
         });
     </script>

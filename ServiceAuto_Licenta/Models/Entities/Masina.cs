@@ -12,30 +12,30 @@ namespace ServiceAutoLicenta.Models.Entities
         public int ClientId { get; set; }
 
         [Required, MaxLength(60)]
-        [Display(Name = "Marca")]
-        public string Marca { get; set; } = string.Empty;
+        [Display(Name="Marca")]
+        public string Marca { get; set; }=string.Empty;
 
         [Required, MaxLength(60)]
-        [Display(Name = "Model")]
-        public string ModelMasina { get; set; } = string.Empty;
+        [Display(Name="Model")]
+        public string ModelMasina { get; set; }=string.Empty;
 
-        [Display(Name = "An fabricatie")]
+        [Display(Name="An fabricatie")]
         public int? AnFabricatie { get; set; }
 
         [Required, MaxLength(10)]
-        [Display(Name = "Nr. înmatriculare")]
-        public string NrInmatriculare { get; set; } = string.Empty;
+        [Display(Name="Nr. înmatriculare")]
+        public string NrInmatriculare { get; set; }=string.Empty;
 
         [MaxLength(17)]
-        [Display(Name = "VIN")]
+        [Display(Name="VIN")]
         public string? Vin { get; set; }
 
-        [Display(Name = "Km actuali")]
+        [Display(Name="Km actuali")]
         public int? KmActuali { get; set; } 
 
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; }=DateTime.Now;
 
-        public Client Client { get; set; } = null!;
-        public ICollection<Programare> Programari { get; set; } = new List<Programare>();
+        public Client Client { get; set; }=null!;
+        public ICollection<Programare> Programari { get; set; }=new List<Programare>();
     }
 }

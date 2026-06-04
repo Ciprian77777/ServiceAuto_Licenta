@@ -1,7 +1,7 @@
 ﻿@model ServiceAutoLicenta.Models.Entities.Factura
 @using ServiceAutoLicenta.Models.Entities
 @{
-    ViewData["Title"] = "Factură " + Model.SerieNumar;
+    ViewData["Title"]="Factură " + Model.SerieNumar;
 }
 
 <div class="page-header">
@@ -18,14 +18,14 @@
             <p>Emisă pe @Model.DataEmitere.ToString("dd MMMM yyyy")</p>
         </div>
     </div>
-    <span class="badge-status @(Model.StatusPlata == StatusPlata.Platita ? "badge-platita" :
-                                           Model.StatusPlata == StatusPlata.Partial ? "badge-partial" : "badge-neplata")"
+    <span class="badge-status @(Model.StatusPlata==StatusPlata.Platita? "badge-platita" :
+                                           Model.StatusPlata==StatusPlata.Partial? "badge-partial" : "badge-neplata")"
           style="font-size:14px;padding:8px 16px;">
         @Model.StatusPlata
     </span>
 </div>
 
-@if (TempData["Succes"] != null)
+@if(TempData["Succes"]!=null)
 {
     <div class="alert alert-success alert-dismissible fade show mb-4">
         <i class="bi bi-check-circle me-2"></i>@TempData["Succes"]
@@ -35,7 +35,6 @@
 
 <div class="row g-4">
     <div class="col-md-4">
-        <!-- Info factură -->
         <div class="content-card mb-4">
             <div class="content-card-header"><h5>Date factură</h5></div>
             <div style="padding:20px;display:flex;flex-direction:column;gap:12px;">
@@ -49,16 +48,15 @@
                 </div>
                 <div style="display:flex;justify-content:space-between;font-size:14px;">
                     <span style="color:var(--text-muted);">Scadență</span>
-                    <span>@(Model.DataScadenta?.ToString("dd.MM.yyyy") ?? "-")</span>
+                    <span>@(Model.DataScadenta?.ToString("dd.MM.yyyy")??"-")</span>
                 </div>
                 <div style="display:flex;justify-content:space-between;font-size:14px;">
                     <span style="color:var(--text-muted);">Metodă plată</span>
-                    <span>@(Model.MetodaPlata?.ToString() ?? "-")</span>
+                    <span>@(Model.MetodaPlata?.ToString()??"-")</span>
                 </div>
             </div>
         </div>
 
-        <!-- Client -->
         <div class="content-card mb-4">
             <div class="content-card-header"><h5>Client</h5></div>
             <div style="padding:20px;">
@@ -78,12 +76,11 @@
             </div>
         </div>
 
-        <!-- Plată -->
-        @if (Model.StatusPlata != StatusPlata.Platita)
+        @if(Model.StatusPlata!=StatusPlata.Platita)
         {
             <div class="content-card" style="border:1.5px solid #86efac;">
-                <div class="content-card-header" style="background:#f0fdf4;">
-                    <h5 style="color:#16a34a;"><i class="bi bi-cash me-2"></i>Înregistrează plata</h5>
+                <div class="content-card-header" style="background:rgba(22,163,74,0.15);">
+                    <h5 style="color:#86efac;"><i class="bi bi-cash me-2"></i>Înregistrează plata</h5>
                 </div>
                 <div style="padding:16px;">
                     <form asp-action="ActualizeazaStatus" method="post">
@@ -103,7 +100,7 @@
                             <i class="bi bi-check-lg"></i> Salvează plata
                         </button>
                     </form>
-                    @if (Model.StatusPlata == StatusPlata.Neplata)
+                    @if(Model.StatusPlata==StatusPlata.Neplata)
                     {
                         <a asp-action="PlataCard" asp-route-id="@Model.Id"
                            class="btn-outline-custom" style="width:100%;justify-content:center;margin-top:8px;">
@@ -115,7 +112,6 @@
         }
     </div>
 
-    <!-- Detalii lucrări -->
     <div class="col-md-8">
         <div class="content-card">
             <div class="content-card-header">
@@ -132,12 +128,12 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var lucrare in Model.Programare.Lucrari)
+                    @foreach(var lucrare in Model.Programare.Lucrari)
                     {
-                        <tr style="background:#f8fafc;">
+                        <tr style="background:rgba(0,0,0,0.1);">
                             <td>
                                 <div style="display:flex;align-items:center;gap:8px;">
-                                    <div style="width:28px;height:28px;background:#eff6ff;border-radius:6px;display:flex;align-items:center;justify-content:center;">
+                                    <div style="width:28px;height:28px;background:rgba(37,99,235,0.25);border-radius:6px;display:flex;align-items:center;justify-content:center;">
                                         <i class="bi bi-wrench" style="color:#2563eb;font-size:12px;"></i>
                                     </div>
                                     <strong>@lucrare.Denumire</strong>
@@ -145,12 +141,12 @@
                             </td>
                             <td style="text-align:right;font-weight:600;">@lucrare.Manopera.ToString("N2") lei</td>
                         </tr>
-                        @foreach (var lp in lucrare.LucrarePiese)
+                        @foreach(var lp in lucrare.LucrarePiese)
                         {
                             <tr>
                                 <td style="padding-left:48px;font-size:13px;color:var(--text-muted);">
                                     @lp.Piesa.Denumire
-                                    <span style="background:#f1f5f9;padding:1px 6px;border-radius:4px;font-size:11px;margin-left:4px;">× @lp.Cantitate</span>
+                                    <span style="background:rgba(255,255,255,0.12);padding:1px 6px;border-radius:4px;font-size:11px;margin-left:4px;">× @lp.Cantitate</span>
                                 </td>
                                 <td style="text-align:right;font-size:13px;">@lp.Subtotal.ToString("N2") lei</td>
                             </tr>
@@ -158,11 +154,11 @@
                     }
                 </tbody>
                 <tfoot>
-                    <tr style="background:#f8fafc;">
+                    <tr style="background:rgba(0,0,0,0.1);">
                         <td style="text-align:right;color:var(--text-muted);font-size:13px;">Subtotal (fără TVA)</td>
                         <td style="text-align:right;font-size:13px;">@Model.Subtotal.ToString("N2") lei</td>
                     </tr>
-                    <tr style="background:#f8fafc;">
+                    <tr style="background:rgba(0,0,0,0.1);">
                         <td style="text-align:right;color:var(--text-muted);font-size:13px;">TVA (19%)</td>
                         <td style="text-align:right;font-size:13px;">@Model.TvaValoare.ToString("N2") lei</td>
                     </tr>

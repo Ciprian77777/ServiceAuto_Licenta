@@ -1,6 +1,6 @@
 ﻿@model ServiceAutoLicenta.Models.Entities.Client
 @{
-    ViewData["Title"] = "Detalii client";
+    ViewData["Title"]="Detalii client";
 }
 
 <div class="page-header">
@@ -37,21 +37,21 @@
                         <i class="bi bi-telephone" style="color:var(--text-muted);width:16px;"></i>
                         <span>@Model.Telefon</span>
                     </div>
-                    @if (!string.IsNullOrEmpty(Model.Email))
+                    @if(!string.IsNullOrEmpty(Model.Email))
                     {
                         <div style="display:flex;align-items:center;gap:10px;font-size:14px;">
                             <i class="bi bi-envelope" style="color:var(--text-muted);width:16px;"></i>
                             <span>@Model.Email</span>
                         </div>
                     }
-                    @if (!string.IsNullOrEmpty(Model.Adresa))
+                    @if(!string.IsNullOrEmpty(Model.Adresa))
                     {
                         <div style="display:flex;align-items:center;gap:10px;font-size:14px;">
                             <i class="bi bi-geo-alt" style="color:var(--text-muted);width:16px;"></i>
                             <span>@Model.Adresa</span>
                         </div>
                     }
-                    @if (!string.IsNullOrEmpty(Model.Cnp))
+                    @if(!string.IsNullOrEmpty(Model.Cnp))
                     {
                         <div style="display:flex;align-items:center;gap:10px;font-size:14px;">
                             <i class="bi bi-card-text" style="color:var(--text-muted);width:16px;"></i>
@@ -75,7 +75,7 @@
                     <i class="bi bi-plus-lg"></i> Adaugă mașină
                 </a>
             </div>
-            @if (!Model.Masini.Any())
+            @if(!Model.Masini.Any())
             {
                 <div style="text-align:center;padding:40px;color:var(--text-muted);">
                     <i class="bi bi-car-front" style="font-size:2.5rem;opacity:0.3;"></i>
@@ -95,7 +95,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var masina in Model.Masini)
+                        @foreach(var masina in Model.Masini)
                         {
                             <tr>
                                 <td>
@@ -103,15 +103,15 @@
                                     <div style="font-size:12px;color:var(--text-muted);">@masina.AnFabricatie</div>
                                 </td>
                                 <td>
-                                    <span style="background:#f1f5f9;padding:4px 10px;border-radius:6px;font-size:13px;font-weight:600;">
+                                    <span style="background:rgba(255,255,255,0.12);padding:4px 10px;border-radius:6px;font-size:13px;font-weight:600;">
                                         @masina.NrInmatriculare
                                     </span>
                                 </td>
                                 <td style="font-size:13px;color:var(--text-muted);">
-                                    @(masina.KmActuali?.ToString("N0") ?? "0") km
+                                    @(masina.KmActuali?.ToString("N0")??"0") km
                                 </td>
                                 <td>
-                                    <span style="background:#eff6ff;color:#2563eb;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;">
+                                    <span style="background:rgba(37,99,235,0.3);color:#93c5fd;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;">
                                         @masina.Programari.Count
                                     </span>
                                 </td>

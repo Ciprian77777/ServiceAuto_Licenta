@@ -4,9 +4,9 @@ using ServiceAutoLicenta.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
-builder.Services.AddDbContext<ServiceAutoLicentaContext>(options =>
+builder.Services.AddDbContext<ServiceAutoLicentaContext>(options=>
     options.UseSqlServer(builder.Configuration.GetConnectionString("ServiceAutoDb")));
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => {
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options=>{
     options.Password.RequireDigit = true;
     options.Password.RequiredLength = 6;
     options.Password.RequireNonAlphanumeric = false;
@@ -15,7 +15,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => {
 .AddEntityFrameworkStores<ServiceAutoLicentaContext>()
 .AddDefaultTokenProviders();
 
-builder.Services.ConfigureApplicationCookie(options => {
+builder.Services.ConfigureApplicationCookie(options=>{
     options.LoginPath = "/Landing/Index";
     options.AccessDeniedPath = "/Landing/Index";
 });

@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<ServiceAutoLicenta.Models.Entities.Masina>
 @{
-    ViewData["Title"] = "Mașini";
+    ViewData["Title"]="Mașini";
 }
 
 <div class="page-header">
@@ -13,14 +13,14 @@
     </a>
 </div>
 
-@if (TempData["Succes"] != null)
+@if(TempData["Succes"]!=null)
 {
     <div class="alert alert-success alert-dismissible fade show mb-4">
         <i class="bi bi-check-circle me-2"></i>@TempData["Succes"]
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 }
-@if (TempData["Eroare"] != null)
+@if(TempData["Eroare"]!=null)
 {
     <div class="alert alert-danger alert-dismissible fade show mb-4">
         <i class="bi bi-exclamation-circle me-2"></i>@TempData["Eroare"]
@@ -28,12 +28,11 @@
     </div>
 }
 
-<!-- Stat cards -->
 <div class="row g-3 mb-4">
     <div class="col-md-4">
         <div class="stat-card">
             <div style="display:flex;align-items:center;gap:16px;">
-                <div class="stat-icon" style="background:#f0fdf4;margin-bottom:0;">
+                <div class="stat-icon" style="background:rgba(22,163,74,0.25);margin-bottom:0;">
                     <i class="bi bi-car-front-fill" style="color:#16a34a;"></i>
                 </div>
                 <div>
@@ -46,11 +45,11 @@
     <div class="col-md-4">
         <div class="stat-card">
             <div style="display:flex;align-items:center;gap:16px;">
-                <div class="stat-icon" style="background:#eff6ff;margin-bottom:0;">
+                <div class="stat-icon" style="background:rgba(37,99,235,0.25);margin-bottom:0;">
                     <i class="bi bi-people-fill" style="color:#2563eb;"></i>
                 </div>
                 <div>
-                    <div class="stat-value" style="font-size:22px;">@Model.Select(m => m.ClientId).Distinct().Count()</div>
+                    <div class="stat-value" style="font-size:22px;">@Model.Select(m=>m.ClientId).Distinct().Count()</div>
                     <div class="stat-label">Proprietari unici</div>
                 </div>
             </div>
@@ -59,11 +58,11 @@
     <div class="col-md-4">
         <div class="stat-card">
             <div style="display:flex;align-items:center;gap:16px;">
-                <div class="stat-icon" style="background:#fff7ed;margin-bottom:0;">
+                <div class="stat-icon" style="background:rgba(234,88,12,0.25);margin-bottom:0;">
                     <i class="bi bi-calendar-check" style="color:#ea580c;"></i>
                 </div>
                 <div>
-                    <div class="stat-value" style="font-size:22px;">@Model.Sum(m => m.Programari.Count)</div>
+                    <div class="stat-value" style="font-size:22px;">@Model.Sum(m=>m.Programari.Count)</div>
                     <div class="stat-label">Total programări</div>
                 </div>
             </div>
@@ -71,7 +70,6 @@
     </div>
 </div>
 
-<!-- Tabel mașini -->
 <div class="content-card">
     <div class="content-card-header">
         <form method="get" style="display:flex;gap:8px;align-items:center;">
@@ -82,7 +80,7 @@
                        placeholder="Caută după nr. înmatriculare, marcă, client..." />
             </div>
             <button type="submit" class="btn-outline-custom">Caută</button>
-            @if (!string.IsNullOrEmpty(ViewBag.Cautare))
+            @if(!string.IsNullOrEmpty(ViewBag.Cautare))
             {
                 <a asp-action="Index" class="btn-outline-custom" style="color:#ef4444;border-color:#fca5a5;">
                     <i class="bi bi-x-lg"></i>
@@ -92,7 +90,7 @@
         <span style="font-size:13px;color:var(--text-muted);">@Model.Count() mașini găsite</span>
     </div>
 
-    @if (!Model.Any())
+    @if(!Model.Any())
     {
         <div style="text-align:center;padding:60px 20px;color:var(--text-muted);">
             <i class="bi bi-car-front" style="font-size:3rem;opacity:0.3;"></i>
@@ -116,11 +114,11 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var masina in Model)
+                @foreach(var masina in Model)
                 {
                     <tr>
                         <td>
-                            <span style="background:#f1f5f9;padding:5px 12px;border-radius:6px;font-size:13px;font-weight:600;font-family:monospace;">
+                            <span style="background:rgba(255,255,255,0.12);padding:5px 12px;border-radius:6px;font-size:13px;font-weight:600;font-family:monospace;">
                                 @masina.NrInmatriculare
                             </span>
                         </td>
@@ -140,10 +138,10 @@
                             </div>
                         </td>
                         <td style="font-size:13px;color:var(--text-muted);">
-                            @(masina.KmActuali?.ToString("N0") ?? "0") km
+                            @(masina.KmActuali?.ToString("N0")??"0") km
                         </td>
                         <td>
-                            <span style="background:#eff6ff;color:#2563eb;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;">
+                            <span style="background:rgba(37,99,235,0.3);color:#93c5fd;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;">
                                 @masina.Programari.Count
                             </span>
                         </td>

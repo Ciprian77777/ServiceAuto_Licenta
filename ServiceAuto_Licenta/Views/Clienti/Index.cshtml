@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<ServiceAutoLicenta.Models.Entities.Client>
 @{
-    ViewData["Title"] = "Clienți";
+    ViewData["Title"]="Clienți";
 }
 
 <div class="page-header">
@@ -13,14 +13,14 @@
     </a>
 </div>
 
-@if (TempData["Succes"] != null)
+@if(TempData["Succes"]!=null)
 {
     <div class="alert alert-success alert-dismissible fade show mb-4">
         <i class="bi bi-check-circle me-2"></i>@TempData["Succes"]
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 }
-@if (TempData["Eroare"] != null)
+@if(TempData["Eroare"]!=null)
 {
     <div class="alert alert-danger alert-dismissible fade show mb-4">
         <i class="bi bi-exclamation-circle me-2"></i>@TempData["Eroare"]
@@ -28,12 +28,11 @@
     </div>
 }
 
-<!-- Stat cards -->
 <div class="row g-3 mb-4">
     <div class="col-md-4">
         <div class="stat-card">
             <div style="display:flex;align-items:center;gap:16px;">
-                <div class="stat-icon" style="background:#eff6ff;margin-bottom:0;">
+                <div class="stat-icon" style="background:rgba(37,99,235,0.25);margin-bottom:0;">
                     <i class="bi bi-people-fill" style="color:#2563eb;"></i>
                 </div>
                 <div>
@@ -46,11 +45,11 @@
     <div class="col-md-4">
         <div class="stat-card">
             <div style="display:flex;align-items:center;gap:16px;">
-                <div class="stat-icon" style="background:#f0fdf4;margin-bottom:0;">
+                <div class="stat-icon" style="background:rgba(22,163,74,0.25);margin-bottom:0;">
                     <i class="bi bi-car-front-fill" style="color:#16a34a;"></i>
                 </div>
                 <div>
-                    <div class="stat-value" style="font-size:22px;">@Model.Sum(c => c.Masini.Count)</div>
+                    <div class="stat-value" style="font-size:22px;">@Model.Sum(c=>c.Masini.Count)</div>
                     <div class="stat-label">Total Mașini</div>
                 </div>
             </div>
@@ -59,12 +58,12 @@
     <div class="col-md-4">
         <div class="stat-card">
             <div style="display:flex;align-items:center;gap:16px;">
-                <div class="stat-icon" style="background:#f5f3ff;margin-bottom:0;">
+                <div class="stat-icon" style="background:rgba(124,58,237,0.25);margin-bottom:0;">
                     <i class="bi bi-person-plus-fill" style="color:#7c3aed;"></i>
                 </div>
                 <div>
                     <div class="stat-value" style="font-size:22px;">
-                        @Model.Count(c => c.CreatedAt >= DateTime.Now.AddMonths(-1))
+                        @Model.Count(c=>c.CreatedAt>=DateTime.Now.AddMonths(-1))
                     </div>
                     <div class="stat-label">Noi luna aceasta</div>
                 </div>
@@ -73,7 +72,6 @@
     </div>
 </div>
 
-<!-- Tabel clienți -->
 <div class="content-card">
     <div class="content-card-header">
         <form method="get" class="d-flex gap-2 align-items-center">
@@ -84,7 +82,7 @@
                        placeholder="Caută după nume, telefon, email..." />
             </div>
             <button type="submit" class="btn-outline-custom">Caută</button>
-            @if (!string.IsNullOrEmpty(ViewBag.Cautare))
+            @if(!string.IsNullOrEmpty(ViewBag.Cautare))
             {
                 <a asp-action="Index" class="btn-outline-custom" style="color:#ef4444;border-color:#fca5a5;">
                     <i class="bi bi-x-lg"></i>
@@ -94,7 +92,7 @@
         <span style="font-size:13px;color:var(--text-muted);">@Model.Count() clienți găsiți</span>
     </div>
 
-    @if (!Model.Any())
+    @if(!Model.Any())
     {
         <div style="text-align:center;padding:60px 20px;color:var(--text-muted);">
             <i class="bi bi-people" style="font-size:3rem;opacity:0.3;"></i>
@@ -118,7 +116,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var client in Model)
+                @foreach(var client in Model)
                 {
                     <tr>
                         <td>
@@ -128,7 +126,7 @@
                                 </div>
                                 <div>
                                     <div style="font-weight:500;">@client.NumeComplet</div>
-                                    @if (!string.IsNullOrEmpty(client.Adresa))
+                                    @if(!string.IsNullOrEmpty(client.Adresa))
                                     {
                                         <div style="font-size:12px;color:var(--text-muted);">@client.Adresa</div>
                                     }
@@ -142,7 +140,7 @@
                             </span>
                         </td>
                         <td style="font-size:13px;color:var(--text-muted);">
-                            @if (!string.IsNullOrEmpty(client.Email))
+                            @if(!string.IsNullOrEmpty(client.Email))
                             {
                                 <i class="bi bi-envelope" style="margin-right:4px;"></i>
                                 @client.Email
@@ -154,7 +152,7 @@
                             }
                         </td>
                         <td>
-                            <span style="background:#eff6ff;color:#2563eb;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;">
+                            <span style="background:rgba(37,99,235,0.3);color:#93c5fd;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;">
                                 @client.Masini.Count
                             </span>
                         </td>

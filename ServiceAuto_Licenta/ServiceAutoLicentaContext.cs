@@ -10,7 +10,7 @@ namespace ServiceAutoLicenta.Data
     public class ServiceAutoLicentaContext : IdentityDbContext<IdentityUser>
     {
         public ServiceAutoLicentaContext(DbContextOptions<ServiceAutoLicentaContext> options)
-            : base(options) { }
+            : base(options){ }
         public DbSet<Client>Clienti{get;set; }
         public DbSet<Masina>Masini{get;set; }
         public DbSet<Programare>Programari{get;set; }

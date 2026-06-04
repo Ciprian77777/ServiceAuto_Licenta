@@ -25,7 +25,7 @@ namespace ServiceAutoLicenta.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Client", b =>
+            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Client", b=>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -92,7 +92,7 @@ namespace ServiceAutoLicenta.Migrations
                         });
                 });
 
-            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Factura", b =>
+            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Factura", b=>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -144,7 +144,7 @@ namespace ServiceAutoLicenta.Migrations
                     b.ToTable("Facturi");
                 });
 
-            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Lucrare", b =>
+            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Lucrare", b=>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -176,7 +176,7 @@ namespace ServiceAutoLicenta.Migrations
                     b.ToTable("Lucrari");
                 });
 
-            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.LucrarePiesa", b =>
+            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.LucrarePiesa", b=>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -205,7 +205,7 @@ namespace ServiceAutoLicenta.Migrations
                     b.ToTable("LucrarePiese");
                 });
 
-            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Masina", b =>
+            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Masina", b=>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -258,7 +258,7 @@ namespace ServiceAutoLicenta.Migrations
                     b.ToTable("Masini");
                 });
 
-            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Piesa", b =>
+            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Piesa", b=>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -341,7 +341,7 @@ namespace ServiceAutoLicenta.Migrations
                         });
                 });
 
-            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Programare", b =>
+            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Programare", b=>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -384,7 +384,7 @@ namespace ServiceAutoLicenta.Migrations
                     b.ToTable("Programari");
                 });
 
-            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Factura", b =>
+            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Factura", b=>
                 {
                     b.HasOne("ServiceAutoLicenta.Models.Entities.Programare", "Programare")
                         .WithOne("Factura")
@@ -395,7 +395,7 @@ namespace ServiceAutoLicenta.Migrations
                     b.Navigation("Programare");
                 });
 
-            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Lucrare", b =>
+            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Lucrare", b=>
                 {
                     b.HasOne("ServiceAutoLicenta.Models.Entities.Programare", "Programare")
                         .WithMany("Lucrari")
@@ -406,7 +406,7 @@ namespace ServiceAutoLicenta.Migrations
                     b.Navigation("Programare");
                 });
 
-            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.LucrarePiesa", b =>
+            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.LucrarePiesa", b=>
                 {
                     b.HasOne("ServiceAutoLicenta.Models.Entities.Lucrare", "Lucrare")
                         .WithMany("LucrarePiese")
@@ -425,7 +425,7 @@ namespace ServiceAutoLicenta.Migrations
                     b.Navigation("Piesa");
                 });
 
-            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Masina", b =>
+            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Masina", b=>
                 {
                     b.HasOne("ServiceAutoLicenta.Models.Entities.Client", "Client")
                         .WithMany("Masini")
@@ -436,7 +436,7 @@ namespace ServiceAutoLicenta.Migrations
                     b.Navigation("Client");
                 });
 
-            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Programare", b =>
+            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Programare", b=>
                 {
                     b.HasOne("ServiceAutoLicenta.Models.Entities.Masina", "Masina")
                         .WithMany("Programari")
@@ -447,27 +447,27 @@ namespace ServiceAutoLicenta.Migrations
                     b.Navigation("Masina");
                 });
 
-            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Client", b =>
+            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Client", b=>
                 {
                     b.Navigation("Masini");
                 });
 
-            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Lucrare", b =>
+            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Lucrare", b=>
                 {
                     b.Navigation("LucrarePiese");
                 });
 
-            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Masina", b =>
+            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Masina", b=>
                 {
                     b.Navigation("Programari");
                 });
 
-            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Piesa", b =>
+            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Piesa", b=>
                 {
                     b.Navigation("LucrarePiese");
                 });
 
-            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Programare", b =>
+            modelBuilder.Entity("ServiceAutoLicenta.Models.Entities.Programare", b=>
                 {
                     b.Navigation("Factura");
 

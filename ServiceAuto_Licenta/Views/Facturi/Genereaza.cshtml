@@ -1,8 +1,8 @@
 ﻿@model ServiceAutoLicenta.Models.Entities.Factura
 @using ServiceAutoLicenta.Models.Entities
 @{
-    ViewData["Title"] = "Generează factură";
-    var programare = ViewBag.Programare as Programare;
+    ViewData["Title"]="Generează factură";
+    var programare=ViewBag.Programare as Programare;
 }
 
 <div class="page-header">
@@ -19,12 +19,11 @@
 </div>
 
 <div class="row g-4">
-    <!-- Sumar programare -->
     <div class="col-md-5">
         <div class="content-card">
             <div class="content-card-header"><h5>Sumar lucrări</h5></div>
             <div style="padding:20px;">
-                @if (programare != null)
+                @if(programare!=null)
                 {
                     <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border-color);">
                         <div class="client-avatar">
@@ -36,14 +35,14 @@
                         </div>
                     </div>
 
-                    @foreach (var lucrare in programare.Lucrari)
+                    @foreach(var lucrare in programare.Lucrari)
                     {
                         <div style="margin-bottom:12px;">
                             <div style="display:flex;justify-content:space-between;font-size:14px;font-weight:500;margin-bottom:4px;">
                                 <span>@lucrare.Denumire</span>
                                 <span>@lucrare.Manopera.ToString("N2") lei</span>
                             </div>
-                            @foreach (var lp in lucrare.LucrarePiese)
+                            @foreach(var lp in lucrare.LucrarePiese)
                             {
                                 <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted);padding-left:12px;">
                                     <span>@lp.Piesa.Denumire × @lp.Cantitate</span>
@@ -72,7 +71,6 @@
         </div>
     </div>
 
-    <!-- Formular factură -->
     <div class="col-md-7">
         <div class="form-card">
             <div style="font-weight:600;font-size:15px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border-color);">

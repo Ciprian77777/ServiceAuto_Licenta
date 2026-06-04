@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<ServiceAutoLicenta.Models.Entities.Factura>
 @using ServiceAutoLicenta.Models.Entities
 @{
-    ViewData["Title"] = "Facturi";
+    ViewData["Title"]="Facturi";
 }
 
 <div class="page-header">
@@ -11,18 +11,18 @@
     </div>
     <div style="text-align:right;">
         <div style="font-size:12px;color:var(--text-muted);">Total încasat</div>
-        <div style="font-size:20px;font-weight:700;color:#16a34a;">@((ViewBag.TotalIncasat as decimal? ?? 0).ToString("N2")) lei</div>
+        <div style="font-size:20px;font-weight:700;color:#16a34a;">@(((decimal)(ViewBag.TotalIncasat??0)).ToString("N2")) lei</div>
     </div>
 </div>
 
-@if (TempData["Succes"] != null)
+@if(TempData["Succes"]!=null)
 {
     <div class="alert alert-success alert-dismissible fade show mb-4">
         <i class="bi bi-check-circle me-2"></i>@TempData["Succes"]
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 }
-@if (TempData["Eroare"] != null)
+@if(TempData["Eroare"]!=null)
 {
     <div class="alert alert-danger alert-dismissible fade show mb-4">
         <i class="bi bi-exclamation-circle me-2"></i>@TempData["Eroare"]
@@ -30,12 +30,11 @@
     </div>
 }
 
-<!-- Stat cards -->
 <div class="row g-3 mb-4">
     <div class="col-md-3 col-sm-6">
         <div class="stat-card">
             <div style="display:flex;align-items:center;gap:16px;">
-                <div class="stat-icon" style="background:#eff6ff;margin-bottom:0;">
+                <div class="stat-icon" style="background:rgba(37,99,235,0.25);margin-bottom:0;">
                     <i class="bi bi-file-earmark-text-fill" style="color:#2563eb;"></i>
                 </div>
                 <div>
@@ -48,11 +47,11 @@
     <div class="col-md-3 col-sm-6">
         <div class="stat-card">
             <div style="display:flex;align-items:center;gap:16px;">
-                <div class="stat-icon" style="background:#f0fdf4;margin-bottom:0;">
+                <div class="stat-icon" style="background:rgba(22,163,74,0.25);margin-bottom:0;">
                     <i class="bi bi-check-circle-fill" style="color:#16a34a;"></i>
                 </div>
                 <div>
-                    <div class="stat-value" style="font-size:22px;color:#16a34a;">@Model.Count(f => f.StatusPlata == StatusPlata.Platita)</div>
+                    <div class="stat-value" style="font-size:22px;color:#16a34a;">@Model.Count(f=>f.StatusPlata==StatusPlata.Platita)</div>
                     <div class="stat-label">Plătite</div>
                 </div>
             </div>
@@ -61,11 +60,11 @@
     <div class="col-md-3 col-sm-6">
         <div class="stat-card">
             <div style="display:flex;align-items:center;gap:16px;">
-                <div class="stat-icon" style="background:#fef2f2;margin-bottom:0;">
+                <div class="stat-icon" style="background:rgba(220,38,38,0.25);margin-bottom:0;">
                     <i class="bi bi-clock-fill" style="color:#ef4444;"></i>
                 </div>
                 <div>
-                    <div class="stat-value" style="font-size:22px;color:#ef4444;">@Model.Count(f => f.StatusPlata == StatusPlata.Neplata)</div>
+                    <div class="stat-value" style="font-size:22px;color:#ef4444;">@Model.Count(f=>f.StatusPlata==StatusPlata.Neplata)</div>
                     <div class="stat-label">Neîncasate</div>
                 </div>
             </div>
@@ -74,11 +73,11 @@
     <div class="col-md-3 col-sm-6">
         <div class="stat-card">
             <div style="display:flex;align-items:center;gap:16px;">
-                <div class="stat-icon" style="background:#fff7ed;margin-bottom:0;">
+                <div class="stat-icon" style="background:rgba(234,88,12,0.25);margin-bottom:0;">
                     <i class="bi bi-hourglass-split" style="color:#ea580c;"></i>
                 </div>
                 <div>
-                    <div class="stat-value" style="font-size:22px;color:#ea580c;">@Model.Count(f => f.StatusPlata == StatusPlata.Partial)</div>
+                    <div class="stat-value" style="font-size:22px;color:#ea580c;">@Model.Count(f=>f.StatusPlata==StatusPlata.Partial)</div>
                     <div class="stat-label">Parțial plătite</div>
                 </div>
             </div>
@@ -86,20 +85,19 @@
     </div>
 </div>
 
-<!-- Filtre + Căutare -->
 <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
-    <a asp-action="Index" class="btn-outline-custom @(string.IsNullOrEmpty(ViewBag.Status) ? "active-filter" : "")">
+    <a asp-action="Index" class="btn-outline-custom @(string.IsNullOrEmpty(ViewBag.Status)? "active-filter" : "")">
         Toate
     </a>
-    <a asp-action="Index" asp-route-status="Platita" class="btn-outline-custom @(ViewBag.Status == "Platita" ? "active-filter" : "")">
+    <a asp-action="Index" asp-route-status="Platita" class="btn-outline-custom @(ViewBag.Status=="Platita"? "active-filter" : "")">
         <span style="width:8px;height:8px;background:#16a34a;border-radius:50%;display:inline-block;margin-right:4px;"></span>
         Plătite
     </a>
-    <a asp-action="Index" asp-route-status="Neplata" class="btn-outline-custom @(ViewBag.Status == "Neplata" ? "active-filter" : "")">
+    <a asp-action="Index" asp-route-status="Neplata" class="btn-outline-custom @(ViewBag.Status=="Neplata"? "active-filter" : "")">
         <span style="width:8px;height:8px;background:#ef4444;border-radius:50%;display:inline-block;margin-right:4px;"></span>
         Neîncasate
     </a>
-    <a asp-action="Index" asp-route-status="Partial" class="btn-outline-custom @(ViewBag.Status == "Partial" ? "active-filter" : "")">
+    <a asp-action="Index" asp-route-status="Partial" class="btn-outline-custom @(ViewBag.Status=="Partial"? "active-filter" : "")">
         <span style="width:8px;height:8px;background:#ea580c;border-radius:50%;display:inline-block;margin-right:4px;"></span>
         Parțial
     </a>
@@ -116,7 +114,7 @@
                        placeholder="Caută după serie, client, mașină..." />
             </div>
             <button type="submit" class="btn-outline-custom">Caută</button>
-            @if (!string.IsNullOrEmpty(ViewBag.Cautare))
+            @if(!string.IsNullOrEmpty(ViewBag.Cautare))
             {
                 <a asp-action="Index" asp-route-status="@ViewBag.Status" class="btn-outline-custom" style="color:#ef4444;border-color:#fca5a5;">
                     <i class="bi bi-x-lg"></i>
@@ -126,9 +124,8 @@
     </div>
 </div>
 
-<!-- Tabel facturi -->
 <div class="content-card">
-    @if (!Model.Any())
+    @if(!Model.Any())
     {
         <div style="text-align:center;padding:60px 20px;color:var(--text-muted);">
             <i class="bi bi-file-earmark-x" style="font-size:3rem;opacity:0.3;"></i>
@@ -150,11 +147,11 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var f in Model)
+                @foreach(var f in Model)
                 {
                     <tr>
                         <td>
-                            <span style="font-family:monospace;font-weight:600;background:#f1f5f9;padding:3px 8px;border-radius:4px;font-size:12px;">
+                            <span style="font-family:monospace;font-weight:600;background:rgba(255,255,255,0.12);padding:3px 8px;border-radius:4px;font-size:12px;">
                                 @f.SerieNumar
                             </span>
                         </td>
@@ -170,8 +167,8 @@
                         <td style="font-size:13px;color:var(--text-muted);">@f.DataEmitere.ToString("dd.MM.yyyy")</td>
                         <td style="font-weight:700;font-size:14px;">@f.Total.ToString("N2") lei</td>
                         <td>
-                            <span class="badge-status @(f.StatusPlata == StatusPlata.Platita ? "badge-platita" :
-                                                                                           f.StatusPlata == StatusPlata.Partial ? "badge-partial" : "badge-neplata")">
+                            <span class="badge-status @(f.StatusPlata==StatusPlata.Platita? "badge-platita" :
+                                                                                           f.StatusPlata==StatusPlata.Partial? "badge-partial" : "badge-neplata")">
                         @f.StatusPlata
                     </span>
                 </td>

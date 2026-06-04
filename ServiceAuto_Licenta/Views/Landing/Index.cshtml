@@ -1,7 +1,7 @@
 ﻿
 @{
-    ViewData["Title"] = "AutoService Pro";
-    Layout = null; // pagina separata fara layout-ul cu sidebar
+    ViewData["Title"]="AutoService Pro";
+    Layout=null;
 }
 <!DOCTYPE html>
 <html lang="ro">
@@ -25,7 +25,6 @@
             min-height: 100vh;
         }
 
-        /* ── Navbar ── */
         .landing-nav {
             position: fixed;
             top: 0;
@@ -112,7 +111,6 @@
                 color: white;
             }
 
-        /* ── Hero ── */
         .hero {
             min-height: 100vh;
             display: flex;
@@ -125,7 +123,7 @@
         .hero-bg {
             position: absolute;
             inset: 0;
-            background: radial-gradient(ellipse at 20% 50%, rgba(37,99,235,0.15) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(124,58,237,0.1) 0%, transparent 50%), radial-gradient(ellipse at 60% 80%, rgba(16,163,74,0.08) 0%, transparent 40%);
+            background: radial-gradient(ellipse at 20% 50%, rgba(37,99,235,0.15) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(124,58,237,0.1) 0%, transparent 50%);
         }
 
         .hero-grid {
@@ -249,13 +247,11 @@
                 color: #f1f5f9;
             }
 
-        /* ── Card autentificare ── */
         .auth-card {
             background: rgba(255,255,255,0.04);
             border: 1px solid rgba(255,255,255,0.08);
             border-radius: 20px;
             padding: 32px;
-            backdrop-filter: blur(20px);
         }
 
         .auth-tabs {
@@ -395,7 +391,6 @@
             margin-bottom: 16px;
         }
 
-        /* ── Features ── */
         .features {
             padding: 100px 48px;
             max-width: 1200px;
@@ -471,7 +466,6 @@
             line-height: 1.6;
         }
 
-        /* ── Footer ── */
         .landing-footer {
             border-top: 1px solid rgba(255,255,255,0.06);
             padding: 32px 48px;
@@ -480,45 +474,22 @@
             font-size: 13px;
         }
 
-        /* ── Responsive ── */
-        @@media (max-width: 900px) {
-            .hero-content {
-                grid-template-columns: 1fr;
-            }
-
-            .hero {
-                padding: 120px 24px 60px;
-            }
-
-            .hero-title {
-                font-size: 36px;
-            }
-
-            .features {
-                padding: 60px 24px;
-            }
-
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .landing-nav {
-                padding: 16px 24px;
-            }
+        @@media (max-width: 900px){
+            .hero-content {grid-template-columns: 1fr;}
+            .hero {padding: 120px 24px 60px;}
+            .hero-title {font-size: 36px;}
+            .features {padding: 60px 24px;}
+            .features-grid {grid-template-columns: 1fr;}
+            .landing-nav {padding: 16px 24px;}
         }
     </style>
 </head>
 <body>
 
-    <!-- Navbar -->
     <nav class="landing-nav">
         <a class="nav-logo" href="#">
-            <div class="nav-logo-icon">
-                <i class="bi bi-wrench-adjustable" style="color:white;"></i>
-            </div>
             <div class="nav-logo-text">
-                <strong>AutoService</strong>
-                <span>Management Pro</span>
+                <strong style="font-size:20px;">GarageCare</strong>
             </div>
         </a>
         <div class="nav-links">
@@ -528,19 +499,12 @@
         </div>
     </nav>
 
-    <!-- Hero -->
     <section class="hero" id="auth">
         <div class="hero-bg"></div>
         <div class="hero-grid"></div>
 
         <div class="hero-content">
-            <!-- Text stanga -->
             <div>
-                <div class="hero-badge">
-                    <i class="bi bi-stars"></i>
-                    Sistem complet de gestiune service auto
-                </div>
-
                 <h1 class="hero-title">
                     Gestionează<br>
                     service-ul tău<br>
@@ -579,22 +543,20 @@
                 </div>
             </div>
 
-            <!-- Card autentificare dreapta -->
             <div class="auth-card">
-                @if (TempData["LoginError"] != null)
+                @if(TempData["LoginError"]!=null)
                 {
                     <div class="error-msg">
                         <i class="bi bi-exclamation-circle me-2"></i>@TempData["LoginError"]
                     </div>
                 }
-                @if (TempData["RegisterError"] != null)
+                @if(TempData["RegisterError"]!=null)
                 {
                     <div class="error-msg">
                         <i class="bi bi-exclamation-circle me-2"></i>@TempData["RegisterError"]
                     </div>
                 }
 
-                <!-- Tabs -->
                 <div class="auth-tabs">
                     <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">
                         <i class="bi bi-box-arrow-in-right me-1"></i> Autentificare
@@ -604,7 +566,6 @@
                     </button>
                 </div>
 
-                <!-- Formular Login -->
                 <div class="auth-form active" id="form-login">
                     <form asp-controller="Landing" asp-action="Login" method="post">
                         @Html.AntiForgeryToken()
@@ -645,7 +606,6 @@
                     </div>
                 </div>
 
-                <!-- Formular Register -->
                 <div class="auth-form" id="form-register">
                     <form asp-controller="Landing" asp-action="Register" method="post">
                         @Html.AntiForgeryToken()
@@ -699,7 +659,6 @@
         </div>
     </section>
 
-    <!-- Features -->
     <section class="features" id="features">
         <div style="text-align:center;margin-bottom:56px;">
             <div class="section-label">Functionalitati</div>
@@ -709,42 +668,42 @@
 
         <div class="features-grid">
             <div class="feature-card">
-                <div class="feature-icon" style="background:rgba(37,99,235,0.15);">
+                <div class="feature-icon">
                     <i class="bi bi-people-fill" style="color:#2563eb;"></i>
                 </div>
                 <h4>Gestiune Clienți</h4>
                 <p>Bază de date completă cu clienții service-ului, date de contact și istoricul vizitelor.</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon" style="background:rgba(22,163,74,0.15);">
+                <div class="feature-icon">
                     <i class="bi bi-car-front-fill" style="color:#16a34a;"></i>
                 </div>
                 <h4>Gestiune Vehicule</h4>
                 <p>Înregistrarea vehiculelor cu marcă, model, VIN, număr de înmatriculare și kilometraj.</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon" style="background:rgba(124,58,237,0.15);">
+                <div class="feature-icon">
                     <i class="bi bi-calendar-check-fill" style="color:#7c3aed;"></i>
                 </div>
                 <h4>Programări Service</h4>
                 <p>Creare și urmărire programări cu statusuri în timp real: programat, în lucru, finalizat.</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon" style="background:rgba(234,88,12,0.15);">
+                <div class="feature-icon">
                     <i class="bi bi-gear-fill" style="color:#ea580c;"></i>
                 </div>
                 <h4>Inventar Piese</h4>
                 <p>Gestiunea stocurilor de piese cu alerte automate pentru reaprovizionare și istoric utilizare.</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon" style="background:rgba(16,163,74,0.15);">
+                <div class="feature-icon">
                     <i class="bi bi-receipt-cutoff" style="color:#16a34a;"></i>
                 </div>
                 <h4>Facturare Automată</h4>
                 <p>Generare facturi cu calcul automat TVA 19%, plată cu card simulată și evidența încasărilor.</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon" style="background:rgba(37,99,235,0.15);">
+                <div class="feature-icon">
                     <i class="bi bi-bar-chart-fill" style="color:#2563eb;"></i>
                 </div>
                 <h4>Rapoarte & Statistici</h4>
@@ -753,30 +712,26 @@
         </div>
     </section>
 
-    <!-- Footer -->
     <footer class="landing-footer">
         <p>© 2024 AutoService Management Pro — Lucrare de licenta Informatica Economica</p>
     </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script>
-        function switchTab(tab) {
+        function switchTab(tab){
             document.getElementById('form-login').classList.remove('active');
             document.getElementById('form-register').classList.remove('active');
             document.getElementById('tab-login').classList.remove('active');
             document.getElementById('tab-register').classList.remove('active');
-
             document.getElementById('form-' + tab).classList.add('active');
             document.getElementById('tab-' + tab).classList.add('active');
-
             document.getElementById('auth').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // Daca exista eroare de register, deschide tab-ul register automat
-        @if (TempData["ShowRegister"] != null)
+        @if(TempData["ShowRegister"]!=null)
         {
                 <text>
-                window.addEventListener('DOMContentLoaded', () => switchTab('register'));
+                window.addEventListener('DOMContentLoaded', ()=>switchTab('register'));
                 </text>
         }
     </script>

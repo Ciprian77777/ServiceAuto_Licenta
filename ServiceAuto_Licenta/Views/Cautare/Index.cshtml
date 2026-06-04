@@ -1,16 +1,16 @@
 ﻿@model ServiceAutoLicenta.Controllers.SearchResult
 @using ServiceAutoLicenta.Models.Entities
 @{
-    ViewData["Title"] = "Cautare";
+    ViewData["Title"]="Cautare";
 }
 
 <div class="page-header">
     <div>
         <h2>Rezultate cautare</h2>
-        @if (!string.IsNullOrEmpty(Model.Query))
+        @if(!string.IsNullOrEmpty(Model.Query))
         {
             <p>
-                @if (Model.TotalRezultate > 0)
+                @if(Model.TotalRezultate > 0)
                 {
                     <span>@Model.TotalRezultate rezultate pentru „<strong>@Model.Query</strong>"</span>
                 }
@@ -39,7 +39,7 @@
             <button type="submit" class="btn-primary-custom" style="padding:12px 24px;font-size:15px;">
                 <i class="bi bi-search me-1"></i> Cauta
             </button>
-            @if (!string.IsNullOrEmpty(Model.Query))
+            @if(!string.IsNullOrEmpty(Model.Query))
             {
                 <a asp-controller="Cautare" asp-action="Index" class="btn-outline-custom" style="padding:12px 16px;">
                     <i class="bi bi-x-lg"></i>
@@ -49,13 +49,13 @@
     </form>
 </div>
 
-@if (string.IsNullOrEmpty(Model.Query))
+@if(string.IsNullOrEmpty(Model.Query))
 {
     <div style="text-align:center;padding:60px 20px;color:var(--text-muted);">
         <i class="bi bi-search" style="font-size:3rem;opacity:0.2;"></i>
         <p style="margin-top:16px;font-size:15px;">Cauta in toata aplicatia</p>
         <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:20px;">
-            @foreach (var hint in new[] { "Ion Popescu", "CJ 01 ABC", "Filtru ulei", "SA-2024" })
+            @foreach(var hint in new[] { "Ion Popescu", "CJ 01 ABC", "Filtru ulei", "SA-2024" })
             {
                 <a href="?q=@hint" style="background:var(--body-bg);border:1px solid var(--border-color);border-radius:20px;padding:6px 14px;font-size:13px;color:var(--text-muted);text-decoration:none;">
                     @hint
@@ -64,7 +64,7 @@
         </div>
     </div>
 }
-else if (Model.TotalRezultate == 0)
+else if(Model.TotalRezultate==0)
 {
     <div style="text-align:center;padding:60px 20px;color:var(--text-muted);">
         <i class="bi bi-emoji-frown" style="font-size:3rem;opacity:0.2;"></i>
@@ -76,12 +76,12 @@ else
 {
     <div style="display:flex;flex-direction:column;gap:20px;">
 
-        @if (Model.Clienti.Any())
+        @if(Model.Clienti.Any())
         {
             <div class="content-card">
                 <div class="content-card-header">
                     <div style="display:flex;align-items:center;gap:10px;">
-                        <div style="width:32px;height:32px;background:#eff6ff;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                        <div style="width:32px;height:32px;background:rgba(37,99,235,0.25);border-radius:8px;display:flex;align-items:center;justify-content:center;">
                             <i class="bi bi-people-fill" style="color:#2563eb;font-size:14px;"></i>
                         </div>
                         <h5>Clienti (@Model.Clienti.Count)</h5>
@@ -93,7 +93,7 @@ else
                 </div>
                 <table class="custom-table">
                     <tbody>
-                        @foreach (var c in Model.Clienti)
+                        @foreach(var c in Model.Clienti)
                         {
                             <tr>
                                 <td>
@@ -107,9 +107,9 @@ else
                                         </div>
                                     </div>
                                 </td>
-                                <td style="color:var(--text-muted);font-size:13px;">@(c.Email ?? "-")</td>
+                                <td style="color:var(--text-muted);font-size:13px;">@(c.Email??"-")</td>
                                 <td>
-                                    <span style="background:#eff6ff;color:#2563eb;padding:3px 10px;border-radius:20px;font-size:12px;">
+                                    <span style="background:rgba(37,99,235,0.3);color:#93c5fd;padding:3px 10px;border-radius:20px;font-size:12px;">
                                         @c.Masini.Count masini
                                     </span>
                                 </td>
@@ -126,12 +126,12 @@ else
             </div>
         }
 
-        @if (Model.Masini.Any())
+        @if(Model.Masini.Any())
         {
             <div class="content-card">
                 <div class="content-card-header">
                     <div style="display:flex;align-items:center;gap:10px;">
-                        <div style="width:32px;height:32px;background:#f0fdf4;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                        <div style="width:32px;height:32px;background:rgba(22,163,74,0.25);border-radius:8px;display:flex;align-items:center;justify-content:center;">
                             <i class="bi bi-car-front-fill" style="color:#16a34a;font-size:14px;"></i>
                         </div>
                         <h5>Masini (@Model.Masini.Count)</h5>
@@ -143,11 +143,11 @@ else
                 </div>
                 <table class="custom-table">
                     <tbody>
-                        @foreach (var m in Model.Masini)
+                        @foreach(var m in Model.Masini)
                         {
                             <tr>
                                 <td>
-                                    <span style="font-family:monospace;font-weight:600;background:#f1f5f9;padding:3px 10px;border-radius:6px;font-size:13px;">
+                                    <span style="font-family:monospace;font-weight:600;background:rgba(255,255,255,0.12);padding:3px 10px;border-radius:6px;font-size:13px;">
                                         @m.NrInmatriculare
                                     </span>
                                 </td>
@@ -169,12 +169,12 @@ else
             </div>
         }
 
-        @if (Model.Programari.Any())
+        @if(Model.Programari.Any())
         {
             <div class="content-card">
                 <div class="content-card-header">
                     <div style="display:flex;align-items:center;gap:10px;">
-                        <div style="width:32px;height:32px;background:#fff7ed;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                        <div style="width:32px;height:32px;background:rgba(234,88,12,0.25);border-radius:8px;display:flex;align-items:center;justify-content:center;">
                             <i class="bi bi-calendar-check-fill" style="color:#ea580c;font-size:14px;"></i>
                         </div>
                         <h5>Programari (@Model.Programari.Count)</h5>
@@ -186,7 +186,7 @@ else
                 </div>
                 <table class="custom-table">
                     <tbody>
-                        @foreach (var p in Model.Programari)
+                        @foreach(var p in Model.Programari)
                         {
                             <tr>
                                 <td style="font-size:13px;color:var(--text-muted);">@p.DataIntrare.ToString("dd.MM.yyyy")</td>
@@ -195,9 +195,9 @@ else
                                     <div style="font-size:12px;color:var(--text-muted);">@p.Masina.NrInmatriculare</div>
                                 </td>
                                 <td>
-                                    <span class="badge-status @(p.Status == StatusProgramare.Finalizata ? "badge-finalizata" :
-                                                                                                            p.Status == StatusProgramare.InLucru ? "badge-inlucru" :
-                                                                                                            p.Status == StatusProgramare.Anulata ? "badge-anulata" : "badge-scheduled")">
+                                    <span class="badge-status @(p.Status==StatusProgramare.Finalizata? "badge-finalizata" :
+                                                                                                            p.Status==StatusProgramare.InLucru? "badge-inlucru" :
+                                                                                                            p.Status==StatusProgramare.Anulata? "badge-anulata" : "badge-scheduled")">
                             @p.Status
                         </span>
                     </td>
@@ -215,12 +215,12 @@ else
             </div>
         }
 
-        @if (Model.Piese.Any())
+        @if(Model.Piese.Any())
         {
             <div class="content-card">
                 <div class="content-card-header">
                     <div style="display:flex;align-items:center;gap:10px;">
-                        <div style="width:32px;height:32px;background:#f5f3ff;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                        <div style="width:32px;height:32px;background:rgba(124,58,237,0.25);border-radius:8px;display:flex;align-items:center;justify-content:center;">
                             <i class="bi bi-gear-fill" style="color:#7c3aed;font-size:14px;"></i>
                         </div>
                         <h5>Piese (@Model.Piese.Count)</h5>
@@ -232,26 +232,26 @@ else
                 </div>
                 <table class="custom-table">
                     <tbody>
-                        @foreach (var p in Model.Piese)
+                        @foreach(var p in Model.Piese)
                         {
                             <tr>
                                 <td>
                                     <div style="font-weight:500;">@p.Denumire</div>
                                     <div style="font-size:12px;color:var(--text-muted);font-family:monospace;">@p.CodPiesa</div>
                                 </td>
-                                <td style="font-size:13px;color:var(--text-muted);">@(p.Producator ?? "-")</td>
+                                <td style="font-size:13px;color:var(--text-muted);">@(p.Producator??"-")</td>
                                 <td>
-                                    @if (p.StocCurent == 0)
+                                    @if(p.StocCurent==0)
                                     {
-                                        <span style="background:#fef2f2;color:#dc2626;padding:3px 10px;border-radius:20px;font-size:12px;">Epuizat</span>
+                                        <span style="background:rgba(220,38,38,0.3);color:#fca5a5;padding:3px 10px;border-radius:20px;font-size:12px;">Epuizat</span>
                                     }
-                                    else if (p.StocScazut)
+                                    else if(p.StocScazut)
                                     {
-                                        <span style="background:#fffbeb;color:#d97706;padding:3px 10px;border-radius:20px;font-size:12px;">Stoc scazut (@p.StocCurent)</span>
+                                        <span style="background:rgba(252,211,77,0.15);color:#fcd34d;padding:3px 10px;border-radius:20px;font-size:12px;">Stoc scazut (@p.StocCurent)</span>
                                     }
                                     else
                                     {
-                                        <span style="background:#f0fdf4;color:#16a34a;padding:3px 10px;border-radius:20px;font-size:12px;">In stoc (@p.StocCurent)</span>
+                                        <span style="background:rgba(22,163,74,0.3);color:#86efac;padding:3px 10px;border-radius:20px;font-size:12px;">In stoc (@p.StocCurent)</span>
                                     }
                                 </td>
                                 <td style="font-weight:600;">@p.PretVanzare.ToString("N2") lei</td>
@@ -268,12 +268,12 @@ else
             </div>
         }
 
-        @if (Model.Facturi.Any())
+        @if(Model.Facturi.Any())
         {
             <div class="content-card">
                 <div class="content-card-header">
                     <div style="display:flex;align-items:center;gap:10px;">
-                        <div style="width:32px;height:32px;background:#f0fdf4;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                        <div style="width:32px;height:32px;background:rgba(22,163,74,0.25);border-radius:8px;display:flex;align-items:center;justify-content:center;">
                             <i class="bi bi-receipt-cutoff" style="color:#16a34a;font-size:14px;"></i>
                         </div>
                         <h5>Facturi (@Model.Facturi.Count)</h5>
@@ -285,11 +285,11 @@ else
                 </div>
                 <table class="custom-table">
                     <tbody>
-                        @foreach (var f in Model.Facturi)
+                        @foreach(var f in Model.Facturi)
                         {
                             <tr>
                                 <td>
-                                    <span style="font-family:monospace;font-weight:600;background:#f1f5f9;padding:3px 8px;border-radius:4px;font-size:12px;">
+                                    <span style="font-family:monospace;font-weight:600;background:rgba(255,255,255,0.12);padding:3px 8px;border-radius:4px;font-size:12px;">
                                         @f.SerieNumar
                                     </span>
                                 </td>
@@ -297,8 +297,8 @@ else
                                 <td style="font-size:13px;color:var(--text-muted);">@f.DataEmitere.ToString("dd.MM.yyyy")</td>
                                 <td style="font-weight:600;">@f.Total.ToString("N2") lei</td>
                                 <td>
-                                    <span class="badge-status @(f.StatusPlata == StatusPlata.Platita ? "badge-platita" :
-                                                                                                            f.StatusPlata == StatusPlata.Partial ? "badge-partial" : "badge-neplata")">
+                                    <span class="badge-status @(f.StatusPlata==StatusPlata.Platita? "badge-platita" :
+                                                                                                            f.StatusPlata==StatusPlata.Partial? "badge-partial" : "badge-neplata")">
                             @f.StatusPlata
                         </span>
                     </td>
