@@ -21,7 +21,7 @@ namespace ServiceAutoLicenta.Controllers
 
         public async Task<IActionResult> Index(string cautare)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
 
             var clienti=db.Clienti
                 .Include(x=>x.Masini)
@@ -30,11 +30,7 @@ namespace ServiceAutoLicenta.Controllers
             if(!string.IsNullOrEmpty(cautare))
             {
                 cautare=cautare.ToLower();
-                clienti=clienti.Where(x=>
-                    x.Nume.ToLower().Contains(cautare) ||
-                    x.Prenume.ToLower().Contains(cautare) ||
-                    x.Telefon.Contains(cautare) ||
-                    x.Email.ToLower().Contains(cautare));
+                clienti=clienti.Where(x=>x.Nume.ToLower().Contains(cautare)||x.Prenume.ToLower().Contains(cautare)||x.Telefon.Contains(cautare)||(x.Email!=null&&x.Email.ToLower().Contains(cautare)));
             }
 
             ViewBag.Cautare=cautare;
@@ -43,11 +39,11 @@ namespace ServiceAutoLicenta.Controllers
 
         public async Task<IActionResult> Detalii(int id)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
 
             var client=await db.Clienti
                 .Include(x=>x.Masini)
-                    .ThenInclude(x=>x.Programari)
+                .ThenInclude(x=>x.Programari)
                 .FirstOrDefaultAsync(x=>x.Id==id&&x.UserId==userId);
 
             if(client==null) return NotFound();
@@ -64,7 +60,7 @@ namespace ServiceAutoLicenta.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Adauga(Client client)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
             ModelState.Remove("UserId");
 
             if(ModelState.IsValid)
@@ -88,7 +84,7 @@ namespace ServiceAutoLicenta.Controllers
 
         public async Task<IActionResult> Editeaza(int id)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
 
             var client=await db.Clienti
                 .FirstOrDefaultAsync(x=>x.Id==id&&x.UserId==userId);
@@ -102,7 +98,7 @@ namespace ServiceAutoLicenta.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Editeaza(int id, Client client)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
             ModelState.Remove("UserId");
 
             if(id!=client.Id) return NotFound();
@@ -128,7 +124,7 @@ namespace ServiceAutoLicenta.Controllers
 
         public async Task<IActionResult> Sterge(int id)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
 
             var client=await db.Clienti
                 .Include(x=>x.Masini)
@@ -143,7 +139,7 @@ namespace ServiceAutoLicenta.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmaStergere(int id)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
 
             var client=await db.Clienti
                 .Include(x=>x.Masini)

@@ -10,43 +10,38 @@ namespace ServiceAutoLicenta.Controllers
     [Authorize]
     public class RapoarteController : Controller
     {
-        private readonly ServiceAutoLicentaContext _context;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly ServiceAutoLicentaContext db;
+        private readonly UserManager<IdentityUser> userManager;
 
         public RapoarteController(ServiceAutoLicentaContext context, UserManager<IdentityUser> userManager)
         {
-            _context=context;
-            _userManager=userManager;
-        }
-
-        private string GetUserId()
-        {
-            return _userManager.GetUserId(User);
+            db=context;
+            this.userManager=userManager;
         }
 
         public async Task<IActionResult> Index()
         {
-            var userId=GetUserId();
+            string? userId=userManager.GetUserId(User);
             var azi=DateTime.Today;
             var primaZiLuna=new DateTime(azi.Year, azi.Month, 1);
 
-            ViewBag.TotalClienti=await _context.Clienti.CountAsync(c=>c.UserId==userId);
-            ViewBag.TotalProgramari=await _context.Programari.CountAsync(p=>p.Masina.Client.UserId==userId);
+            ViewBag.TotalClienti=await db.Clienti.CountAsync(c=>c.UserId==userId);
+            ViewBag.TotalProgramari=await db.Programari.CountAsync(p=>p.Masina.Client.UserId==userId);
 
-            ViewBag.NrProgramata=await _context.Programari.CountAsync(p=>p.Masina.Client.UserId==userId&&p.Status==StatusProgramare.Programata);
-            ViewBag.NrInLucru=await _context.Programari.CountAsync(p=>p.Masina.Client.UserId==userId&&p.Status==StatusProgramare.InLucru);
-            ViewBag.NrFinalizata=await _context.Programari.CountAsync(p=>p.Masina.Client.UserId==userId&&p.Status==StatusProgramare.Finalizata);
-            ViewBag.NrAnulata=await _context.Programari.CountAsync(p=>p.Masina.Client.UserId==userId&&p.Status==StatusProgramare.Anulata);
+            ViewBag.NrProgramata=await db.Programari.CountAsync(p=>p.Masina.Client.UserId==userId&&p.Status==StatusProgramare.Programata);
+            ViewBag.NrInLucru=await db.Programari.CountAsync(p=>p.Masina.Client.UserId==userId&&p.Status==StatusProgramare.InLucru);
+            ViewBag.NrFinalizata=await db.Programari.CountAsync(p=>p.Masina.Client.UserId==userId&&p.Status==StatusProgramare.Finalizata);
+            ViewBag.NrAnulata=await db.Programari.CountAsync(p=>p.Masina.Client.UserId==userId&&p.Status==StatusProgramare.Anulata);
 
-            ViewBag.NrPlatite=await _context.Facturi.CountAsync(f=>f.Programare.Masina.Client.UserId==userId&&f.StatusPlata==StatusPlata.Platita);
-            ViewBag.NrNeplata=await _context.Facturi.CountAsync(f=>f.Programare.Masina.Client.UserId==userId&&f.StatusPlata==StatusPlata.Neplata);
-            ViewBag.NrPartial=await _context.Facturi.CountAsync(f=>f.Programare.Masina.Client.UserId==userId&&f.StatusPlata==StatusPlata.Partial);
+            ViewBag.NrPlatite=await db.Facturi.CountAsync(f=>f.Programare.Masina.Client.UserId==userId&&f.StatusPlata==StatusPlata.Platita);
+            ViewBag.NrNeplata=await db.Facturi.CountAsync(f=>f.Programare.Masina.Client.UserId==userId&&f.StatusPlata==StatusPlata.Neplata);
+            ViewBag.NrPartial=await db.Facturi.CountAsync(f=>f.Programare.Masina.Client.UserId==userId&&f.StatusPlata==StatusPlata.Partial);
 
-            ViewBag.VenituriLuna=await _context.Facturi
+            ViewBag.VenituriLuna=await db.Facturi
                 .Where(f=>f.Programare.Masina.Client.UserId==userId&&f.StatusPlata==StatusPlata.Platita&&f.DataEmitere>=primaZiLuna)
                 .SumAsync(f=>(decimal?)f.Total)??0;
 
-            var facturiChart=await _context.Facturi
+            var facturiChart=await db.Facturi
                 .Where(f=>f.Programare.Masina.Client.UserId==userId&&f.StatusPlata==StatusPlata.Platita&&f.DataEmitere>=azi.AddMonths(-6))
                 .ToListAsync();
 
@@ -67,13 +62,13 @@ namespace ServiceAutoLicenta.Controllers
             ViewBag.ProfitLunarLabels="[\"" + string.Join("\",\"", lblVenituri) + "\"]";
             ViewBag.ProfitLunarDate="[" + string.Join(",", dtVenituri.Select(v=>((int)v).ToString())) + "]";
 
-            var lucrariLista=await _context.Lucrari
+            var lucrariLista=await db.Lucrari
                 .Where(l=>l.Programare.Masina.Client.UserId==userId)
                 .ToListAsync();
 
             var lucrariTop=lucrariLista
                 .GroupBy(l=>l.Denumire)
-                .Select(g=>new { Denumire=g.Key, Count=g.Count(), TotalManopera=g.Sum(l=>l.Manopera) })
+                .Select(g=>new {Denumire=g.Key, Count=g.Count(), TotalManopera=g.Sum(l=>l.Manopera)})
                 .OrderByDescending(x=>x.Count)
                 .Take(5)
                 .ToList();
@@ -82,26 +77,26 @@ namespace ServiceAutoLicenta.Controllers
             ViewBag.LucrariTopDate="[" + string.Join(",", lucrariTop.Select(x=>x.Count)) + "]";
             ViewBag.LucrariTop=lucrariTop;
 
-            var lucrarePieseLista=await _context.LucrarePiese
+            var lucrarePieseLista=await db.LucrarePiese
                 .Include(lp=>lp.Piesa)
                 .Where(lp=>lp.Lucrare.Programare.Masina.Client.UserId==userId)
                 .ToListAsync();
 
             ViewBag.PieseTop=lucrarePieseLista
                 .GroupBy(lp=>lp.Piesa.Denumire)
-                .Select(g=>new { Denumire=g.Key, TotalCantitate=g.Sum(lp=>lp.Cantitate), TotalValoare=g.Sum(lp=>lp.Cantitate * lp.PretUnitar) })
+                .Select(g=>new {Denumire=g.Key, TotalCantitate=g.Sum(lp=>lp.Cantitate), TotalValoare=g.Sum(lp=>lp.Cantitate * lp.PretUnitar)})
                 .OrderByDescending(x=>x.TotalCantitate)
                 .Take(5)
                 .ToList();
 
-            var programariClienti=await _context.Programari
+            var programariClienti=await db.Programari
                 .Include(p=>p.Masina).ThenInclude(m=>m.Client)
                 .Where(p=>p.Masina.Client.UserId==userId)
                 .ToListAsync();
 
             ViewBag.ClientiTop=programariClienti
                 .GroupBy(p=>p.Masina.Client.Nume + " " + p.Masina.Client.Prenume)
-                .Select(g=>new { Nume=g.Key, NrProgramari=g.Count(), TotalCheltuit=g.Sum(p=>p.TotalCuTva) })
+                .Select(g=>new {Nume=g.Key, NrProgramari=g.Count(), TotalCheltuit=g.Sum(p=>p.TotalCuTva)})
                 .OrderByDescending(x=>x.NrProgramari)
                 .Take(5)
                 .ToList();

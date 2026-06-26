@@ -22,20 +22,17 @@ namespace ServiceAutoLicenta.Controllers
 
         public async Task<IActionResult> Index(string cautare, string status)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
 
             var programari=db.Programari
                 .Include(x=>x.Masina)
-                    .ThenInclude(x=>x.Client)
+                .ThenInclude(x=>x.Client)
                 .Where(x=>x.Masina.Client.UserId==userId);
 
             if(!string.IsNullOrEmpty(cautare))
             {
                 cautare=cautare.ToLower();
-                programari=programari.Where(x=>
-                    x.Masina.NrInmatriculare.ToLower().Contains(cautare) ||
-                    x.Masina.Client.Nume.ToLower().Contains(cautare) ||
-                    x.Masina.Client.Prenume.ToLower().Contains(cautare));
+                programari=programari.Where(x=>x.Masina.NrInmatriculare.ToLower().Contains(cautare)||x.Masina.Client.Nume.ToLower().Contains(cautare)||x.Masina.Client.Prenume.ToLower().Contains(cautare));
             }
 
             if(!string.IsNullOrEmpty(status)&&Enum.TryParse<StatusProgramare>(status, out var statusEnum))
@@ -49,7 +46,7 @@ namespace ServiceAutoLicenta.Controllers
 
         public async Task<IActionResult> Detalii(int id)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
 
             var programare=await db.Programari
                 .Include(x=>x.Masina).ThenInclude(x=>x.Client)
@@ -69,10 +66,10 @@ namespace ServiceAutoLicenta.Controllers
 
         public async Task<IActionResult> Adauga(int? masinaId)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
             await PopulareDropdownMasini(userId, masinaId);
 
-            var programare=new Programare { DataIntrare=DateTime.Today };
+            var programare=new Programare {DataIntrare=DateTime.Today};
             if(masinaId.HasValue)
                 programare.MasinaId=masinaId.Value;
 
@@ -83,7 +80,7 @@ namespace ServiceAutoLicenta.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Adauga(Programare programare)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
             ModelState.Remove("Masina");
             ModelState.Remove("Lucrari");
             ModelState.Remove("Factura");
@@ -99,7 +96,7 @@ namespace ServiceAutoLicenta.Controllers
                 db.Programari.Add(programare);
                 await db.SaveChangesAsync();
                 TempData["Succes"]="Programarea a fost adaugata!";
-                return RedirectToAction("Detalii", new { id=programare.Id });
+                return RedirectToAction("Detalii", new {id=programare.Id});
             }
 
             await PopulareDropdownMasini(userId, programare.MasinaId);
@@ -108,7 +105,7 @@ namespace ServiceAutoLicenta.Controllers
 
         public async Task<IActionResult> Editeaza(int id)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
 
             var programare=await db.Programari
                 .Include(x=>x.Masina).ThenInclude(x=>x.Client)
@@ -124,7 +121,7 @@ namespace ServiceAutoLicenta.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Editeaza(int id, Programare programare)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
             ModelState.Remove("Masina");
             ModelState.Remove("Lucrari");
             ModelState.Remove("Factura");
@@ -143,7 +140,7 @@ namespace ServiceAutoLicenta.Controllers
                 {
                     totalFaraTva+=l.Manopera;
                     foreach(var lp in l.LucrarePiese)
-                        totalFaraTva+=lp.Cantitate * lp.PretUnitar;
+                    totalFaraTva+=lp.Cantitate * lp.PretUnitar;
                 }
 
                 programare.TotalFaraTva=totalFaraTva;
@@ -153,7 +150,7 @@ namespace ServiceAutoLicenta.Controllers
                 db.Programari.Update(programare);
                 await db.SaveChangesAsync();
                 TempData["Succes"]="Programarea a fost actualizata!";
-                return RedirectToAction("Detalii", new { id=programare.Id });
+                return RedirectToAction("Detalii", new {id=programare.Id});
             }
 
             await PopulareDropdownMasini(userId, programare.MasinaId);
@@ -162,7 +159,7 @@ namespace ServiceAutoLicenta.Controllers
 
         public async Task<IActionResult> Sterge(int id)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
 
             var programare=await db.Programari
                 .Include(x=>x.Masina).ThenInclude(x=>x.Client)
@@ -179,7 +176,7 @@ namespace ServiceAutoLicenta.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmaStergere(int id)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
 
             var programare=await db.Programari
                 .Include(x=>x.Masina).ThenInclude(x=>x.Client)
@@ -205,7 +202,7 @@ namespace ServiceAutoLicenta.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AdaugaLucrare(int programareId, string denumire, string descriere, decimal manopera, decimal durataOre)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
 
             var programare=await db.Programari
                 .Include(x=>x.Masina).ThenInclude(x=>x.Client)
@@ -227,7 +224,7 @@ namespace ServiceAutoLicenta.Controllers
             await RecalculeazaTotal(programareId);
 
             TempData["Succes"]="Lucrarea a fost adaugata!";
-            return RedirectToAction("Detalii", new { id=programareId });
+            return RedirectToAction("Detalii", new {id=programareId});
         }
 
         [HttpPost]
@@ -242,14 +239,14 @@ namespace ServiceAutoLicenta.Controllers
                 await RecalculeazaTotal(programareId);
                 TempData["Succes"]="Lucrarea a fost stearsa!";
             }
-            return RedirectToAction("Detalii", new { id=programareId });
+            return RedirectToAction("Detalii", new {id=programareId});
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AdaugaPiesa(int lucrareId, int programareId, int piesaId, int cantitate)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
 
             var piesa=await db.Piese
                 .FirstOrDefaultAsync(x=>x.Id==piesaId&&x.UserId==userId);
@@ -257,13 +254,13 @@ namespace ServiceAutoLicenta.Controllers
             if(piesa==null)
             {
                 TempData["Eroare"]="Piesa nu a fost gasita!";
-                return RedirectToAction("Detalii", new { id=programareId });
+                return RedirectToAction("Detalii", new {id=programareId});
             }
 
             if(piesa.StocCurent < cantitate)
             {
                 TempData["Eroare"]=$"Stoc insuficient! Stoc disponibil: {piesa.StocCurent}";
-                return RedirectToAction("Detalii", new { id=programareId });
+                return RedirectToAction("Detalii", new {id=programareId});
             }
 
             var lucrarePiesa=new LucrarePiesa
@@ -280,7 +277,7 @@ namespace ServiceAutoLicenta.Controllers
             await RecalculeazaTotal(programareId);
 
             TempData["Succes"]="Piesa a fost adaugata!";
-            return RedirectToAction("Detalii", new { id=programareId });
+            return RedirectToAction("Detalii", new {id=programareId});
         }
 
         private async Task RecalculeazaTotal(int programareId)
@@ -296,7 +293,7 @@ namespace ServiceAutoLicenta.Controllers
             {
                 total+=l.Manopera;
                 foreach(var lp in l.LucrarePiese)
-                    total+=lp.Cantitate * lp.PretUnitar;
+                total+=lp.Cantitate * lp.PretUnitar;
             }
 
             programare.TotalFaraTva=total;
@@ -306,17 +303,13 @@ namespace ServiceAutoLicenta.Controllers
             await db.SaveChangesAsync();
         }
 
-        private async Task PopulareDropdownMasini(string userId, int? selectedId=null)
+        private async Task PopulareDropdownMasini(string? userId, int? selectedId=null)
         {
             var masini=await db.Masini
                 .Include(x=>x.Client)
                 .Where(x=>x.Client.UserId==userId)
                 .OrderBy(x=>x.NrInmatriculare)
-                .Select(x=>new
-                {
-                    x.Id,
-                    Descriere=x.NrInmatriculare + " - " + x.Marca + " " + x.ModelMasina + " (" + x.Client.Nume + " " + x.Client.Prenume + ")"
-                })
+                .Select(x=>new{x.Id,Descriere=x.NrInmatriculare + " - " + x.Marca + " " + x.ModelMasina + " (" + x.Client.Nume + " " + x.Client.Prenume + ")"})
                 .ToListAsync();
 
             ViewBag.MasinaId=new SelectList(masini, "Id", "Descriere", selectedId);

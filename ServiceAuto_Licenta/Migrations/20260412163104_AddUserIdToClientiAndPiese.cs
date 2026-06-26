@@ -5,10 +5,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ServiceAutoLicenta.Migrations
 {
-    /// <inheritdoc />
     public partial class AddUserIdToClientiAndPiese : Migration
     {
-        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
@@ -61,7 +59,6 @@ namespace ServiceAutoLicenta.Migrations
                 values: new object[] { new DateTime(2026, 4, 12, 19, 31, 2, 829, DateTimeKind.Local).AddTicks(6434), "" });
         }
 
-        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(

@@ -22,7 +22,7 @@ namespace ServiceAutoLicenta.Controllers
 
         public async Task<IActionResult> Index(string cautare)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
 
             var masini=db.Masini
                 .Include(x=>x.Client)
@@ -32,12 +32,7 @@ namespace ServiceAutoLicenta.Controllers
             if(!string.IsNullOrEmpty(cautare))
             {
                 cautare=cautare.ToLower();
-                masini=masini.Where(x=>
-                    x.NrInmatriculare.ToLower().Contains(cautare) ||
-                    x.Marca.ToLower().Contains(cautare) ||
-                    x.ModelMasina.ToLower().Contains(cautare) ||
-                    x.Client.Nume.ToLower().Contains(cautare) ||
-                    x.Client.Prenume.ToLower().Contains(cautare));
+                masini=masini.Where(x=>x.NrInmatriculare.ToLower().Contains(cautare)||x.Marca.ToLower().Contains(cautare)||x.ModelMasina.ToLower().Contains(cautare)||x.Client.Nume.ToLower().Contains(cautare)||x.Client.Prenume.ToLower().Contains(cautare));
             }
 
             ViewBag.Cautare=cautare;
@@ -46,7 +41,7 @@ namespace ServiceAutoLicenta.Controllers
 
         public async Task<IActionResult> Detalii(int id)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
 
             var masina=await db.Masini
                 .Include(x=>x.Client)
@@ -60,7 +55,7 @@ namespace ServiceAutoLicenta.Controllers
 
         public async Task<IActionResult> Adauga(int? clientId)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
             await PopulareDropdownClienti(userId, clientId);
 
             var masina=new Masina();
@@ -74,7 +69,7 @@ namespace ServiceAutoLicenta.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Adauga(Masina masina)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
             ModelState.Remove("Client");
 
             if(ModelState.IsValid)
@@ -103,7 +98,7 @@ namespace ServiceAutoLicenta.Controllers
 
         public async Task<IActionResult> Editeaza(int id)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
 
             var masina=await db.Masini
                 .Include(x=>x.Client)
@@ -119,7 +114,7 @@ namespace ServiceAutoLicenta.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Editeaza(int id, Masina masina)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
             ModelState.Remove("Client");
 
             if(id!=masina.Id) return NotFound();
@@ -145,7 +140,7 @@ namespace ServiceAutoLicenta.Controllers
 
         public async Task<IActionResult> Sterge(int id)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
 
             var masina=await db.Masini
                 .Include(x=>x.Client)
@@ -161,7 +156,7 @@ namespace ServiceAutoLicenta.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmaStergere(int id)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
 
             var masina=await db.Masini
                 .Include(x=>x.Client)
@@ -182,7 +177,7 @@ namespace ServiceAutoLicenta.Controllers
             return RedirectToAction("Index");
         }
 
-        private async Task PopulareDropdownClienti(string userId, int? selectedId=null)
+        private async Task PopulareDropdownClienti(string? userId, int? selectedId=null)
         {
             var clienti=await db.Clienti
                 .Where(x=>x.UserId==userId)

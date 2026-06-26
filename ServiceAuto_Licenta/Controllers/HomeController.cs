@@ -26,7 +26,7 @@ namespace ServiceAutoLicenta.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
             var azi=DateTime.Today;
             var primaZiLuna=new DateTime(azi.Year, azi.Month, 1);
             var primaZiLunaAnt=primaZiLuna.AddMonths(-1);

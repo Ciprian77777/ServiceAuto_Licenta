@@ -1,0 +1,43 @@
+@{
+    Layout = null;
+    bool succes = ViewBag.Succes ?? false;
+}
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Confirmare cont — GarageCare</title>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *{box-sizing:border-box;margin:0;padding:0;}
+        body{font-family:'Inter',sans-serif;background:#111;color:#e0e0e0;min-height:100vh;display:flex;align-items:center;justify-content:center;}
+        .box{background:#1a1a1a;border:1px solid #c1272d;border-top:3px solid #c1272d;border-radius:10px;padding:40px;text-align:center;max-width:420px;width:100%;}
+        .icon{font-size:3rem;margin-bottom:20px;}
+        h2{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;text-transform:uppercase;color:#fff;margin-bottom:12px;}
+        p{font-size:14px;color:#888;line-height:1.7;margin-bottom:8px;}
+        .btn{display:inline-block;margin-top:24px;background:#c1272d;color:#fff;padding:10px 28px;border-radius:6px;font-size:13px;font-weight:700;text-transform:uppercase;text-decoration:none;letter-spacing:0.04em;}
+        .btn:hover{background:#a01f24;color:#fff;}
+    </style>
+</head>
+<body>
+    <div class="box">
+        @if(succes)
+        {
+            <div class="icon">✅</div>
+            <h2>Cont confirmat!</h2>
+            <p>Adresa de email a fost verificată cu succes.</p>
+            <p>Te poți autentifica acum în aplicație.</p>
+            <a href="/Landing/Index" class="btn">Mergi la login</a>
+        }
+        else
+        {
+            <div class="icon">❌</div>
+            <h2>Link invalid</h2>
+            <p>Link-ul de confirmare este invalid sau a expirat.</p>
+            <p>Încearcă să te înregistrezi din nou.</p>
+            <a href="/Landing/Index" class="btn">Înapoi</a>
+        }
+    </div>
+</body>
+</html>

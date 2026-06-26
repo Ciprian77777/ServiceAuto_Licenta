@@ -1,740 +1,528 @@
-﻿
 @{
-    ViewData["Title"]="AutoService Pro";
-    Layout=null;
+    ViewData["Title"] = "GarageCare";
+    Layout = null;
 }
 <!DOCTYPE html>
 <html lang="ro">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AutoService Pro — Management System</title>
+    <title>GarageCare — Service Management</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+        *{box-sizing:border-box;margin:0;padding:0;}
+        body{
+            font-family:'Inter',-apple-system,sans-serif;
+            background:#111;color:#fff;min-height:100vh;
         }
 
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: #0f172a;
-            color: #f1f5f9;
-            min-height: 100vh;
+        .l-nav{
+            position:fixed;top:0;left:0;right:0;z-index:100;
+            height:64px;
+            background:#111;
+            border-bottom:2px solid #c1272d;
+            display:flex;align-items:center;
+            justify-content:space-between;
+            padding:0 48px;
+        }
+        .l-nav-logo{
+            display:flex;align-items:center;gap:10px;text-decoration:none;
+        }
+        .l-nav-accent{width:5px;height:28px;background:#c1272d;}
+        .l-nav-logo strong{
+            font-family:'Barlow Condensed',sans-serif;
+            font-size:24px;font-weight:700;
+            color:#fff;letter-spacing:0.03em;
+        }
+        .l-nav-logo span{font-size:11px;color:#c1272d;letter-spacing:0.08em;text-transform:uppercase;}
+        .l-nav-right{display:flex;align-items:center;gap:8px;}
+        .btn-nav{
+            padding:8px 22px;
+            font-size:13px;font-weight:600;
+            text-transform:uppercase;letter-spacing:0.04em;
+            cursor:pointer;text-decoration:none;
+            transition:all 0.12s;border-radius:0;
+        }
+        .btn-nav-ghost{
+            background:transparent;color:#ccc;
+            border:1px solid #333;
+        }
+        .btn-nav-ghost:hover{border-color:#c1272d;color:#fff;}
+        .btn-nav-red{
+            background:#c1272d;color:#fff;border:1px solid #c1272d;
+        }
+        .btn-nav-red:hover{background:#a01f24;}
+
+        .hero-section{
+            position:relative;
+            min-height:100vh;
+            display:flex;
+            align-items:center;
+            overflow:hidden;
         }
 
-        .landing-nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            padding: 16px 48px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255,255,255,0.06);
+        .hero-bg-img{
+            position:absolute;inset:0;
+            background:url('/images/hero-garage.png') center center / cover no-repeat;
+            z-index:0;
         }
 
-        .nav-logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
+        .hero-bg-overlay{
+            position:absolute;inset:0;
+            background:rgba(0,0,0,0.45);
+            z-index:1;
+        }
+        .hero-bg-overlay::after{
+            content:'';
+            position:absolute;bottom:0;left:0;right:0;
+            height:3px;background:#c1272d;
+        }
+        .hero{
+            position:relative;z-index:2;
+            width:100%;
+            display:grid;
+            grid-template-columns:1fr 420px;
+            gap:60px;
+            align-items:center;
+            padding:100px 48px 60px;
+            max-width:1280px;margin:0 auto;
         }
 
-        .nav-logo-icon {
-            width: 36px;
-            height: 36px;
-            background: #2563eb;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
+        .hero-eyebrow{
+            display:inline-flex;align-items:center;gap:8px;
+            background:rgba(193,39,45,0.15);
+            border:1px solid rgba(193,39,45,0.4);
+            padding:5px 14px;
+            font-size:11px;font-weight:700;
+            text-transform:uppercase;letter-spacing:0.1em;
+            color:#f87171;margin-bottom:22px;
+        }
+        .hero-eyebrow i{font-size:13px;}
+        .hero-title{
+            font-family:'Barlow Condensed',sans-serif;
+            font-size:72px;font-weight:800;
+            line-height:0.95;
+            margin-bottom:24px;
+            text-transform:uppercase;
+            letter-spacing:-0.01em;
+        }
+        .hero-title .red{color:#c1272d;}
+        .hero-title .slash{color:#444;font-weight:600;}
+        .hero-sub{
+            font-size:16px;color:#888;
+            line-height:1.7;max-width:460px;
+            margin-bottom:36px;
+        }
+        .hero-stats{display:flex;gap:36px;margin-bottom:40px;}
+        .hero-stat{}
+        .hero-stat strong{
+            font-family:'Barlow Condensed',sans-serif;
+            font-size:36px;font-weight:700;color:#fff;display:block;line-height:1;
+        }
+        .hero-stat strong span{color:#c1272d;}
+        .hero-stat em{font-size:12px;color:#666;font-style:normal;text-transform:uppercase;letter-spacing:0.06em;}
+        .hero-divider{width:1px;background:#222;align-self:stretch;}
+        .hero-cta{display:flex;gap:12px;}
+        .btn-hero-red{
+            padding:14px 30px;
+            background:#c1272d;color:#fff;
+            border:none;border-radius:0;
+            font-size:14px;font-weight:700;
+            text-transform:uppercase;letter-spacing:0.05em;
+            cursor:pointer;text-decoration:none;
+            display:inline-flex;align-items:center;gap:8px;
+            transition:background 0.12s,transform 0.12s;
+        }
+        .btn-hero-red:hover{background:#a01f24;color:#fff;transform:translateY(-2px);}
+        .btn-hero-ghost{
+            padding:14px 28px;
+            background:transparent;color:#ccc;
+            border:1px solid #333;border-radius:0;
+            font-size:14px;font-weight:600;
+            text-transform:uppercase;letter-spacing:0.04em;
+            cursor:pointer;text-decoration:none;
+            display:inline-flex;align-items:center;gap:8px;
+            transition:all 0.12s;
+        }
+        .btn-hero-ghost:hover{border-color:#c1272d;color:#fff;}
+
+        .auth-card{
+            background:#1a1a1a;
+            border:1px solid #2a2a2a;
+            border-top:3px solid #c1272d;
+            padding:32px;
+            position:relative;z-index:1;
+        }
+        .auth-card-title{
+            font-family:'Barlow Condensed',sans-serif;
+            font-size:22px;font-weight:700;
+            text-transform:uppercase;letter-spacing:0.04em;
+            color:#fff;margin-bottom:24px;
+            display:flex;align-items:center;gap:10px;
+        }
+        .auth-card-title::after{
+            content:'';flex:1;height:2px;background:#c1272d;
+        }
+        .auth-tabs{
+            display:flex;margin-bottom:24px;
+            border-bottom:1px solid #2a2a2a;
+        }
+        .auth-tab{
+            flex:1;padding:10px;
+            border:none;background:transparent;
+            color:#666;font-size:13px;font-weight:600;
+            text-transform:uppercase;letter-spacing:0.04em;
+            cursor:pointer;transition:all 0.15s;
+            border-bottom:2px solid transparent;
+            margin-bottom:-1px;
+        }
+        .auth-tab.active{color:#c1272d;border-bottom-color:#c1272d;}
+        .auth-tab:hover:not(.active){color:#fff;}
+        .auth-form{display:none;}
+        .auth-form.active{display:block;}
+        .form-group{margin-bottom:14px;}
+        .form-label-a{
+            display:block;font-size:11px;font-weight:700;
+            text-transform:uppercase;letter-spacing:0.06em;
+            color:#888;margin-bottom:6px;
+        }
+        .form-input-wrap{position:relative;}
+        .form-input-wrap i{
+            position:absolute;left:12px;top:50%;
+            transform:translateY(-50%);
+            color:#555;font-size:14px;pointer-events:none;
+        }
+        .form-input-wrap .toggle-pass{left:auto;right:12px;pointer-events:all;cursor:pointer;color:#666;}
+        .form-input-wrap .toggle-pass:hover{color:#c1272d;}
+        .form-input{
+            width:100%;padding:10px 12px 10px 36px;
+            background:#111;
+            border:1px solid #333;
+            color:#fff;font-size:14px;outline:none;
+            border-radius:0;
+            transition:border-color 0.15s;
+        }
+        .form-input:focus{border-color:#c1272d;background:#0d0d0d;}
+        .form-input::placeholder{color:#444;}
+        .btn-submit{
+            width:100%;padding:12px;
+            background:#c1272d;color:#fff;
+            border:none;border-radius:0;
+            font-size:13px;font-weight:700;
+            text-transform:uppercase;letter-spacing:0.06em;
+            cursor:pointer;transition:background 0.12s;
+            margin-top:6px;
+            display:flex;align-items:center;justify-content:center;gap:8px;
+        }
+        .btn-submit:hover{background:#a01f24;}
+        .auth-footer-text{
+            text-align:center;font-size:12px;color:#555;
+            margin-top:14px;
+        }
+        .auth-footer-text a{color:#c1272d;text-decoration:none;font-weight:600;}
+        .auth-footer-text a:hover{color:#e04040;}
+        .auth-separator{
+            display:flex;align-items:center;gap:12px;
+            margin:14px 0;color:#333;font-size:11px;
+        }
+        .auth-separator::before,.auth-separator::after{
+            content:'';flex:1;height:1px;background:#2a2a2a;
+        }
+        .error-msg{
+            background:rgba(193,39,45,0.1);
+            border:1px solid rgba(193,39,45,0.3);
+            border-left:3px solid #c1272d;
+            padding:10px 14px;font-size:13px;color:#fca5a5;
+            margin-bottom:16px;
         }
 
-        .nav-logo-text strong {
-            color: #f1f5f9;
-            font-size: 16px;
-            display: block;
-            line-height: 1.2;
+        .features-strip{
+            background:#0a0a0a;
+            border-top:1px solid #1a1a1a;
+            padding:60px 48px;
         }
-
-        .nav-logo-text span {
-            color: #2563eb;
-            font-size: 12px;
+        .features-strip-inner{max-width:1280px;margin:0 auto;}
+        .features-strip-header{margin-bottom:40px;}
+        .section-eyebrow{
+            font-size:11px;font-weight:700;
+            text-transform:uppercase;letter-spacing:0.12em;
+            color:#c1272d;margin-bottom:8px;display:block;
         }
-
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        .section-title{
+            font-family:'Barlow Condensed',sans-serif;
+            font-size:42px;font-weight:800;
+            text-transform:uppercase;color:#fff;
+            line-height:1;
         }
-
-        .btn-nav-login {
-            padding: 8px 20px;
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 8px;
-            color: #f1f5f9;
-            background: transparent;
-            font-size: 14px;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.15s;
+        .section-title .slash{color:#333;}
+        .features-grid{
+            display:grid;
+            grid-template-columns:repeat(3,1fr);
+            gap:1px;background:#1a1a1a;
         }
+        .feature-item{
+            background:#111;
+            padding:28px 24px;
+        }
+        .feature-num{
+            font-family:'Barlow Condensed',sans-serif;
+            font-size:36px;font-weight:700;
+            color:#222;margin-bottom:12px;
+            line-height:1;transition:color 0.15s;
+        }
+        .feature-icon-wrap{
+            width:42px;height:42px;
+            display:flex;align-items:center;justify-content:center;
+            font-size:18px;margin-bottom:14px;
+            color:#c1272d;
+        }
+        .feature-item h4{
+            font-size:15px;font-weight:700;color:#fff;
+            margin-bottom:8px;text-transform:uppercase;letter-spacing:0.03em;
+        }
+        .feature-item p{font-size:13px;color:#666;line-height:1.6;}
 
-            .btn-nav-login:hover {
-                background: rgba(255,255,255,0.08);
-                color: #f1f5f9;
+        .l-footer{
+            background:#0a0a0a;
+            border-top:2px solid #c1272d;
+            padding:20px 48px;
+            display:flex;align-items:center;justify-content:space-between;
+        }
+        .l-footer p{font-size:12px;color:#444;}
+        .l-footer-logo{
+            font-family:'Barlow Condensed',sans-serif;
+            font-size:18px;font-weight:700;color:#333;
+        }
+        .l-footer-logo span{color:#c1272d;}
+
+        @@media(max-width:900px){
+            .hero{grid-template-columns:1fr;padding:100px 24px 40px;}
+            .hero-title{font-size:48px;}
+            .features-grid{grid-template-columns:1fr;}
+            .l-nav{padding:0 24px;}
+            .features-strip{padding:40px 24px;}
+            .l-footer{padding:16px 24px;flex-direction:column;gap:8px;text-align:center;}
+            .hero-bg-overlay{
+                background:linear-gradient(180deg,rgba(0,0,0,0.88) 0%,rgba(0,0,0,0.82) 100%);
             }
-
-        .btn-nav-register {
-            padding: 8px 20px;
-            border: none;
-            border-radius: 8px;
-            color: white;
-            background: #2563eb;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            text-decoration: none;
-            transition: background 0.15s;
-        }
-
-            .btn-nav-register:hover {
-                background: #1d4ed8;
-                color: white;
-            }
-
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
-            padding: 120px 48px 80px;
-        }
-
-        .hero-bg {
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(ellipse at 20% 50%, rgba(37,99,235,0.15) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(124,58,237,0.1) 0%, transparent 50%);
-        }
-
-        .hero-grid {
-            position: absolute;
-            inset: 0;
-            background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-            background-size: 60px 60px;
-        }
-
-        .hero-content {
-            position: relative;
-            max-width: 1200px;
-            margin: 0 auto;
-            width: 100%;
-            display: grid;
-            grid-template-columns: 1fr 420px;
-            gap: 80px;
-            align-items: center;
-        }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(37,99,235,0.15);
-            border: 1px solid rgba(37,99,235,0.3);
-            border-radius: 20px;
-            padding: 6px 14px;
-            font-size: 13px;
-            color: #93c5fd;
-            margin-bottom: 24px;
-        }
-
-        .hero-title {
-            font-size: 56px;
-            font-weight: 800;
-            line-height: 1.1;
-            margin-bottom: 20px;
-            letter-spacing: -0.02em;
-        }
-
-            .hero-title span {
-                color: #2563eb;
-            }
-
-        .hero-subtitle {
-            font-size: 18px;
-            color: #94a3b8;
-            line-height: 1.7;
-            margin-bottom: 40px;
-            max-width: 500px;
-        }
-
-        .hero-stats {
-            display: flex;
-            gap: 32px;
-            margin-bottom: 40px;
-        }
-
-        .hero-stat {
-            text-align: center;
-        }
-
-            .hero-stat strong {
-                display: block;
-                font-size: 28px;
-                font-weight: 700;
-                color: #f1f5f9;
-            }
-
-            .hero-stat span {
-                font-size: 13px;
-                color: #64748b;
-            }
-
-        .hero-cta {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .btn-hero-primary {
-            padding: 14px 28px;
-            background: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: background 0.15s, transform 0.15s;
-        }
-
-            .btn-hero-primary:hover {
-                background: #1d4ed8;
-                color: white;
-                transform: translateY(-1px);
-            }
-
-        .btn-hero-secondary {
-            padding: 14px 28px;
-            background: transparent;
-            color: #f1f5f9;
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 10px;
-            font-size: 15px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.15s;
-        }
-
-            .btn-hero-secondary:hover {
-                background: rgba(255,255,255,0.06);
-                color: #f1f5f9;
-            }
-
-        .auth-card {
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 20px;
-            padding: 32px;
-        }
-
-        .auth-tabs {
-            display: flex;
-            background: rgba(255,255,255,0.05);
-            border-radius: 10px;
-            padding: 4px;
-            margin-bottom: 28px;
-        }
-
-        .auth-tab {
-            flex: 1;
-            padding: 9px;
-            border: none;
-            border-radius: 8px;
-            background: transparent;
-            color: #64748b;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-            .auth-tab.active {
-                background: #2563eb;
-                color: white;
-            }
-
-        .auth-form {
-            display: none;
-        }
-
-            .auth-form.active {
-                display: block;
-            }
-
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        .form-label-auth {
-            display: block;
-            font-size: 13px;
-            font-weight: 500;
-            color: #94a3b8;
-            margin-bottom: 6px;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 11px 14px;
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 9px;
-            color: #f1f5f9;
-            font-size: 14px;
-            outline: none;
-            transition: border-color 0.15s;
-        }
-
-            .form-input:focus {
-                border-color: #2563eb;
-                background: rgba(37,99,235,0.08);
-            }
-
-            .form-input::placeholder {
-                color: #475569;
-            }
-
-        .form-input-icon {
-            position: relative;
-        }
-
-            .form-input-icon i {
-                position: absolute;
-                left: 12px;
-                top: 50%;
-                transform: translateY(-50%);
-                color: #475569;
-                font-size: 15px;
-            }
-
-            .form-input-icon input {
-                padding-left: 38px;
-            }
-
-        .btn-submit {
-            width: 100%;
-            padding: 12px;
-            background: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 9px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.15s;
-            margin-top: 8px;
-        }
-
-            .btn-submit:hover {
-                background: #1d4ed8;
-            }
-
-        .auth-divider {
-            text-align: center;
-            color: #475569;
-            font-size: 12px;
-            margin: 16px 0;
-            position: relative;
-        }
-
-            .auth-divider::before, .auth-divider::after {
-                content: '';
-                position: absolute;
-                top: 50%;
-                width: 40%;
-                height: 1px;
-                background: rgba(255,255,255,0.08);
-            }
-
-            .auth-divider::before {
-                left: 0;
-            }
-
-            .auth-divider::after {
-                right: 0;
-            }
-
-        .error-msg {
-            background: rgba(239,68,68,0.12);
-            border: 1px solid rgba(239,68,68,0.25);
-            border-radius: 8px;
-            padding: 10px 14px;
-            font-size: 13px;
-            color: #fca5a5;
-            margin-bottom: 16px;
-        }
-
-        .features {
-            padding: 100px 48px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .section-label {
-            display: inline-block;
-            background: rgba(37,99,235,0.15);
-            border: 1px solid rgba(37,99,235,0.3);
-            border-radius: 20px;
-            padding: 5px 14px;
-            font-size: 12px;
-            color: #93c5fd;
-            margin-bottom: 16px;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-        }
-
-        .section-title {
-            font-size: 36px;
-            font-weight: 700;
-            margin-bottom: 12px;
-        }
-
-        .section-subtitle {
-            font-size: 16px;
-            color: #64748b;
-            margin-bottom: 56px;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-        }
-
-        .feature-card {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.07);
-            border-radius: 16px;
-            padding: 28px;
-            transition: all 0.2s;
-        }
-
-            .feature-card:hover {
-                background: rgba(255,255,255,0.06);
-                border-color: rgba(37,99,235,0.3);
-                transform: translateY(-3px);
-            }
-
-        .feature-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            margin-bottom: 16px;
-        }
-
-        .feature-card h4 {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #f1f5f9;
-        }
-
-        .feature-card p {
-            font-size: 14px;
-            color: #64748b;
-            line-height: 1.6;
-        }
-
-        .landing-footer {
-            border-top: 1px solid rgba(255,255,255,0.06);
-            padding: 32px 48px;
-            text-align: center;
-            color: #475569;
-            font-size: 13px;
-        }
-
-        @@media (max-width: 900px){
-            .hero-content {grid-template-columns: 1fr;}
-            .hero {padding: 120px 24px 60px;}
-            .hero-title {font-size: 36px;}
-            .features {padding: 60px 24px;}
-            .features-grid {grid-template-columns: 1fr;}
-            .landing-nav {padding: 16px 24px;}
         }
     </style>
 </head>
 <body>
 
-    <nav class="landing-nav">
-        <a class="nav-logo" href="#">
-            <div class="nav-logo-text">
-                <strong style="font-size:20px;">GarageCare</strong>
+    <nav class="l-nav">
+        <a class="l-nav-logo" href="#">
+            <div class="l-nav-accent"></div>
+            <div>
+                <strong>GarageCare</strong>
+                <span style="display:block;">Service Management</span>
             </div>
         </a>
-        <div class="nav-links">
-            <a href="#features" class="btn-nav-login">Funcționalități</a>
-            <a href="#auth" class="btn-nav-login" onclick="switchTab('login')">Login</a>
-            <a href="#auth" class="btn-nav-register" onclick="switchTab('register')">Creează cont</a>
+        <div class="l-nav-right">
+            <a href="#features" class="btn-nav btn-nav-ghost">Funcționalități</a>
+            <a href="#auth" class="btn-nav btn-nav-ghost" onclick="switchTab('login')">Login</a>
+            <a href="#auth" class="btn-nav btn-nav-red" onclick="switchTab('register')">Cont nou</a>
         </div>
     </nav>
 
-    <section class="hero" id="auth">
-        <div class="hero-bg"></div>
-        <div class="hero-grid"></div>
+    <section class="hero-section" id="auth">
+        <div class="hero-bg-img"></div>
+        <div class="hero-bg-overlay"></div>
+        <div class="hero">
+        <div>
+            <h1 class="hero-title">
+                Gestionează<br>
+                service-ul tău<br>
+                <span class="red">profesional</span>
+            </h1>
+            <p class="hero-sub">
+                Clienți, vehicule, programări, piese, facturi și rapoarte analitice.
+            </p>
+            <div class="hero-cta">
+                <a href="#auth" class="btn-hero-red" onclick="switchTab('register')">
+                    <i class="bi bi-person-plus"></i> Creează cont gratuit
+                </a>
+                <a href="#features" class="btn-hero-ghost">
+                    <i class="bi bi-arrow-down"></i> Descoperă
+                </a>
+            </div>
+        </div>
 
-        <div class="hero-content">
-            <div>
-                <h1 class="hero-title">
-                    Gestionează<br>
-                    service-ul tău<br>
-                    <span>profesional</span>
-                </h1>
+        <div class="auth-card">
+            @if(TempData["LoginError"] != null)
+            {
+                <div class="error-msg"><i class="bi bi-exclamation-circle me-2"></i>@TempData["LoginError"]</div>
+            }
+            @if(TempData["RegisterError"] != null)
+            {
+                <div class="error-msg"><i class="bi bi-exclamation-circle me-2"></i>@TempData["RegisterError"]</div>
+            }
 
-                <p class="hero-subtitle">
-                    Platformă modernă pentru gestiunea clienților, vehiculelor,
-                    programărilor, pieselor și facturilor — totul într-un singur loc.
+            <div class="auth-card-title">Acces platformă</div>
+
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">
+                    <i class="bi bi-box-arrow-in-right me-1"></i> Login
+                </button>
+                <button class="auth-tab" id="tab-register" onclick="switchTab('register')">
+                    <i class="bi bi-person-plus me-1"></i> Înregistrare
+                </button>
+            </div>
+
+            <div class="auth-form active" id="form-login">
+                <form asp-controller="Landing" asp-action="Login" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="form-group">
+                        <label class="form-label-a">Adresă email</label>
+                        <div class="form-input-wrap">
+                            <i class="bi bi-envelope"></i>
+                            <input type="email" name="email" class="form-input" placeholder="adresa@email.ro" required />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label-a">Parolă</label>
+                        <div class="form-input-wrap">
+                            <i class="bi bi-lock"></i>
+                            <input type="password" id="pass-login" name="password" class="form-input" style="padding-right:36px;" placeholder="••••••••" required />
+                            <i class="bi bi-eye toggle-pass" onclick="togglePass('pass-login',this)"></i>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-submit">
+                        <i class="bi bi-box-arrow-in-right"></i> Intră în cont
+                    </button>
+                </form>
+                <div class="auth-separator">sau</div>
+                <p class="auth-footer-text">
+                    Nu ai cont? <a href="#" onclick="switchTab('register')">Creează unul acum</a>
                 </p>
-
-                <div class="hero-stats">
-                    <div class="hero-stat">
-                        <strong>100%</strong>
-                        <span>Funcțional</span>
-                    </div>
-                    <div class="hero-stat">
-                        <strong>7+</strong>
-                        <span>Module</span>
-                    </div>
-                    <div class="hero-stat">
-                        <strong>Real-time</strong>
-                        <span>Statistici</span>
-                    </div>
-                </div>
-
-                <div class="hero-cta">
-                    <a href="#auth" class="btn-hero-primary" onclick="switchTab('register')">
-                        <i class="bi bi-rocket-takeoff"></i>
-                        Începe gratuit
-                    </a>
-                    <a href="#features" class="btn-hero-secondary">
-                        <i class="bi bi-play-circle"></i>
-                        Află mai multe
-                    </a>
-                </div>
             </div>
 
-            <div class="auth-card">
-                @if(TempData["LoginError"]!=null)
-                {
-                    <div class="error-msg">
-                        <i class="bi bi-exclamation-circle me-2"></i>@TempData["LoginError"]
+            <div class="auth-form" id="form-register">
+                <form asp-controller="Landing" asp-action="Register" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="form-group">
+                        <label class="form-label-a">Nume complet</label>
+                        <div class="form-input-wrap">
+                            <i class="bi bi-person"></i>
+                            <input type="text" name="nume" class="form-input" placeholder="Ion Popescu" required />
+                        </div>
                     </div>
-                }
-                @if(TempData["RegisterError"]!=null)
-                {
-                    <div class="error-msg">
-                        <i class="bi bi-exclamation-circle me-2"></i>@TempData["RegisterError"]
+                    <div class="form-group">
+                        <label class="form-label-a">Email</label>
+                        <div class="form-input-wrap">
+                            <i class="bi bi-envelope"></i>
+                            <input type="email" name="email" class="form-input" placeholder="adresa@email.ro" required />
+                        </div>
                     </div>
-                }
-
-                <div class="auth-tabs">
-                    <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">
-                        <i class="bi bi-box-arrow-in-right me-1"></i> Autentificare
+                    <div class="form-group">
+                        <label class="form-label-a">Parolă</label>
+                        <div class="form-input-wrap">
+                            <i class="bi bi-lock"></i>
+                            <input type="password" id="pass-register" name="password" class="form-input" style="padding-right:36px;" placeholder="Minim 6 caractere" required />
+                            <i class="bi bi-eye toggle-pass" onclick="togglePass('pass-register',this)"></i>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label-a">Confirmă parola</label>
+                        <div class="form-input-wrap">
+                            <i class="bi bi-lock-fill"></i>
+                            <input type="password" id="pass-confirm" name="confirmPassword" class="form-input" style="padding-right:36px;" placeholder="Repetă parola" required />
+                            <i class="bi bi-eye toggle-pass" onclick="togglePass('pass-confirm',this)"></i>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-submit">
+                        <i class="bi bi-person-check"></i> Creează contul
                     </button>
-                    <button class="auth-tab" id="tab-register" onclick="switchTab('register')">
-                        <i class="bi bi-person-plus me-1"></i> Cont nou
-                    </button>
+                </form>
+                <div class="auth-separator">sau</div>
+                <p class="auth-footer-text">
+                    Ai deja cont? <a href="#" onclick="switchTab('login')">Autentifică-te</a>
+                </p>
+            </div>
+        </div>
+        </div>
+    </section>
+
+    <section class="features-strip" id="features">
+        <div class="features-strip-inner">
+            <div class="features-strip-header">
+                <span class="section-eyebrow">— Ce oferim</span>
+                <h2 class="section-title">Tot ce ai nevoie<br><span class="slash">/</span> într-un singur loc</h2>
+            </div>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-num">01</div>
+                    <div class="feature-icon-wrap"><i class="bi bi-people-fill"></i></div>
+                    <h4>Gestiune Clienți</h4>
+                    <p>Bază de date completă cu date de contact, CNP și istoricul complet al vizitelor.</p>
                 </div>
-
-                <div class="auth-form active" id="form-login">
-                    <form asp-controller="Landing" asp-action="Login" method="post">
-                        @Html.AntiForgeryToken()
-                        <div class="form-group">
-                            <label class="form-label-auth">Email</label>
-                            <div class="form-input-icon">
-                                <i class="bi bi-envelope"></i>
-                                <input type="email" name="email" class="form-input"
-                                       placeholder="adresa@email.ro" required />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label-auth">Parolă</label>
-                            <div class="form-input-icon">
-                                <i class="bi bi-lock"></i>
-                                <input type="password" name="password" class="form-input"
-                                       placeholder="••••••••" required />
-                            </div>
-                        </div>
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-                            <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:#94a3b8;cursor:pointer;">
-                                <input type="checkbox" name="rememberMe" style="accent-color:#2563eb;" />
-                                Ține-mă minte
-                            </label>
-                        </div>
-                        <button type="submit" class="btn-submit">
-                            <i class="bi bi-box-arrow-in-right me-2"></i>Intră în cont
-                        </button>
-                    </form>
-
-                    <div class="auth-divider">sau</div>
-
-                    <div style="text-align:center;font-size:13px;color:#64748b;">
-                        Nu ai cont?
-                        <a href="#" onclick="switchTab('register')" style="color:#2563eb;text-decoration:none;font-weight:500;">
-                            Creează unul acum
-                        </a>
-                    </div>
+                <div class="feature-item">
+                    <div class="feature-num">02</div>
+                    <div class="feature-icon-wrap"><i class="bi bi-car-front-fill"></i></div>
+                    <h4>Gestiune Vehicule</h4>
+                    <p>Înregistrare marcă, model, VIN, număr de înmatriculare și kilometraj actual.</p>
                 </div>
-
-                <div class="auth-form" id="form-register">
-                    <form asp-controller="Landing" asp-action="Register" method="post">
-                        @Html.AntiForgeryToken()
-                        <div class="form-group">
-                            <label class="form-label-auth">Nume complet</label>
-                            <div class="form-input-icon">
-                                <i class="bi bi-person"></i>
-                                <input type="text" name="nume" class="form-input"
-                                       placeholder="Ion Popescu" required />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label-auth">Email</label>
-                            <div class="form-input-icon">
-                                <i class="bi bi-envelope"></i>
-                                <input type="email" name="email" class="form-input"
-                                       placeholder="adresa@email.ro" required />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label-auth">Parolă</label>
-                            <div class="form-input-icon">
-                                <i class="bi bi-lock"></i>
-                                <input type="password" name="password" class="form-input"
-                                       placeholder="Minim 6 caractere" required />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label-auth">Confirmare parolă</label>
-                            <div class="form-input-icon">
-                                <i class="bi bi-lock-fill"></i>
-                                <input type="password" name="confirmPassword" class="form-input"
-                                       placeholder="Repeta parola" required />
-                            </div>
-                        </div>
-                        <button type="submit" class="btn-submit">
-                            <i class="bi bi-person-plus me-2"></i>Creează contul
-                        </button>
-                    </form>
-
-                    <div class="auth-divider">sau</div>
-
-                    <div style="text-align:center;font-size:13px;color:#64748b;">
-                        Ai deja cont?
-                        <a href="#" onclick="switchTab('login')" style="color:#2563eb;text-decoration:none;font-weight:500;">
-                            Autentifică-te
-                        </a>
-                    </div>
+                <div class="feature-item">
+                    <div class="feature-num">03</div>
+                    <div class="feature-icon-wrap"><i class="bi bi-calendar-check-fill"></i></div>
+                    <h4>Programări Service</h4>
+                    <p>Urmărire programări în timp real cu statusuri: Programată, În Lucru, Finalizată.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-num">04</div>
+                    <div class="feature-icon-wrap"><i class="bi bi-gear-fill"></i></div>
+                    <h4>Inventar Piese</h4>
+                    <p>Gestiune stocuri cu alerte automate de reaprovizionare și istoric utilizare.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-num">05</div>
+                    <div class="feature-icon-wrap"><i class="bi bi-receipt-cutoff"></i></div>
+                    <h4>Facturare Automată</h4>
+                    <p>Facturi cu TVA 19% calculat automat, plată cu card simulată și evidența încasărilor.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-num">06</div>
+                    <div class="feature-icon-wrap"><i class="bi bi-robot"></i></div>
+                    <h4>Asistent AI</h4>
+                    <p>Chatbot integrat cu LLaMA 3.2 care răspunde în română la întrebări despre datele tale.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="features" id="features">
-        <div style="text-align:center;margin-bottom:56px;">
-            <div class="section-label">Functionalitati</div>
-            <h2 class="section-title">Tot ce ai nevoie pentru service-ul tău</h2>
-            <p class="section-subtitle">O platformă completă care simplifică toate procesele operaționale</p>
-        </div>
-
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="bi bi-people-fill" style="color:#2563eb;"></i>
-                </div>
-                <h4>Gestiune Clienți</h4>
-                <p>Bază de date completă cu clienții service-ului, date de contact și istoricul vizitelor.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="bi bi-car-front-fill" style="color:#16a34a;"></i>
-                </div>
-                <h4>Gestiune Vehicule</h4>
-                <p>Înregistrarea vehiculelor cu marcă, model, VIN, număr de înmatriculare și kilometraj.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="bi bi-calendar-check-fill" style="color:#7c3aed;"></i>
-                </div>
-                <h4>Programări Service</h4>
-                <p>Creare și urmărire programări cu statusuri în timp real: programat, în lucru, finalizat.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="bi bi-gear-fill" style="color:#ea580c;"></i>
-                </div>
-                <h4>Inventar Piese</h4>
-                <p>Gestiunea stocurilor de piese cu alerte automate pentru reaprovizionare și istoric utilizare.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="bi bi-receipt-cutoff" style="color:#16a34a;"></i>
-                </div>
-                <h4>Facturare Automată</h4>
-                <p>Generare facturi cu calcul automat TVA 19%, plată cu card simulată și evidența încasărilor.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="bi bi-bar-chart-fill" style="color:#2563eb;"></i>
-                </div>
-                <h4>Rapoarte & Statistici</h4>
-                <p>Dashboard cu grafice interactive, top clienți, lucrări frecvente și integrare Power BI.</p>
-            </div>
-        </div>
-    </section>
-
-    <footer class="landing-footer">
-        <p>© 2024 AutoService Management Pro — Lucrare de licenta Informatica Economica</p>
+    <footer class="l-footer">
+        <p>© 2026 GarageCare — Lucrare de licență, Informatică Economică, UBB Cluj-Napoca</p>
+        <div class="l-footer-logo">Garage<span>Care</span></div>
     </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script>
-        function switchTab(tab){
-            document.getElementById('form-login').classList.remove('active');
-            document.getElementById('form-register').classList.remove('active');
-            document.getElementById('tab-login').classList.remove('active');
-            document.getElementById('tab-register').classList.remove('active');
+        function togglePass(id,icon) {
+            var input=document.getElementById(id);
+            if(input.type==='password'){
+                input.type='text';
+                icon.classList.replace('bi-eye','bi-eye-slash');
+            } else {
+                input.type='password';
+                icon.classList.replace('bi-eye-slash','bi-eye');
+            }
+        }
+        function switchTab(tab) {
+            ['login','register'].forEach(t => {
+                document.getElementById('form-' + t).classList.remove('active');
+                document.getElementById('tab-' + t).classList.remove('active');
+            });
             document.getElementById('form-' + tab).classList.add('active');
             document.getElementById('tab-' + tab).classList.add('active');
             document.getElementById('auth').scrollIntoView({ behavior: 'smooth' });
         }
-
-        @if(TempData["ShowRegister"]!=null)
+        @if(TempData["ShowRegister"] != null)
         {
-                <text>
-                window.addEventListener('DOMContentLoaded', ()=>switchTab('register'));
-                </text>
+            <text>window.addEventListener('DOMContentLoaded', () => switchTab('register'));</text>
         }
     </script>
-
 </body>
 </html>

@@ -2,7 +2,7 @@
 @using ServiceAutoLicenta.Models.Entities
 @{
     ViewData["Title"] = "Factura " + Model.SerieNumar;
-    Layout = null; // fara sidebar, pagina curata pentru print
+    Layout = null;
 }
 <!DOCTYPE html>
 <html lang="ro">
@@ -33,7 +33,6 @@
             overflow: hidden;
         }
 
-        /* ── Actiuni (nu se printeaza) ── */
         .print-actions {
             background: #0f172a;
             padding: 14px 32px;
@@ -75,12 +74,10 @@
             gap: 6px;
         }
 
-        /* ── Factura ── */
         .invoice {
             padding: 48px;
         }
 
-        /* Header */
         .invoice-header {
             display: flex;
             justify-content: space-between;
@@ -161,7 +158,6 @@
                 color: #0f172a;
             }
 
-        /* Status badge */
         .status-badge {
             display: inline-block;
             padding: 5px 14px;
@@ -186,7 +182,6 @@
             color: #ea580c;
         }
 
-        /* Parti */
         .invoice-parties {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -223,7 +218,6 @@
             line-height: 1.8;
         }
 
-        /* Tabel lucrari */
         .invoice-table {
             width: 100%;
             border-collapse: collapse;
@@ -305,7 +299,6 @@
             margin-left: 4px;
         }
 
-        /* Totaluri */
         .invoice-totals {
             display: flex;
             justify-content: flex-end;
@@ -358,7 +351,6 @@
             color: white;
         }
 
-        /* Plata */
         .payment-info {
             display: flex;
             gap: 24px;
@@ -389,7 +381,6 @@
             color: #0f172a;
         }
 
-        /* Footer factura */
         .invoice-footer {
             border-top: 1px solid #e2e8f0;
             padding-top: 24px;
@@ -417,7 +408,6 @@
             color: #94a3b8;
         }
 
-        /* ── Print CSS ── */
         @@media print {
             body {
                 background: white;
@@ -442,7 +432,6 @@
 </head>
 <body>
 
-    <!-- Butoane actiuni (nu se printeaza) -->
     <div class="print-actions">
         <a href="javascript:history.back()" class="btn-back">
             ← Inapoi
@@ -453,11 +442,9 @@
         </button>
     </div>
 
-    <!-- Factura -->
     <div class="page-wrapper">
         <div class="invoice">
 
-            <!-- Header -->
             <div class="invoice-header">
                 <div class="company-info">
                     <div class="logo">
@@ -496,7 +483,6 @@
                 </div>
             </div>
 
-            <!-- Parti -->
             <div class="invoice-parties">
                 <div class="party-card">
                     <div class="party-label">Furnizor</div>
@@ -533,7 +519,6 @@
                 </div>
             </div>
 
-            <!-- Vehicul -->
             <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 16px;margin-bottom:24px;display:flex;gap:24px;align-items:center;">
                 <div>
                     <div style="font-size:11px;color:#2563eb;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;">Vehicul</div>
@@ -556,7 +541,6 @@
                 </div>
             </div>
 
-            <!-- Tabel lucrari -->
             <table class="invoice-table">
                 <thead>
                     <tr>
@@ -609,7 +593,6 @@
                 </tbody>
             </table>
 
-            <!-- Totaluri -->
             <div class="invoice-totals">
                 <div class="totals-box">
                     <div class="total-row">
@@ -627,7 +610,6 @@
                 </div>
             </div>
 
-            <!-- Info plata -->
             <div class="payment-info">
                 <div class="payment-card">
                     <div class="payment-card-label">Metoda de plata</div>
@@ -649,7 +631,6 @@
                 </div>
             </div>
 
-            <!-- Footer -->
             <div class="invoice-footer">
                 <div class="footer-note">
                     Factura a fost generata electronic prin sistemul AutoService Pro.<br>

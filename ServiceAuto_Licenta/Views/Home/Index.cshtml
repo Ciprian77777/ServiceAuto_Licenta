@@ -1,347 +1,214 @@
-﻿@using ServiceAutoLicenta.Models.Entities
+@using ServiceAutoLicenta.Models.Entities
 @{
-    ViewData["Title"]="Dashboard";
+    ViewData["Title"] = "Dashboard";
+    decimal venLuna = ViewBag.VenituriLuna   ?? 0;
+    decimal venAnt  = ViewBag.VenituriLunaAnt ?? 0;
+    decimal diff    = venAnt > 0 ? Math.Round((venLuna - venAnt) / venAnt * 100, 1) : 0;
 }
 
 <div class="page-header">
-    <div>
+    <div class="page-header-left">
         <h2>Dashboard</h2>
-        <p>Bine ai venit! Iată situația de astăzi.</p>
+        <p>@DateTime.Today.ToString("dd MMMM yyyy")</p>
     </div>
     <a asp-controller="Programari" asp-action="Adauga" class="btn-primary-custom">
         <i class="bi bi-plus-lg"></i> Programare nouă
     </a>
 </div>
 
-<div class="row g-3 mb-4">
-    <div class="col-md-3 col-sm-6">
-        <a asp-controller="Clienti" asp-action="Index" class="text-decoration-none">
-            <div class="stat-card">
-                <div class="stat-icon" style="background:rgba(37,99,235,0.25);">
-                    <i class="bi bi-people-fill" style="color:#2563eb;"></i>
-                </div>
-                <div class="stat-value">@(ViewBag.TotalClienti??0)</div>
-                <div class="stat-label">Total Clienți</div>
-                <div class="stat-change up">
-                    <i class="bi bi-arrow-up-right"></i> activi în sistem
-                </div>
-            </div>
-        </a>
-    </div>
-    <div class="col-md-3 col-sm-6">
-        <a asp-controller="Masini" asp-action="Index" class="text-decoration-none">
-            <div class="stat-card">
-                <div class="stat-icon" style="background:rgba(22,163,74,0.25);">
-                    <i class="bi bi-car-front-fill" style="color:#16a34a;"></i>
-                </div>
-                <div class="stat-value">@(ViewBag.TotalMasini??0)</div>
-                <div class="stat-label">Total Mașini</div>
-                <div class="stat-change up">
-                    <i class="bi bi-arrow-up-right"></i> înregistrate
-                </div>
-            </div>
-        </a>
-    </div>
-    <div class="col-md-3 col-sm-6">
-        <a asp-controller="Facturi" asp-action="Index" class="text-decoration-none">
-            <div class="stat-card">
-                <div class="stat-icon" style="background:rgba(22,163,74,0.25);">
-                    <i class="bi bi-cash-stack" style="color:#16a34a;"></i>
-                </div>
-                <div class="stat-value">@(((decimal)(ViewBag.VenituriLuna??0)).ToString("N0")) lei</div>
-                <div class="stat-label">Venituri luna aceasta</div>
-                @{
-                    decimal diff=0;
-                    try
-                    {
-                        decimal luna=ViewBag.VenituriLuna??0;
-                        decimal lunaAnt=ViewBag.VenituriLunaAnt??0;
-                        diff=lunaAnt > 0? ((luna - lunaAnt) / lunaAnt * 100) : 0;
-                    }
-                    catch { }
-                }
-                @if(diff!=0)
-                {
-                    <div class="stat-change @(diff>=0? "up" : "down")">
-                        <i class="bi bi-arrow-@(diff>=0? "up" : "down")-right"></i>
-                        @Math.Abs(diff).ToString("N1")% față de luna trecută
-                    </div>
-                }
-            </div>
-        </a>
-    </div>
-    <div class="col-md-3 col-sm-6">
-        <a asp-controller="Programari" asp-action="Index" class="text-decoration-none">
-            <div class="stat-card">
-                <div class="stat-icon" style="background:rgba(234,88,12,0.25);">
-                    <i class="bi bi-wrench-adjustable" style="color:#ea580c;"></i>
-                </div>
-                <div class="stat-value">@(ViewBag.ProgramariInLucru??0)</div>
-                <div class="stat-label">Reparații active</div>
-                <div class="stat-change" style="color:#ea580c;">
-                    <i class="bi bi-clock"></i> în lucru acum
-                </div>
-            </div>
-        </a>
-    </div>
-</div>
-
-<div class="row g-4 mb-4">
-    <div class="col-md-8">
-        <div class="content-card">
-            <div class="content-card-header">
-                <div>
-                    <h5>Venituri lunare</h5>
-                    <p>Ultimele 6 luni</p>
-                </div>
-            </div>
-            <div class="p-4">
-                <canvas id="chartVenituri" height="100"></canvas>
-            </div>
+<div style="background:#111;border-top:3px solid #c1272d;padding:18px 24px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;">
+    <div>
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#666;margin-bottom:4px;">Venituri luna curentă</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:38px;font-weight:700;color:#fff;line-height:1;">
+            @venLuna.ToString("N0") <span style="font-size:18px;color:#888;">lei</span>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="content-card">
-            <div class="content-card-header">
-                <div>
-                    <h5>Programări pe status</h5>
-                    <p>Distribuție curentă</p>
-                </div>
-            </div>
-            <div class="p-4">
-                <canvas id="chartStatusuri" height="200"></canvas>
-            </div>
+    @if(diff != 0)
+    {
+    <div style="text-align:right;">
+        <div style="font-size:11px;color:#666;margin-bottom:4px;">față de luna trecută</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;color:@(diff>=0?"#16a34a":"#c1272d");">
+            @(diff >= 0 ? "+" : "")@diff%
         </div>
     </div>
+    }
 </div>
 
-<div class="row g-4 mb-4">
-    <div class="col-md-6">
+@if((ViewBag.AlerteStoc ?? 0) > 0)
+{
+<div class="content-card mb-3">
+    <div class="content-card-header" style="background:#fffbeb;border-bottom-color:#fde68a;">
+        <div style="display:flex;align-items:center;gap:8px;">
+            <i class="bi bi-exclamation-triangle-fill" style="color:#f59e0b;"></i>
+            <h5 style="color:#92400e;">@ViewBag.AlerteStoc piese cu stoc scăzut</h5>
+        </div>
+        <a asp-controller="Piese" asp-action="Index" asp-route-stocScazut="true" class="btn-outline-custom" style="padding:4px 10px;font-size:10px;">
+            Gestionează <i class="bi bi-arrow-right"></i>
+        </a>
+    </div>
+    <table class="custom-table">
+        <thead><tr><th>Piesă</th><th>Cod</th><th>Stoc</th><th>Minim</th><th></th></tr></thead>
+        <tbody>
+        @foreach(var p in ViewBag.PieseStocScazut)
+        {
+            <tr>
+                <td style="font-weight:600;">@p.Denumire</td>
+                <td style="font-size:11px;color:#999;">@p.CodPiesa</td>
+                <td><span class="badge-status badge-neplata">@p.StocCurent buc.</span></td>
+                <td style="color:#aaa;font-size:12px;">@p.StocMinim buc.</td>
+                <td>
+                    <a asp-controller="Piese" asp-action="Detalii" asp-route-id="@p.Id" class="btn-outline-custom" style="padding:3px 9px;font-size:10px;">
+                        <i class="bi bi-box-seam"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+}
+
+<div class="row g-3 mb-3">
+    <div class="col-lg-7">
         <div class="content-card">
             <div class="content-card-header">
-                <div>
-                    <h5>Ultimele programări</h5>
-                    <p>Activitate recentă</p>
-                </div>
-                <a asp-controller="Programari" asp-action="Index" class="btn-outline-custom">
-                    Vezi toate
+                <h5>Ultimele programări</h5>
+                <a asp-controller="Programari" asp-action="Index" class="btn-outline-custom" style="padding:4px 10px;font-size:10px;">
+                    Toate <i class="bi bi-arrow-right"></i>
                 </a>
             </div>
             <table class="custom-table">
                 <thead>
-                    <tr>
-                        <th>Client / Mașină</th>
-                        <th>Data</th>
-                        <th>Status</th>
-                        <th></th>
-                    </tr>
+                    <tr><th>Client / Mașină</th><th>Data</th><th>Status</th><th></th></tr>
                 </thead>
                 <tbody>
-                    @if(ViewBag.UltimeProgramari!=null)
+                @if(ViewBag.UltimeProgramari != null)
+                {
+                    @foreach(var p in ViewBag.UltimeProgramari)
                     {
-                        @foreach(var p in ViewBag.UltimeProgramari)
-                        {
-                            <tr>
-                                <td>
-                                    <div style="display:flex;align-items:center;gap:10px;">
-                                        <div class="client-avatar" style="font-size:11px;">
-                                            @(p.Masina.Client.Nume.Substring(0, 1))@(p.Masina.Client.Prenume.Substring(0, 1))
-                                        </div>
-                                        <div>
-                                            <div style="font-weight:500;">@p.Masina.Client.NumeComplet</div>
-                                            <div style="font-size:12px;color:var(--text-muted);">@p.Masina.NrInmatriculare</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td style="color:var(--text-muted);font-size:13px;">@p.DataIntrare.ToString("dd.MM.yyyy")</td>
-                                <td>
-                                    <span class="badge-status @(p.Status==StatusProgramare.Finalizata? "badge-finalizata" :
-                                                                                                            p.Status==StatusProgramare.InLucru? "badge-inlucru" :
-                                                                                                            p.Status==StatusProgramare.Anulata? "badge-anulata" : "badge-scheduled")">
-                                @p.Status
-                            </span>
+                    <tr>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:9px;">
+                                <div class="client-avatar">@(p.Masina.Client.Nume[0])@(p.Masina.Client.Prenume[0])</div>
+                                <div>
+                                    <div style="font-weight:600;font-size:13px;">@p.Masina.Client.NumeComplet</div>
+                                    <div style="font-size:11px;color:#aaa;">@p.Masina.NrInmatriculare — @p.Masina.Marca @p.Masina.ModelMasina</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="font-size:12px;color:#888;">@p.DataIntrare.ToString("dd.MM.yy")</td>
+                        <td>
+                            <span class="badge-status @(p.Status==StatusProgramare.Finalizata?"badge-finalizata":p.Status==StatusProgramare.InLucru?"badge-inlucru":p.Status==StatusProgramare.Anulata?"badge-anulata":"badge-scheduled")">@p.Status</span>
                         </td>
                         <td>
-                            <a asp-controller="Programari" asp-action="Detalii"
-                               asp-route-id="@p.Id" class="btn-outline-custom" style="padding:5px 10px;">
+                            <a asp-controller="Programari" asp-action="Detalii" asp-route-id="@p.Id" class="btn-outline-custom" style="padding:3px 9px;font-size:10px;">
                                 <i class="bi bi-eye"></i>
                             </a>
                         </td>
                     </tr>
-                                        }
                     }
+                }
                 </tbody>
             </table>
         </div>
     </div>
 
-    <div class="col-md-6">
+    <div class="col-lg-5">
         <div class="content-card">
             <div class="content-card-header">
-                <div>
-                    <h5>Ultimele facturi</h5>
-                    <p>Situație financiară</p>
-                </div>
-                <a asp-controller="Facturi" asp-action="Index" class="btn-outline-custom">
-                    Vezi toate
+                <h5>Ultimele facturi</h5>
+                <a asp-controller="Facturi" asp-action="Index" class="btn-outline-custom" style="padding:4px 10px;font-size:10px;">
+                    Toate <i class="bi bi-arrow-right"></i>
                 </a>
             </div>
             <table class="custom-table">
-                <thead>
-                    <tr>
-                        <th>Client</th>
-                        <th>Serie</th>
-                        <th>Total</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
+                <thead><tr><th>Client</th><th>Total</th><th>Status</th></tr></thead>
                 <tbody>
-                    @if(ViewBag.UltimiFacturi!=null)
+                @if(ViewBag.UltimiFacturi != null)
+                {
+                    @foreach(var f in ViewBag.UltimiFacturi)
                     {
-                        @foreach(var f in ViewBag.UltimiFacturi)
-                        {
-                            <tr>
-                                <td>
-                                    <div style="display:flex;align-items:center;gap:10px;">
-                                        <div class="client-avatar" style="font-size:11px;">
-                                            @(f.Programare.Masina.Client.Nume.Substring(0, 1))@(f.Programare.Masina.Client.Prenume.Substring(0, 1))
-                                        </div>
-                                        <span style="font-weight:500;">@f.Programare.Masina.Client.NumeComplet</span>
-                                    </div>
-                                </td>
-                                <td style="font-size:13px;color:var(--text-muted);">@f.SerieNumar</td>
-                                <td style="font-weight:600;">@f.Total.ToString("N2") lei</td>
-                                <td>
-                                    <span class="badge-status @(f.StatusPlata==StatusPlata.Platita? "badge-platita" :
-                                                                                                            f.StatusPlata==StatusPlata.Partial? "badge-partial" : "badge-neplata")">
-                                @f.StatusPlata
-                            </span>
+                    <tr>
+                        <td>
+                            <div style="font-weight:600;font-size:13px;">@f.Programare.Masina.Client.NumeComplet</div>
+                            <div style="font-size:11px;color:#aaa;">@f.SerieNumar</div>
+                        </td>
+                        <td style="font-weight:700;font-size:13px;">@f.Total.ToString("N0") lei</td>
+                        <td>
+                            <span class="badge-status @(f.StatusPlata==StatusPlata.Platita?"badge-platita":f.StatusPlata==StatusPlata.Partial?"badge-partial":"badge-neplata")">@f.StatusPlata</span>
                         </td>
                     </tr>
-                                        }
                     }
+                }
                 </tbody>
             </table>
         </div>
     </div>
 </div>
 
-@if((ViewBag.AlerteStoc??0) > 0)
-{
-    <div class="content-card mb-4">
-        <div class="content-card-header" style="background:rgba(252,211,77,0.1);border-bottom-color:rgba(252,211,77,0.3);">
-            <div style="display:flex;align-items:center;gap:10px;">
-                <i class="bi bi-exclamation-triangle-fill" style="color:#fcd34d;font-size:18px;"></i>
-                <div>
-                    <h5 style="color:#fcd34d;">Alerte stoc scăzut</h5>
-                    <p style="color:#94a3b8;">@ViewBag.AlerteStoc piese necesită reaprovizionare</p>
-                </div>
+<div class="row g-3 mb-3">
+    <div class="col-lg-8">
+        <div class="content-card">
+            <div class="content-card-header">
+                <div><h5>Venituri lunare</h5><p>Ultimele 6 luni</p></div>
             </div>
-            <a asp-controller="Piese" asp-action="Index" asp-route-stocScazut="true"
-               class="btn-outline-custom">
-                Vezi toate
-            </a>
+            <div style="padding:18px 20px;">
+                <canvas id="chartVenituri" height="90"></canvas>
+            </div>
         </div>
-        <table class="custom-table">
-            <thead>
-                <tr>
-                    <th>Piesă</th>
-                    <th>Cod</th>
-                    <th>Stoc curent</th>
-                    <th>Stoc minim</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @if(ViewBag.PieseStocScazut!=null)
-                {
-                    @foreach(var piesa in ViewBag.PieseStocScazut)
-                    {
-                        <tr>
-                            <td style="font-weight:500;">@piesa.Denumire</td>
-                            <td style="font-size:12px;color:var(--text-muted);">@piesa.CodPiesa</td>
-                            <td>
-                                <span class="badge-status badge-neplata">@piesa.StocCurent buc.</span>
-                            </td>
-                            <td style="color:var(--text-muted);">@piesa.StocMinim buc.</td>
-                            <td>
-                                <a asp-controller="Piese" asp-action="Detalii"
-                                   asp-route-id="@piesa.Id" class="btn-outline-custom" style="padding:5px 10px;">
-                                    <i class="bi bi-box-seam"></i> Actualizează
-                                </a>
-                            </td>
-                        </tr>
-                    }
-                }
-            </tbody>
-        </table>
     </div>
-}
+    <div class="col-lg-4">
+        <div class="content-card h-100">
+            <div class="content-card-header">
+                <div><h5>Programări</h5><p>Distribuție pe status</p></div>
+            </div>
+            <div style="padding:18px;display:flex;align-items:center;justify-content:center;">
+                <canvas id="chartStatusuri" height="170"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <script>
-        const labelsVenituri=@Html.Raw(ViewBag.ProfitLunarLabels??"[]");
-        const dataVenituri=@Html.Raw(ViewBag.ProfitLunarDate??"[]");
-
-        new Chart(document.getElementById('chartVenituri'), {
-            type: 'line',
-            data: {
-                labels: labelsVenituri,
-                datasets: [{
-                    label: 'Venituri (lei)',
-                    data: dataVenituri,
-                    borderColor: '#2563eb',
-                    backgroundColor: 'rgba(37,99,235,0.08)',
-                    borderWidth: 2.5,
-                    fill: true,
-                    tension: 0.4,
-                    pointBackgroundColor: '#2563eb',
-                    pointRadius: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: { color: 'rgba(255,255,255,0.08)' },
-                        ticks: { color: '#94a3b8', callback: v=>v + ' lei' }
-                    },
-                    x: {
-                        grid: { display: false },
-                        ticks: { color: '#94a3b8' }
-                    }
-                }
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+    new Chart(document.getElementById('chartVenituri'), {
+        type: 'bar',
+        data: {
+            labels: @Html.Raw(ViewBag.ProfitLunarLabels ?? "[]"),
+            datasets: [{
+                data: @Html.Raw(ViewBag.ProfitLunarDate ?? "[]"),
+                backgroundColor: '#c1272d',
+                borderRadius: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, grid: { color: '#f2f2f2' }, ticks: { color: '#999', font: { size: 11 }, callback: v => v + ' lei' } },
+                x: { grid: { display: false }, ticks: { color: '#999', font: { size: 11 } } }
             }
-        });
+        }
+    });
 
-        new Chart(document.getElementById('chartStatusuri'), {
-            type: 'doughnut',
-            data: {
-                labels: ['Programată', 'În lucru', 'Finalizată', 'Anulată'],
-                datasets: [{
-                    data: [
-                        @(ViewBag.NrProgramata??0),
-                        @(ViewBag.NrInLucru??0),
-                        @(ViewBag.NrFinalizata??0),
-                        @(ViewBag.NrAnulata??0)
-                    ],
-                    backgroundColor: ['#2563eb', '#ea580c', '#16a34a', '#dc2626'],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: { color: '#94a3b8', font: { size: 12 }, padding: 16 }
-                    }
-                },
-                cutout: '65%'
+    new Chart(document.getElementById('chartStatusuri'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Programată', 'În lucru', 'Finalizată', 'Anulată'],
+            datasets: [{
+                data: [@(ViewBag.NrProgramata??0), @(ViewBag.NrInLucru??0), @(ViewBag.NrFinalizata??0), @(ViewBag.NrAnulata??0)],
+                backgroundColor: ['#1a56db', '#c2410c', '#15803d', '#b91c1c'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            cutout: '65%',
+            plugins: {
+                legend: { position: 'bottom', labels: { color: '#666', font: { size: 11 }, padding: 12, boxWidth: 10 } }
             }
-        });
-    </script>
+        }
+    });
+</script>
 }

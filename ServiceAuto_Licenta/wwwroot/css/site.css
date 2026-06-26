@@ -1,22 +1,64 @@
-html {
-  font-size: 14px;
+html { font-size: 16px; position: relative; min-height: 100%; }
+body { margin-bottom: 0; }
+
+.btn:focus, .btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+  box-shadow: 0 0 0 3px rgba(193,39,45,0.2);
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+.btn-primary {
+  background-color: #c1272d;
+  border-color: #c1272d;
+  border-radius: 6px;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 13px;
+  letter-spacing: 0.04em;
 }
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+.btn-primary:hover, .btn-primary:focus {
+  background-color: #a01f24;
+  border-color: #a01f24;
 }
-
-html {
-  position: relative;
-  min-height: 100%;
+.btn-secondary {
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
+.btn-danger  { background-color: #c1272d; border-color: #c1272d; border-radius: 6px; }
+.btn-success { border-radius: 6px; }
+.btn-warning { border-radius: 6px; }
+.btn-outline-primary { border-color: #c1272d; color: #c1272d; border-radius: 6px; }
+.btn-outline-primary:hover { background-color: #c1272d; border-color: #c1272d; }
+.btn-outline-danger { border-radius: 6px; }
+.btn-sm { font-size: 11px; padding: 5px 12px; }
 
-body {
-  margin-bottom: 60px;
+.card { border-radius: 10px; border-color: #2a2a2a; background: #111; color: #e0e0e0; }
+.card-header { background: #1a1a1a; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 0.04em; border-radius: 10px 10px 0 0 !important; color: #fff; border-color: #2a2a2a; }
+.input-group-text { background: #1a1a1a; border-color: #333; color: #aaa; }
+
+.table thead th {
+  background: #1a1a1a;
+  color: #888;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 2px solid rgba(193,39,45,0.2);
+}
+.table { color: #ddd; }
+
+.form-control, .form-select {
+  border-radius: 6px;
+  border-color: #333;
+  color: #e0e0e0;
+  background: #1a1a1a;
+}
+.form-control:focus, .form-select:focus {
+  border-color: #c1272d;
+  color: #e0e0e0;
+  background: #111;
 }

@@ -21,17 +21,14 @@ namespace ServiceAutoLicenta.Controllers
 
         public async Task<IActionResult> Index(string cautare, bool stocScazut)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
 
             var piese=db.Piese.Where(x=>x.UserId==userId);
 
             if(!string.IsNullOrEmpty(cautare))
             {
                 cautare=cautare.ToLower();
-                piese=piese.Where(x=>
-                    x.Denumire.ToLower().Contains(cautare) ||
-                    x.CodPiesa.ToLower().Contains(cautare) ||
-                    x.Producator.ToLower().Contains(cautare));
+                piese=piese.Where(x=>x.Denumire.ToLower().Contains(cautare)||x.CodPiesa.ToLower().Contains(cautare)||(x.Producator!=null&&x.Producator.ToLower().Contains(cautare)));
             }
 
             if(stocScazut)
@@ -40,21 +37,21 @@ namespace ServiceAutoLicenta.Controllers
             ViewBag.Cautare=cautare;
             ViewBag.StocScazut=stocScazut;
             ViewBag.NrAlerte=await db.Piese
-                .CountAsync(x=>x.UserId==userId&&x.StocCurent<=x.StocMinim);
+            .CountAsync(x=>x.UserId==userId&&x.StocCurent<=x.StocMinim);
 
             return View(await piese.OrderBy(x=>x.Denumire).ToListAsync());
         }
 
         public async Task<IActionResult> Detalii(int id)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
 
             var piesa=await db.Piese
                 .Include(x=>x.LucrarePiese)
-                    .ThenInclude(x=>x.Lucrare)
-                        .ThenInclude(x=>x.Programare)
-                            .ThenInclude(x=>x.Masina)
-                                .ThenInclude(x=>x.Client)
+                .ThenInclude(x=>x.Lucrare)
+                .ThenInclude(x=>x.Programare)
+                .ThenInclude(x=>x.Masina)
+                .ThenInclude(x=>x.Client)
                 .FirstOrDefaultAsync(x=>x.Id==id&&x.UserId==userId);
 
             if(piesa==null) return NotFound();
@@ -71,7 +68,7 @@ namespace ServiceAutoLicenta.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Adauga(Piesa piesa)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
             ModelState.Remove("UserId");
 
             if(ModelState.IsValid)
@@ -95,7 +92,7 @@ namespace ServiceAutoLicenta.Controllers
 
         public async Task<IActionResult> Editeaza(int id)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
 
             var piesa=await db.Piese
                 .FirstOrDefaultAsync(x=>x.Id==id&&x.UserId==userId);
@@ -109,7 +106,7 @@ namespace ServiceAutoLicenta.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Editeaza(int id, Piesa piesa)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
             ModelState.Remove("UserId");
 
             if(id!=piesa.Id) return NotFound();
@@ -135,11 +132,11 @@ namespace ServiceAutoLicenta.Controllers
 
         public async Task<IActionResult> Sterge(int id)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
 
             var piesa=await db.Piese
-                .Include(x=>x.LucrarePiese)
-                .FirstOrDefaultAsync(x=>x.Id==id&&x.UserId==userId);
+            .Include(x=>x.LucrarePiese)
+            .FirstOrDefaultAsync(x=>x.Id==id&&x.UserId==userId);
 
             if(piesa==null) return NotFound();
 
@@ -150,11 +147,11 @@ namespace ServiceAutoLicenta.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmaStergere(int id)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
 
             var piesa=await db.Piese
-                .Include(x=>x.LucrarePiese)
-                .FirstOrDefaultAsync(x=>x.Id==id&&x.UserId==userId);
+            .Include(x=>x.LucrarePiese)
+            .FirstOrDefaultAsync(x=>x.Id==id&&x.UserId==userId);
 
             if(piesa==null) return NotFound();
 
@@ -174,7 +171,7 @@ namespace ServiceAutoLicenta.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ActualizeazaStoc(int id, int cantitate)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
 
             var piesa=await db.Piese
                 .FirstOrDefaultAsync(x=>x.Id==id&&x.UserId==userId);
@@ -186,7 +183,7 @@ namespace ServiceAutoLicenta.Controllers
 
             await db.SaveChangesAsync();
             TempData["Succes"]=$"Stoc actualizat! Stoc curent: {piesa.StocCurent}";
-            return RedirectToAction("Detalii", new { id });
+            return RedirectToAction("Detalii", new {id});
         }
     }
 }

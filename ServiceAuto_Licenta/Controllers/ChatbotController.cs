@@ -30,9 +30,9 @@ namespace ServiceAutoLicenta.Controllers
         {
             if(string.IsNullOrEmpty(request.Message))
                 return Json(new { success=false });
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
             string data=await BuildData(userId);
-            string raspuns=await AskOllama(request.Message, data);
+            string? raspuns=await AskOllama(request.Message, data);
             return Json(new
             {
                 success=true,
@@ -40,7 +40,7 @@ namespace ServiceAutoLicenta.Controllers
             });
         }
 
-        private async Task<string> BuildData(string userId)
+        private async Task<string> BuildData(string? userId)
         {
             StringBuilder sb=new StringBuilder();
             var clienti=await db.Clienti
@@ -51,7 +51,7 @@ namespace ServiceAutoLicenta.Controllers
             sb.AppendLine("CLIENTI");
             foreach(var c in clienti)
             {
-                sb.AppendLine( c.NumeComplet + " | " + c.Telefon);
+                sb.AppendLine(c.NumeComplet + " | " + c.Telefon);
             }
 
             var masini=await db.Masini
@@ -62,7 +62,7 @@ namespace ServiceAutoLicenta.Controllers
 
             foreach(var m in masini)
             {
-                sb.AppendLine( m.Marca + " " +m.ModelMasina + " | " + m.NrInmatriculare );
+                sb.AppendLine(m.Marca + " " +m.ModelMasina + " | " + m.NrInmatriculare);
             }
             var programari=await db.Programari
                 .Include(x=>x.Masina)
@@ -75,7 +75,7 @@ namespace ServiceAutoLicenta.Controllers
 
             foreach(var p in programari)
             {
-                sb.AppendLine( p.Masina.NrInmatriculare + " | " + p.DataIntrare.ToString("dd.MM.yyyy") );
+                sb.AppendLine(p.Masina.NrInmatriculare + " | " + p.DataIntrare.ToString("dd.MM.yyyy"));
             }
 
             var facturi=await db.Facturi
@@ -90,7 +90,7 @@ namespace ServiceAutoLicenta.Controllers
 
             foreach(var f in facturi)
             {
-                sb.AppendLine( f.SerieNumar +" | " + f.Total +" lei" );
+                sb.AppendLine(f.SerieNumar +" | " + f.Total +" lei");
             }
 
             var piese=await db.Piese
@@ -110,9 +110,10 @@ namespace ServiceAutoLicenta.Controllers
             return sb.ToString();
         }
 
-        private async Task<string> AskOllama(string mesaj, string data)
+        private async Task<string?> AskOllama(string mesaj, string data)
         {
             HttpClient client=new HttpClient();
+            client.Timeout=TimeSpan.FromMinutes(5);
             var body=new
             {
                 model="llama3.2",
@@ -121,30 +122,27 @@ namespace ServiceAutoLicenta.Controllers
             };
 
             var json=JsonSerializer.Serialize(body);
-            var content=new StringContent(json,Encoding.UTF8, "application/json" );
+            var content=new StringContent(json,Encoding.UTF8, "application/json");
 
             try
             {
                 var response=await client.PostAsync("http://localhost:11434/api/generate",content);
                 var text=await response.Content.ReadAsStringAsync();
                 using JsonDocument doc=JsonDocument.Parse(text);
-                return doc.RootElement
-                    .GetProperty("response")
-                    .GetString();
+                return doc.RootElement.GetProperty("response").GetString();
+            }
+            catch(TaskCanceledException)
+            {
+                return "Raspunsul a durat prea mult. Incearca o intrebare mai simpla.";
             }
             catch
             {
-                return "Eroare la conectare.";
+                return "Eroare la conectare. Verifica daca Ollama este pornit.";
             }
         }
     }
     public class ChatRequest
     {
-        public string Message { get; set; }
-    }
-    public class ChatMessage
-    {
-        public string Role { get; set; }
-        public string Content { get; set; }
+        public string? Message {get;set;}
     }
 }

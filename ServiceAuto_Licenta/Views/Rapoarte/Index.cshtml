@@ -1,10 +1,10 @@
-﻿@{
+@{
     ViewData["Title"]="Rapoarte";
 }
 
 <div class="page-header">
     <div>
-        <h2>Reports & Analytics</h2>
+        <h2>Rapoarte & Statistici</h2>
         <p>Prezentare generală a performanței business-ului</p>
     </div>
     <div style="display:flex;align-items:center;gap:8px;">
@@ -14,322 +14,309 @@
     </div>
 </div>
 
-<div class="row g-3 mb-4">
-    <div class="col-md-3 col-sm-6">
+<div class="row g-3">
+
+    <div class="col-md-3 d-flex flex-column gap-3">
+        @{
+            decimal venituri = ViewBag.VenituriLuna ?? 0m;
+            decimal profitEstimat = venituri * 0.45m;
+        }
         <div class="stat-card">
             <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
-                <div class="stat-icon" style="background:rgba(37,99,235,0.25);margin-bottom:0;">
-                    <i class="bi bi-cash-stack" style="color:#2563eb;"></i>
+                <div class="stat-icon" style="margin-bottom:0;">
+                    <i class="bi bi-cash-stack"></i>
                 </div>
-                <span style="background:rgba(22,163,74,0.3);color:#86efac;font-size:12px;font-weight:600;padding:3px 8px;border-radius:20px;">
-                    +18%
-                </span>
+                <span style="font-size:12px;font-weight:700;color:#15803d;">+18%</span>
             </div>
-            <div class="stat-value">@(((decimal)(ViewBag.VenituriLuna ?? 0m)).ToString("N0")) lei</div>
+            <div class="stat-value">@venituri.ToString("N0") lei</div>
             <div class="stat-label">Venituri luna aceasta</div>
         </div>
-    </div>
-    <div class="col-md-3 col-sm-6">
+
         <div class="stat-card">
             <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
-                <div class="stat-icon" style="background:rgba(22,163,74,0.25);margin-bottom:0;">
-                    <i class="bi bi-graph-up-arrow" style="color:#16a34a;"></i>
+                <div class="stat-icon" style="margin-bottom:0;">
+                    <i class="bi bi-graph-up-arrow"></i>
                 </div>
-                <span style="background:rgba(22,163,74,0.3);color:#86efac;font-size:12px;font-weight:600;padding:3px 8px;border-radius:20px;">
-                    +22%
-                </span>
+                <span style="font-size:12px;font-weight:700;color:#15803d;">+22%</span>
             </div>
-            <div class="stat-value" style="color:#16a34a;">
-                @{
-                    decimal venituri=ViewBag.VenituriLuna??0;
-                    decimal profitEstimat=venituri * 0.45m;
-                }
-                @profitEstimat.ToString("N0") lei
-            </div>
+            <div class="stat-value">@profitEstimat.ToString("N0") lei</div>
             <div class="stat-label">Profit estimat (45%)</div>
         </div>
-    </div>
-    <div class="col-md-3 col-sm-6">
+
         <div class="stat-card">
             <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
-                <div class="stat-icon" style="background:rgba(124,58,237,0.25);margin-bottom:0;">
-                    <i class="bi bi-people-fill" style="color:#7c3aed;"></i>
+                <div class="stat-icon" style="margin-bottom:0;">
+                    <i class="bi bi-people-fill"></i>
                 </div>
-                <span style="background:rgba(22,163,74,0.3);color:#86efac;font-size:12px;font-weight:600;padding:3px 8px;border-radius:20px;">
-                    +12%
-                </span>
+                <span style="font-size:12px;font-weight:700;color:#15803d;">+12%</span>
             </div>
-            <div class="stat-value">@(ViewBag.TotalClienti??0)</div>
+            <div class="stat-value">@(ViewBag.TotalClienti ?? 0)</div>
             <div class="stat-label">Total clienți</div>
         </div>
-    </div>
-    <div class="col-md-3 col-sm-6">
+
         <div class="stat-card">
             <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
-                <div class="stat-icon" style="background:rgba(234,88,12,0.25);margin-bottom:0;">
-                    <i class="bi bi-wrench-adjustable" style="color:#ea580c;"></i>
+                <div class="stat-icon" style="margin-bottom:0;">
+                    <i class="bi bi-wrench-adjustable"></i>
                 </div>
-                <span style="background:rgba(22,163,74,0.3);color:#86efac;font-size:12px;font-weight:600;padding:3px 8px;border-radius:20px;">
-                    +9%
-                </span>
+                <span style="font-size:12px;font-weight:700;color:#15803d;">+9%</span>
             </div>
-            <div class="stat-value">@(ViewBag.TotalProgramari??0)</div>
+            <div class="stat-value">@(ViewBag.TotalProgramari ?? 0)</div>
             <div class="stat-label">Total programări</div>
         </div>
     </div>
-</div>
 
-<div class="row g-4 mb-4">
-    <div class="col-md-8">
-        <div class="content-card h-100">
-            <div class="content-card-header">
-                <div>
-                    <h5>Revenue vs Profit Trend</h5>
-                    <p>Performanță financiară lunară — ultimele 6 luni</p>
-                </div>
-                @{
-                    decimal venituriLunare=ViewBag.VenituriLuna??0;
-                    decimal mediaLunara=venituriLunare;
-                }
-                <div style="text-align:right;">
-                    <div style="font-size:11px;color:var(--text-muted);">Avg. lunar</div>
-                    <div style="font-size:15px;font-weight:700;color:#2563eb;">@mediaLunara.ToString("N0") lei</div>
+    <div class="col-md-9">
+
+        <div class="row g-4 mb-4">
+            <div class="col-md-8">
+                <div class="content-card h-100">
+                    <div class="content-card-header">
+                        <div>
+                            <h5>Revenue vs Profit Trend</h5>
+                            <p>Performanță financiară lunară — ultimele 6 luni</p>
+                        </div>
+                        <div style="text-align:right;">
+                            <div style="font-size:11px;color:var(--text-muted);">Avg. lunar</div>
+                            <div style="font-size:15px;font-weight:700;color:#2563eb;">@venituri.ToString("N0") lei</div>
+                        </div>
+                    </div>
+                    <div style="padding:20px;">
+                        <canvas id="chartVenituri" height="120"></canvas>
+                    </div>
                 </div>
             </div>
-            <div style="padding:20px;">
-                <canvas id="chartVenituri" height="120"></canvas>
+
+            <div class="col-md-4">
+                <div class="content-card h-100">
+                    <div class="content-card-header">
+                        <div>
+                            <h5>Lucrări frecvente</h5>
+                            <p>Top 5 servicii</p>
+                        </div>
+                    </div>
+                    <div style="padding:20px;">
+                        <canvas id="chartLucrari" height="220"></canvas>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="col-md-4">
-        <div class="content-card h-100">
-            <div class="content-card-header">
-                <div>
-                    <h5>Lucrări frecvente</h5>
-                    <p>Top 5 servicii</p>
-                </div>
-            </div>
-            <div style="padding:20px;">
-                <canvas id="chartLucrari" height="220"></canvas>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row g-4 mb-4">
-    <div class="col-md-6">
-        <div class="content-card">
-            <div class="content-card-header">
-                <div>
-                    <h5>Top 5 piese utilizate</h5>
-                    <p>După cantitate</p>
-                </div>
-            </div>
-            <table class="custom-table">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Piesă</th>
-                        <th>Cantitate</th>
-                        <th>Valoare</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @{
-                        int i=1;
-                    }
-                    @if(ViewBag.PieseTop!=null)
-                    {
-                        @foreach(var piesa in ViewBag.PieseTop)
-                        {
-                            string bgP="#e2e8f0"; string fgP="var(--text-muted)";
-                            if(i==1){bgP="#fbbf24";fgP="white";}
-                            else if(i==2){bgP="#94a3b8";fgP="white";}
-                            else if(i==3){bgP="#cd7c2f";fgP="white";}
+        <div class="row g-4 mb-4">
+            <div class="col-md-6">
+                <div class="content-card">
+                    <div class="content-card-header">
+                        <div>
+                            <h5>Top 5 piese utilizate</h5>
+                            <p>După cantitate</p>
+                        </div>
+                    </div>
+                    <table class="custom-table">
+                        <thead>
                             <tr>
-                                <td>
-                                    <span style="width:24px;height:24px;background:@bgP;color:@fgP;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">
-                                        @i
-                                    </span>
-                                </td>
-                                <td style="font-size:13px;font-weight:500;">@piesa.Denumire</td>
-                                <td style="font-size:13px;">@piesa.TotalCantitate buc.</td>
-                                <td style="font-size:13px;font-weight:600;color:#2563eb;">@piesa.TotalValoare.ToString("N2") lei</td>
+                                <th>#</th>
+                                <th>Piesă</th>
+                                <th>Cantitate</th>
+                                <th>Valoare</th>
                             </tr>
-                            i++;
-                        }
-                    }
-                    @if(i==1)
-                    {
-                        <tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:20px;">Nu există date.</td></tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    </div>
+                        </thead>
+                        <tbody>
+                            @{
+                                int i = 1;
+                            }
+                            @if(ViewBag.PieseTop != null)
+                            {
+                                @foreach(var piesa in ViewBag.PieseTop)
+                                {
+                                    string bgP = "#e2e8f0"; string fgP = "var(--text-muted)";
+                                    if(i == 1){bgP = "#fbbf24"; fgP = "white";}
+                                    else if(i == 2){bgP = "#94a3b8"; fgP = "white";}
+                                    else if(i == 3){bgP = "#cd7c2f"; fgP = "white";}
+                                    <tr>
+                                        <td>
+                                            <span style="width:24px;height:24px;background:@bgP;color:@fgP;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">
+                                                @i
+                                            </span>
+                                        </td>
+                                        <td style="font-size:13px;font-weight:500;">@piesa.Denumire</td>
+                                        <td style="font-size:13px;">@piesa.TotalCantitate buc.</td>
+                                        <td style="font-size:13px;font-weight:600;">@piesa.TotalValoare.ToString("N2") lei</td>
+                                    </tr>
+                                    i++;
+                                }
+                            }
+                            @if(i == 1)
+                            {
+                                <tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:20px;">Nu există date.</td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-    <div class="col-md-6">
-        <div class="content-card">
+            <div class="col-md-6">
+                <div class="content-card">
+                    <div class="content-card-header">
+                        <div>
+                            <h5>Top 5 clienți</h5>
+                            <p>După număr de vizite</p>
+                        </div>
+                    </div>
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Client</th>
+                                <th>Programări</th>
+                                <th>Total cheltuit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                int j = 1;
+                            }
+                            @if(ViewBag.ClientiTop != null)
+                            {
+                                @foreach(var client in ViewBag.ClientiTop)
+                                {
+                                    string bgC = "#e2e8f0"; string fgC = "var(--text-muted)";
+                                    if(j == 1){bgC = "#fbbf24"; fgC = "white";}
+                                    else if(j == 2){bgC = "#94a3b8"; fgC = "white";}
+                                    else if(j == 3){bgC = "#cd7c2f"; fgC = "white";}
+                                    <tr>
+                                        <td>
+                                            <span style="width:24px;height:24px;background:@bgC;color:@fgC;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">
+                                                @j
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div style="display:flex;align-items:center;gap:8px;">
+                                                <div class="client-avatar" style="width:28px;height:28px;font-size:10px;">
+                                                    @(client.Nume.Length >= 2 ? client.Nume.Substring(0, 1) : "?")
+                                                </div>
+                                                <span style="font-size:13px;font-weight:500;">@client.Nume</span>
+                                            </div>
+                                        </td>
+                                        <td style="font-size:13px;">@client.NrProgramari</td>
+                                        <td style="font-size:13px;font-weight:600;">@client.TotalCheltuit.ToString("N2") lei</td>
+                                    </tr>
+                                    j++;
+                                }
+                            }
+                            @if(j == 1)
+                            {
+                                <tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:20px;">Nu există date.</td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-card mb-4">
             <div class="content-card-header">
                 <div>
-                    <h5>Top 5 clienți</h5>
-                    <p>După număr de vizite</p>
+                    <h5>Top 5 lucrări efectuate</h5>
+                    <p>Cele mai frecvente servicii</p>
                 </div>
             </div>
             <table class="custom-table">
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Client</th>
-                        <th>Programări</th>
-                        <th>Total cheltuit</th>
+                        <th>Lucrare</th>
+                        <th>Nr. execuții</th>
+                        <th>Total manoperă</th>
+                        <th>Frecvență</th>
                     </tr>
                 </thead>
                 <tbody>
                     @{
-                        int j=1;
+                        int k = 1; int maxCount = 1;
                     }
-                    @if(ViewBag.ClientiTop!=null)
+                    @if(ViewBag.LucrariTop != null)
                     {
-                        @foreach(var client in ViewBag.ClientiTop)
+                        @foreach(var lucrare in ViewBag.LucrariTop)
                         {
-                            string bgC="#e2e8f0"; string fgC="var(--text-muted)";
-                            if(j==1){bgC="#fbbf24";fgC="white";}
-                            else if(j==2){bgC="#94a3b8";fgC="white";}
-                            else if(j==3){bgC="#cd7c2f";fgC="white";}
+                            if(k == 1) maxCount = lucrare.Count;
+                            string bgLuc = "#e2e8f0"; string fgLuc = "var(--text-muted)";
+                            if(k == 1){bgLuc = "#fbbf24"; fgLuc = "white";}
+                            else if(k == 2){bgLuc = "#94a3b8"; fgLuc = "white";}
+                            else if(k == 3){bgLuc = "#cd7c2f"; fgLuc = "white";}
                             <tr>
                                 <td>
-                                    <span style="width:24px;height:24px;background:@bgC;color:@fgC;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">
-                                        @j
+                                    <span style="width:24px;height:24px;background:@bgLuc;color:@fgLuc;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">
+                                        @k
                                     </span>
                                 </td>
-                                <td>
+                                <td style="font-weight:500;">@lucrare.Denumire</td>
+                                <td style="font-size:13px;">@lucrare.Count execuții</td>
+                                <td style="font-size:13px;font-weight:600;">@lucrare.TotalManopera.ToString("N2") lei</td>
+                                <td style="min-width:150px;">
+                                    @{
+                                        int proc = 0;
+                                        if(maxCount > 0)
+                                            proc = (int)(lucrare.Count * 100.0 / maxCount);
+                                    }
                                     <div style="display:flex;align-items:center;gap:8px;">
-                                        <div class="client-avatar" style="width:28px;height:28px;font-size:10px;">
-                                            @(client.Nume.Length>=2? client.Nume.Substring(0, 1) : "?")
+                                        <div style="flex:1;background:#e2e8f0;border-radius:4px;height:6px;">
+                                            <div style="width:@proc%;height:100%;background:#2563eb;border-radius:4px;"></div>
                                         </div>
-                                        <span style="font-size:13px;font-weight:500;">@client.Nume</span>
+                                        <span style="font-size:12px;color:var(--text-muted);min-width:30px;">@proc%</span>
                                     </div>
                                 </td>
-                                <td style="font-size:13px;">@client.NrProgramari</td>
-                                <td style="font-size:13px;font-weight:600;color:#16a34a;">@client.TotalCheltuit.ToString("N2") lei</td>
                             </tr>
-                            j++;
+                            k++;
                         }
                     }
-                    @if(j==1)
+                    @if(k == 1)
                     {
-                        <tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:20px;">Nu există date.</td></tr>
+                        <tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:20px;">Nu există date.</td></tr>
                     }
                 </tbody>
             </table>
         </div>
-    </div>
-</div>
 
-<div class="content-card mb-4">
-    <div class="content-card-header">
-        <div>
-            <h5>Top 5 lucrări efectuate</h5>
-            <p>Cele mai frecvente servicii</p>
-        </div>
-    </div>
-    <table class="custom-table">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Lucrare</th>
-                <th>Nr. execuții</th>
-                <th>Total manoperă</th>
-                <th>Frecvență</th>
-            </tr>
-        </thead>
-        <tbody>
-            @{
-                int k=1; int maxCount=1;
-            }
-            @if(ViewBag.LucrariTop!=null)
-            {
-                @foreach(var lucrare in ViewBag.LucrariTop)
-                {
-                    if(k==1) maxCount=lucrare.Count;
-                    string bgLuc="#e2e8f0"; string fgLuc="var(--text-muted)";
-                    if(k==1){bgLuc="#fbbf24";fgLuc="white";}
-                    else if(k==2){bgLuc="#94a3b8";fgLuc="white";}
-                    else if(k==3){bgLuc="#cd7c2f";fgLuc="white";}
-                    <tr>
-                        <td>
-                            <span style="width:24px;height:24px;background:@bgLuc;color:@fgLuc;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">
-                                @k
-                            </span>
-                        </td>
-                        <td style="font-weight:500;">@lucrare.Denumire</td>
-                        <td style="font-size:13px;">@lucrare.Count execuții</td>
-                        <td style="font-size:13px;font-weight:600;color:#2563eb;">@lucrare.TotalManopera.ToString("N2") lei</td>
-                        <td style="min-width:150px;">
-                            @{
-                                int proc=0;
-                                if(maxCount > 0)
-                                    proc=(int)(lucrare.Count * 100.0 / maxCount);
-                            }
-                            <div style="display:flex;align-items:center;gap:8px;">
-                                <div style="flex:1;background:#e2e8f0;border-radius:4px;height:6px;">
-                                    <div style="width:@proc%;height:100%;background:#2563eb;border-radius:4px;"></div>
-                                </div>
-                                <span style="font-size:12px;color:var(--text-muted);min-width:30px;">@proc%</span>
-                            </div>
-                        </td>
-                    </tr>
-                    k++;
-                }
-            }
-            @if(k==1)
-            {
-                <tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:20px;">Nu există date.</td></tr>
-            }
-        </tbody>
-    </table>
-</div>
-
-<div class="row g-4">
-    <div class="col-md-6">
-        <div class="content-card">
-            <div class="content-card-header">
-                <div>
-                    <h5>Distribuție programări</h5>
-                    <p>După status</p>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="content-card">
+                    <div class="content-card-header">
+                        <div>
+                            <h5>Distribuție programări</h5>
+                            <p>După status</p>
+                        </div>
+                    </div>
+                    <div style="padding:20px;">
+                        <canvas id="chartStatusuri" height="200"></canvas>
+                    </div>
                 </div>
             </div>
-            <div style="padding:20px;">
-                <canvas id="chartStatusuri" height="200"></canvas>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="content-card">
-            <div class="content-card-header">
-                <div>
-                    <h5>Situație facturi</h5>
-                    <p>Încasate vs neîncasate</p>
+            <div class="col-md-6">
+                <div class="content-card">
+                    <div class="content-card-header">
+                        <div>
+                            <h5>Situație facturi</h5>
+                            <p>Încasate vs neîncasate</p>
+                        </div>
+                    </div>
+                    <div style="padding:20px;">
+                        <canvas id="chartFacturi" height="200"></canvas>
+                    </div>
                 </div>
             </div>
-            <div style="padding:20px;">
-                <canvas id="chartFacturi" height="200"></canvas>
-            </div>
         </div>
+
     </div>
 </div>
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script>
-        const gridColor='rgba(0,0,0,0.05)';
-        const textColor='#64748b';
+        const gridColor = 'rgba(0,0,0,0.05)';
+        const textColor = '#64748b';
 
-        // Grafic venituri lunare
-        const labelsVenituri=@Html.Raw(ViewBag.ProfitLunarLabels??"[]");
-        const dataVenituri=@Html.Raw(ViewBag.ProfitLunarDate??"[]");
+        const labelsVenituri = @Html.Raw(ViewBag.ProfitLunarLabels ?? "[]");
+        const dataVenituri = @Html.Raw(ViewBag.ProfitLunarDate ?? "[]");
 
         new Chart(document.getElementById('chartVenituri'), {
             type: 'line',
@@ -345,18 +332,20 @@
                         fill: true,
                         tension: 0.4,
                         pointBackgroundColor: '#2563eb',
-                        pointRadius: 4
+                        pointRadius: 4,
+                        pointStyle: 'rect'
                     },
                     {
                         label: 'Profit estimat',
-                        data: dataVenituri.map(v=>Math.round(v * 0.45)),
+                        data: dataVenituri.map(v => Math.round(v * 0.45)),
                         borderColor: '#16a34a',
                         backgroundColor: 'rgba(22,163,74,0.06)',
                         borderWidth: 2,
                         fill: true,
                         tension: 0.4,
                         pointBackgroundColor: '#16a34a',
-                        pointRadius: 4
+                        pointRadius: 4,
+                        pointStyle: 'rect'
                     }
                 ]
             },
@@ -365,23 +354,22 @@
                 plugins: {
                     legend: {
                         position: 'bottom',
-                        labels: { color: textColor, font: { size: 12 }, padding: 16 }
+                        labels: { color: textColor, font: { size: 12 }, padding: 16, boxWidth: 10, usePointStyle: true }
                     }
                 },
                 scales: {
                     y: {
                         beginAtZero: true,
                         grid: { color: gridColor },
-                        ticks: { color: textColor, callback: v=>v + ' lei' }
+                        ticks: { color: textColor, callback: v => v + ' lei' }
                     },
                     x: { grid: { display: false }, ticks: { color: textColor } }
                 }
             }
         });
 
-        // Grafic lucrări frecvente
-        const labelsLucrari=@Html.Raw(ViewBag.LucrariTopLabels??"[]");
-        const dataLucrari=@Html.Raw(ViewBag.LucrariTopDate??"[]");
+        const labelsLucrari = @Html.Raw(ViewBag.LucrariTopLabels ?? "[]");
+        const dataLucrari = @Html.Raw(ViewBag.LucrariTopDate ?? "[]");
 
         new Chart(document.getElementById('chartLucrari'), {
             type: 'doughnut',
@@ -389,7 +377,7 @@
                 labels: labelsLucrari,
                 datasets: [{
                     data: dataLucrari,
-                    backgroundColor: ['#2563eb','#16a34a','#ea580c','#7c3aed','#94a3b8'],
+                    backgroundColor: ['#2563eb', '#16a34a', '#ea580c', '#7c3aed', '#94a3b8'],
                     borderWidth: 0
                 }]
             },
@@ -398,24 +386,23 @@
                 plugins: {
                     legend: {
                         position: 'bottom',
-                        labels: { color: textColor, font: { size: 11 }, padding: 12 }
+                        labels: { color: textColor, font: { size: 11 }, padding: 12, boxWidth: 10 }
                     }
                 },
                 cutout: '65%'
             }
         });
 
-        // Grafic statusuri programări
         new Chart(document.getElementById('chartStatusuri'), {
             type: 'doughnut',
             data: {
                 labels: ['Programată', 'În lucru', 'Finalizată', 'Anulată'],
                 datasets: [{
                     data: [
-                        @(ViewBag.NrProgramata??0),
-                        @(ViewBag.NrInLucru??0),
-                        @(ViewBag.NrFinalizata??0),
-                        @(ViewBag.NrAnulata??0)
+                        @(ViewBag.NrProgramata ?? 0),
+                        @(ViewBag.NrInLucru ?? 0),
+                        @(ViewBag.NrFinalizata ?? 0),
+                        @(ViewBag.NrAnulata ?? 0)
                     ],
                     backgroundColor: ['#2563eb', '#ea580c', '#16a34a', '#ef4444'],
                     borderWidth: 0
@@ -426,23 +413,22 @@
                 plugins: {
                     legend: {
                         position: 'bottom',
-                        labels: { color: textColor, font: { size: 12 }, padding: 16 }
+                        labels: { color: textColor, font: { size: 12 }, padding: 16, boxWidth: 10 }
                     }
                 },
                 cutout: '65%'
             }
         });
 
-        // Grafic facturi
         new Chart(document.getElementById('chartFacturi'), {
             type: 'doughnut',
             data: {
                 labels: ['Plătite', 'Neîncasate', 'Parțial'],
                 datasets: [{
                     data: [
-                        @(ViewBag.NrPlatite??0),
-                        @(ViewBag.NrNeplata??0),
-                        @(ViewBag.NrPartial??0)
+                        @(ViewBag.NrPlatite ?? 0),
+                        @(ViewBag.NrNeplata ?? 0),
+                        @(ViewBag.NrPartial ?? 0)
                     ],
                     backgroundColor: ['#16a34a', '#ef4444', '#ea580c'],
                     borderWidth: 0
@@ -453,7 +439,7 @@
                 plugins: {
                     legend: {
                         position: 'bottom',
-                        labels: { color: textColor, font: { size: 12 }, padding: 16 }
+                        labels: { color: textColor, font: { size: 12 }, padding: 16, boxWidth: 10 }
                     }
                 },
                 cutout: '65%'

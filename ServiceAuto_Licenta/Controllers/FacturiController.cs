@@ -21,22 +21,18 @@ namespace ServiceAutoLicenta.Controllers
 
         public async Task<IActionResult> Index(string cautare, string status)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
 
             var facturi=db.Facturi
                 .Include(x=>x.Programare)
-                    .ThenInclude(x=>x.Masina)
-                        .ThenInclude(x=>x.Client)
+                .ThenInclude(x=>x.Masina)
+                .ThenInclude(x=>x.Client)
                 .Where(x=>x.Programare.Masina.Client.UserId==userId);
 
             if(!string.IsNullOrEmpty(cautare))
             {
                 cautare=cautare.ToLower();
-                facturi=facturi.Where(x=>
-                    x.SerieNumar.ToLower().Contains(cautare) ||
-                    x.Programare.Masina.Client.Nume.ToLower().Contains(cautare) ||
-                    x.Programare.Masina.Client.Prenume.ToLower().Contains(cautare) ||
-                    x.Programare.Masina.NrInmatriculare.ToLower().Contains(cautare));
+                facturi=facturi.Where(x=>x.SerieNumar.ToLower().Contains(cautare)||x.Programare.Masina.Client.Nume.ToLower().Contains(cautare)||x.Programare.Masina.Client.Prenume.ToLower().Contains(cautare)||x.Programare.Masina.NrInmatriculare.ToLower().Contains(cautare));
             }
 
             if(!string.IsNullOrEmpty(status)&&Enum.TryParse<StatusPlata>(status, out var statusEnum))
@@ -53,7 +49,7 @@ namespace ServiceAutoLicenta.Controllers
 
         public async Task<IActionResult> Detalii(int id)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
 
             var factura=await db.Facturi
                 .Include(x=>x.Programare)
@@ -69,7 +65,7 @@ namespace ServiceAutoLicenta.Controllers
 
         public async Task<IActionResult> Genereaza(int programareId)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
 
             var programare=await db.Programari
                 .Include(x=>x.Masina).ThenInclude(x=>x.Client)
@@ -122,7 +118,7 @@ namespace ServiceAutoLicenta.Controllers
                 return RedirectToAction("Detalii", new { id=factura.Id });
             }
 
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
             var programare=await db.Programari
                 .Include(x=>x.Masina).ThenInclude(x=>x.Client)
                 .Include(x=>x.Lucrari).ThenInclude(x=>x.LucrarePiese).ThenInclude(x=>x.Piesa)
@@ -136,7 +132,7 @@ namespace ServiceAutoLicenta.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ActualizeazaStatus(int id, StatusPlata statusPlata, MetodaPlata? metodaPlata)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
 
             var factura=await db.Facturi
                 .Include(x=>x.Programare).ThenInclude(x=>x.Masina).ThenInclude(x=>x.Client)
@@ -149,12 +145,12 @@ namespace ServiceAutoLicenta.Controllers
             await db.SaveChangesAsync();
 
             TempData["Succes"]="Statusul facturii a fost actualizat!";
-            return RedirectToAction("Detalii", new { id });
+            return RedirectToAction("Detalii", new {id});
         }
 
         public async Task<IActionResult> PlataCard(int id)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
 
             var factura=await db.Facturi
                 .Include(x=>x.Programare).ThenInclude(x=>x.Masina).ThenInclude(x=>x.Client)
@@ -165,7 +161,7 @@ namespace ServiceAutoLicenta.Controllers
             if(factura.StatusPlata==StatusPlata.Platita)
             {
                 TempData["Eroare"]="Factura este deja platita!";
-                return RedirectToAction("Detalii", new { id });
+                return RedirectToAction("Detalii", new {id});
             }
 
             return View(factura);
@@ -175,7 +171,7 @@ namespace ServiceAutoLicenta.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> PlataCard(int id, string numarCard, string titular, string expirare, string cvv)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
 
             var factura=await db.Facturi
                 .Include(x=>x.Programare).ThenInclude(x=>x.Masina).ThenInclude(x=>x.Client)
@@ -192,12 +188,12 @@ namespace ServiceAutoLicenta.Controllers
             await db.SaveChangesAsync();
 
             TempData["Succes"]=$"Plata procesata cu succes! ID tranzactie: {idTranzactie}";
-            return RedirectToAction("Detalii", new { id });
+            return RedirectToAction("Detalii", new {id});
         }
 
         public async Task<IActionResult> Print(int id)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
 
             var factura=await db.Facturi
                 .Include(x=>x.Programare).ThenInclude(x=>x.Masina).ThenInclude(x=>x.Client)
@@ -211,7 +207,7 @@ namespace ServiceAutoLicenta.Controllers
 
         public async Task<IActionResult> Sterge(int id)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
 
             var factura=await db.Facturi
                 .Include(x=>x.Programare).ThenInclude(x=>x.Masina).ThenInclude(x=>x.Client)
@@ -226,7 +222,7 @@ namespace ServiceAutoLicenta.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmaStergere(int id)
         {
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
 
             var factura=await db.Facturi
                 .Include(x=>x.Programare).ThenInclude(x=>x.Masina).ThenInclude(x=>x.Client)

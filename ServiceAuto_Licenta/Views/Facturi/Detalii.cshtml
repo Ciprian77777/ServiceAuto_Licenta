@@ -18,8 +18,7 @@
             <p>Emisă pe @Model.DataEmitere.ToString("dd MMMM yyyy")</p>
         </div>
     </div>
-    <span class="badge-status @(Model.StatusPlata==StatusPlata.Platita? "badge-platita" :
-                                           Model.StatusPlata==StatusPlata.Partial? "badge-partial" : "badge-neplata")"
+    <span class="badge-status @(Model.StatusPlata==StatusPlata.Platita?"badge-platita":Model.StatusPlata==StatusPlata.Partial?"badge-partial":"badge-neplata")"
           style="font-size:14px;padding:8px 16px;">
         @Model.StatusPlata
     </span>
@@ -78,9 +77,9 @@
 
         @if(Model.StatusPlata!=StatusPlata.Platita)
         {
-            <div class="content-card" style="border:1.5px solid #86efac;">
-                <div class="content-card-header" style="background:rgba(22,163,74,0.15);">
-                    <h5 style="color:#86efac;"><i class="bi bi-cash me-2"></i>Înregistrează plata</h5>
+            <div class="content-card">
+                <div class="content-card-header">
+                    <h5><i class="bi bi-cash me-2"></i>Înregistrează plata</h5>
                 </div>
                 <div style="padding:16px;">
                     <form asp-action="ActualizeazaStatus" method="post">
@@ -96,7 +95,7 @@
                                 <option value="">-- Metodă plată --</option>
                             </select>
                         </div>
-                        <button type="submit" class="btn-primary-custom" style="width:100%;justify-content:center;background:#16a34a;">
+                        <button type="submit" class="btn-primary-custom" style="width:100%;justify-content:center;">
                             <i class="bi bi-check-lg"></i> Salvează plata
                         </button>
                     </form>

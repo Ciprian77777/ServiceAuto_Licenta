@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using ServiceAutoLicenta.Data;
+using ServiceAutoLicenta.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
@@ -11,9 +13,12 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options=>{
     options.Password.RequiredLength = 6;
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequireUppercase = false;
+    options.SignIn.RequireConfirmedEmail = true;
 })
 .AddEntityFrameworkStores<ServiceAutoLicentaContext>()
 .AddDefaultTokenProviders();
+
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 builder.Services.ConfigureApplicationCookie(options=>{
     options.LoginPath = "/Landing/Index";

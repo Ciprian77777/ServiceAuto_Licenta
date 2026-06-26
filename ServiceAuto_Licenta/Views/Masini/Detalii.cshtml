@@ -108,9 +108,7 @@
                                 <td>@prog.DataIntrare.ToString("dd.MM.yyyy")</td>
                                 <td style="color:var(--text-muted);">@(prog.DataIesire?.ToString("dd.MM.yyyy")??"-")</td>
                                 <td>
-                                    <span class="badge-status @(prog.Status==StatusProgramare.Finalizata? "badge-finalizata" :
-                                                                                                            prog.Status==StatusProgramare.InLucru? "badge-inlucru" :
-                                                                                                            prog.Status==StatusProgramare.Anulata? "badge-anulata" : "badge-scheduled")">
+                                    <span class="badge-status @(prog.Status==StatusProgramare.Finalizata?"badge-finalizata":prog.Status==StatusProgramare.InLucru?"badge-inlucru":prog.Status==StatusProgramare.Anulata?"badge-anulata":"badge-scheduled")">
                                 @prog.Status
                             </span>
                         </td>

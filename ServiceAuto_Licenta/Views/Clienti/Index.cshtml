@@ -5,7 +5,7 @@
 
 <div class="page-header">
     <div>
-        <h2>Client Management</h2>
+        <h2>Clienți</h2>
         <p>Gestionează baza de date de clienți</p>
     </div>
     <a asp-action="Adauga" class="btn-primary-custom">
@@ -28,51 +28,31 @@
     </div>
 }
 
-<div class="row g-3 mb-4">
-    <div class="col-md-4">
+<div class="page-with-stats">
+    <aside class="pstats">
         <div class="stat-card">
-            <div style="display:flex;align-items:center;gap:16px;">
-                <div class="stat-icon" style="background:rgba(37,99,235,0.25);margin-bottom:0;">
-                    <i class="bi bi-people-fill" style="color:#2563eb;"></i>
-                </div>
-                <div>
-                    <div class="stat-value" style="font-size:22px;">@Model.Count()</div>
-                    <div class="stat-label">Total Clienți</div>
-                </div>
-            </div>
+            <div class="stat-icon"><i class="bi bi-people-fill"></i></div>
+            <div class="stat-value">@Model.Count()</div>
+            <div class="stat-label">Total Clienți</div>
         </div>
-    </div>
-    <div class="col-md-4">
         <div class="stat-card">
-            <div style="display:flex;align-items:center;gap:16px;">
-                <div class="stat-icon" style="background:rgba(22,163,74,0.25);margin-bottom:0;">
-                    <i class="bi bi-car-front-fill" style="color:#16a34a;"></i>
-                </div>
-                <div>
-                    <div class="stat-value" style="font-size:22px;">@Model.Sum(c=>c.Masini.Count)</div>
-                    <div class="stat-label">Total Mașini</div>
-                </div>
-            </div>
+            <div class="stat-icon"><i class="bi bi-car-front-fill"></i></div>
+            <div class="stat-value">@Model.Sum(c=>c.Masini.Count)</div>
+            <div class="stat-label">Total Mașini</div>
         </div>
-    </div>
-    <div class="col-md-4">
         <div class="stat-card">
-            <div style="display:flex;align-items:center;gap:16px;">
-                <div class="stat-icon" style="background:rgba(124,58,237,0.25);margin-bottom:0;">
-                    <i class="bi bi-person-plus-fill" style="color:#7c3aed;"></i>
-                </div>
-                <div>
-                    <div class="stat-value" style="font-size:22px;">
-                        @Model.Count(c=>c.CreatedAt>=DateTime.Now.AddMonths(-1))
-                    </div>
-                    <div class="stat-label">Noi luna aceasta</div>
-                </div>
-            </div>
+            <div class="stat-icon"><i class="bi bi-person-plus-fill"></i></div>
+            <div class="stat-value">@Model.Count(c=>c.CreatedAt>=DateTime.Now.AddMonths(-1))</div>
+            <div class="stat-label">Noi luna aceasta</div>
         </div>
-    </div>
-</div>
-
-<div class="content-card">
+        <div class="stat-card">
+            <div class="stat-icon"><i class="bi bi-person-check"></i></div>
+            <div class="stat-value">@Model.Count(c=>c.Masini.Any())</div>
+            <div class="stat-label">Cu mașini active</div>
+        </div>
+    </aside>
+    <div class="pmain">
+    <div class="content-card">
     <div class="content-card-header">
         <form method="get" class="d-flex gap-2 align-items-center">
             <div style="position:relative;">
@@ -151,10 +131,8 @@
                                 <span>-</span>
                             }
                         </td>
-                        <td>
-                            <span style="background:rgba(37,99,235,0.3);color:#93c5fd;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;">
-                                @client.Masini.Count
-                            </span>
+                        <td style="font-size:13px;font-weight:600;color:#333;">
+                            @client.Masini.Count
                         </td>
                         <td style="font-size:13px;color:var(--text-muted);">
                             @client.CreatedAt.ToString("MMM dd, yyyy")
@@ -180,4 +158,6 @@
             </tbody>
         </table>
     }
+</div>
+    </div>
 </div>

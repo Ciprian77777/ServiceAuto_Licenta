@@ -1,0 +1,63 @@
+@model ServiceAutoLicenta.ViewComponents.StatsModel
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+<div class="gs-sidebar">
+
+    <a asp-controller="Clienti" asp-action="Index" class="gs-item">
+        <i class="bi bi-people-fill gs-icon"></i>
+        <div class="gs-num">@Model.TotalClienti</div>
+        <div class="gs-label">Clienți</div>
+    </a>
+
+    <a asp-controller="Masini" asp-action="Index" class="gs-item">
+        <i class="bi bi-car-front-fill gs-icon"></i>
+        <div class="gs-num">@Model.TotalMasini</div>
+        <div class="gs-label">Mașini</div>
+    </a>
+
+    <div class="gs-divider"></div>
+
+    <a asp-controller="Programari" asp-action="Index" asp-route-status="Programata" class="gs-item">
+        <i class="bi bi-calendar-plus gs-icon" style="color:#1a56db;"></i>
+        <div class="gs-num" style="color:#1a56db;">@Model.Programate</div>
+        <div class="gs-label">Programate</div>
+    </a>
+
+    <a asp-controller="Programari" asp-action="Index" asp-route-status="InLucru" class="gs-item">
+        <i class="bi bi-wrench-adjustable gs-icon" style="color:#c2410c;"></i>
+        <div class="gs-num" style="color:#c2410c;">@Model.InLucru</div>
+        <div class="gs-label">În lucru</div>
+    </a>
+
+    <a asp-controller="Programari" asp-action="Index" asp-route-status="Finalizata" class="gs-item">
+        <i class="bi bi-check2-circle gs-icon" style="color:#15803d;"></i>
+        <div class="gs-num" style="color:#15803d;">@Model.Finalizate</div>
+        <div class="gs-label">Finalizate</div>
+    </a>
+
+    <div class="gs-divider"></div>
+
+    <a asp-controller="Facturi" asp-action="Index" asp-route-status="Neplata" class="gs-item">
+        <i class="bi bi-receipt gs-icon" style="color:#b91c1c;"></i>
+        <div class="gs-num" style="color:#b91c1c;">@Model.FacturiNeplatite</div>
+        <div class="gs-label">Neîncasate</div>
+    </a>
+
+    @if(Model.AlerteStoc > 0)
+    {
+    <a asp-controller="Piese" asp-action="Index" asp-route-stocScazut="true" class="gs-item gs-alert">
+        <i class="bi bi-exclamation-triangle gs-icon" style="color:#f59e0b;"></i>
+        <div class="gs-num" style="color:#f59e0b;">@Model.AlerteStoc</div>
+        <div class="gs-label">Stoc scăzut</div>
+    </a>
+    }
+
+    <div class="gs-divider"></div>
+
+    <div class="gs-item gs-venituri">
+        <i class="bi bi-cash-stack gs-icon" style="color:#15803d;"></i>
+        <div class="gs-num gs-venituri-num">@Model.VenituriLuna.ToString("N0")</div>
+        <div class="gs-label">lei / luna</div>
+    </div>
+
+</div>

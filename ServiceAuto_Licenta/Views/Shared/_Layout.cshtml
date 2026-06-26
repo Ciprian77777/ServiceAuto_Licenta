@@ -1,673 +1,427 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ro">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - ServiceAuto</title>
+    <title>@ViewData["Title"] - GarageCare</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <style>
-        :root {
-            --sidebar-bg:#0f172a;
-            --sidebar-width:250px;
-            --sidebar-text:#94a3b8;
-            --sidebar-text-hover:#f1f5f9;
-            --sidebar-active-bg:#2563eb;
-            --sidebar-section:#475569;
-            --topbar-height:64px;
-            --body-bg:#1e293b;
-            --card-bg:#0f172a;
-            --text-primary:#f1f5f9;
-            --text-muted:#94a3b8;
-            --border-color:rgba(255,255,255,0.1);
-            --blue:#2563eb;
-            --green:#16a34a;
-            --orange:#ea580c;
-            --purple:#7c3aed;
+        :root{
+            --red:#c1272d;
+            --red-dark:#a01f24;
+            --black:#111111;
+            --body-bg:#111111;
+            --card-bg:#1a1a1a;
+            --text:#e0e0e0;
+            --muted:#888888;
+            --border:#2a2a2a;
+            --nav-h:56px;
+            --sub-h:42px;
+            --text-primary:var(--text);
+            --text-muted:var(--muted);
+            --border-color:var(--border);
+            --bs-body-bg:var(--body-bg);
+            --bs-body-color:var(--text);
+            --bs-card-bg:var(--body-bg);
+            --bs-card-border-color:var(--border);
+            --bs-card-cap-bg:var(--card-bg);
+            --bs-border-color:var(--border);
+            --bs-secondary-color:var(--muted);
+            --bs-input-group-addon-bg:var(--card-bg);
+            --bs-input-group-addon-border-color:var(--border);
+            --bs-input-group-addon-color:var(--muted);
         }
-        * {
-            box-sizing:border-box;
-        }
-        body {
-            margin:0;
-            font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background:var(--body-bg);
-            color:var(--text-primary);
-        }
-
-
-        .sidebar {
-            position:fixed;
-            top:0;
-            left:0;
-            width:var(--sidebar-width);
-            height:100vh;
-            background:var(--sidebar-bg);
-            display:flex;
-            flex-direction:column;
-            z-index:100;
-            overflow-y:auto;
+        *{box-sizing:border-box;margin:0;padding:0;}
+        body{
+            font-family:'Inter',sans-serif;
+            background-color:#111;
+            background-image:linear-gradient(rgba(0,0,0,0.55),rgba(0,0,0,0.55)),url('/images/hero-garage.png');
+            background-size:cover;
+            background-position:center;
+            background-attachment:fixed;
+            color:var(--text);
+            padding-top:calc(var(--nav-h) + var(--sub-h));
         }
 
-        .sidebar-logo {
-            display:flex;
-            align-items:center;
-            gap:12px;
-            padding:20px 20px 24px;
-            border-bottom:1px solid rgba(255,255,255,0.08);
-        }
-
-        .sidebar-logo-icon {
-            width:40px;
-            height:40px;
-            background:var(--blue);
-            border-radius:10px;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            color:white;
-            font-size:18px;
-            flex-shrink:0;
-        }
-
-        .sidebar-logo-text {
-            line-height:1.2;
-        }
-
-        .sidebar-logo-text strong {
-                color:#f1f5f9;
-                font-size:15px;
-                display:block;
-            }
-        .sidebar-logo-text span {
-                color:#2563eb;
-                font-size:12px;
-            }
-
-        .sidebar-section-label {
-            padding:20px 20px 8px;
-            font-size:11px;
-            font-weight:600;
-            text-transform:uppercase;
-            letter-spacing:0.08em;
-            color:var(--sidebar-section);
-        }
-
-        .sidebar-nav {
-            padding:0 12px;
-        }
-        .sidebar-link {
-            display:flex;
-            align-items:center;
-            gap:12px;
-            padding:10px 12px;
-            border-radius:8px;
-            color:var(--sidebar-text);
-            text-decoration:none;
-            font-size:14px;
-            font-weight:500;
-            margin-bottom:2px;
-            transition:all 0.15s ease;
-        }
-
-            .sidebar-link:hover {
-                background:rgba(255,255,255,0.07);
-                color:var(--sidebar-text-hover);
-            }
-            .sidebar-link.active {
-                background:var(--sidebar-active-bg);
-                color:#ffffff;
-            }
-            .sidebar-link i {
-                font-size:16px;
-                width:20px;
-                text-align:center;
-            }
-        .sidebar-bottom {
-            margin-top:auto;
-            padding:16px 12px;
-            border-top:1px solid rgba(255,255,255,0.08);
-        }
-
-            .sidebar-bottom .sidebar-link {
-                margin-bottom:0;
-            }
-
-        
-        .topbar {
-            position:fixed;
-            top:0;
-            left:var(--sidebar-width);
-            right:0;
-            height:var(--topbar-height);
-            background:#0f172a;
-            border-bottom:1px solid rgba(255,255,255,0.08);
-            display:flex;
-            align-items:center;
+        .gc-topnav{
+            position:fixed;top:0;left:0;right:0;z-index:200;
+            height:var(--nav-h);
+            background:var(--black);
+            border-bottom:2px solid var(--red);
+            display:flex;align-items:center;
             justify-content:space-between;
-            padding:0 28px;
-            z-index:99;
-        }
-        .topbar-left h1 {
-            font-size:18px;
-            font-weight:600;
-            margin:0;
-            color:#f1f5f9;
-        }
-        .topbar-left p {
-            font-size:13px;
-            color:#94a3b8;
-            margin:0;
-        }
-        .topbar-right {
-            display:flex;
-            align-items:center;
-            gap:16px;
-        }
-        .topbar-search {
-            position:relative;
+            padding:0 32px;
+            gap:24px;
         }
 
-            .topbar-search input {
-                background:var(--body-bg);
-                border:1px solid var(--border-color);
-                border-radius:8px;
-                padding:8px 16px 8px 36px;
-                font-size:13px;
-                color:var(--text-primary);
-                width:220px;
-                outline:none;
-            }
+        .gc-logo{
+            display:flex;align-items:center;gap:8px;
+            text-decoration:none;flex-shrink:0;
+        }
+        .gc-logo-bar{width:4px;height:28px;background:var(--red);}
+        .gc-logo-text strong{
+            font-family:'Barlow Condensed',sans-serif;
+            font-size:22px;font-weight:700;color:#fff;
+            letter-spacing:0.03em;display:block;line-height:1;
+        }
+        .gc-logo-text small{
+            font-size:9px;color:var(--red);
+            text-transform:uppercase;letter-spacing:0.1em;
+        }
 
-                .topbar-search input:focus {
-                    border-color:var(--blue);
-                }
+        .gc-search{position:relative;flex-shrink:0;}
+        .gc-search i{
+            position:absolute;left:10px;top:50%;
+            transform:translateY(-50%);
+            color:#666;font-size:13px;pointer-events:none;
+        }
+        .gc-search input{
+            background:#1e1e1e;border:1px solid #2a2a2a;
+            border-radius:6px;padding:7px 12px 7px 30px;
+            font-size:13px;color:#fff;width:200px;outline:none;
+            transition:border-color .15s;
+        }
+        .gc-search input::placeholder{color:#555;}
+        .gc-search input:focus{border-color:var(--red);}
 
-            .topbar-search i {
-                position:absolute;
-                left:12px;
-                top:50%;
-                transform:translateY(-50%);
-                color:var(--text-muted);
-                font-size:14px;
-            }
+        .gc-nav-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+        .gc-icon-btn{
+            width:32px;height:32px;
+            background:#1e1e1e;border:1px solid #2a2a2a;
+            border-radius:6px;display:flex;
+            align-items:center;justify-content:center;
+            color:#888;cursor:pointer;text-decoration:none;
+            font-size:14px;position:relative;
+            transition:all .12s;
+        }
+        .gc-icon-btn:hover{background:var(--red);border-color:var(--red);color:#fff;}
+        .gc-badge{
+            position:absolute;top:-4px;right:-4px;
+            width:15px;height:15px;
+            background:var(--red);border-radius:50%;
+            font-size:9px;color:#fff;font-weight:700;
+            display:flex;align-items:center;justify-content:center;
+        }
+        .gc-user{
+            display:flex;align-items:center;gap:8px;
+        }
+        .gc-avatar{
+            width:30px;height:30px;
+            background:var(--red);border-radius:6px;
+            display:flex;align-items:center;justify-content:center;
+            color:#fff;font-size:12px;font-weight:700;
+        }
+        .gc-username{font-size:13px;color:#ccc;font-weight:500;}
 
-        .topbar-icon-btn {
-            position:relative;
-            width:36px;
-            height:36px;
-            border-radius:8px;
-            background:rgba(255,255,255,0.07);
-            border:1px solid rgba(255,255,255,0.1);
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            color:#94a3b8;
-            cursor:pointer;
+        .gc-subnav{
+            position:fixed;top:var(--nav-h);left:0;right:0;z-index:199;
+            height:var(--sub-h);
+            background:#1a1a1a;
+            border-bottom:1px solid #2a2a2a;
+            display:flex;align-items:stretch;
+            padding:0 32px;
+            overflow-x:auto;
+        }
+        .gc-subnav::-webkit-scrollbar{display:none;}
+        .gc-nav-link{
+            display:flex;align-items:center;gap:7px;
+            padding:0 16px;
+            color:#999;
             text-decoration:none;
-            font-size:16px;
+            font-size:12px;font-weight:600;
+            text-transform:uppercase;letter-spacing:0.06em;
+            white-space:nowrap;
+            border-bottom:2px solid transparent;
+            transition:all .12s;
+        }
+        .gc-nav-link i{font-size:13px;}
+        .gc-nav-link:hover{color:#fff;border-bottom-color:rgba(193,39,45,0.5);}
+        .gc-nav-link.active{color:#fff;border-bottom-color:var(--red);}
+        .gc-subnav-sep{
+            width:1px;background:#2a2a2a;
+            margin:8px 4px;flex-shrink:0;
         }
 
-            .topbar-icon-btn:hover {
-                color:#f1f5f9;
-            }
-
-        .topbar-badge {
-            position:absolute;
-            top:-4px;
-            right:-4px;
-            width:16px;
-            height:16px;
-            background:#ef4444;
-            border-radius:50%;
-            font-size:10px;
-            color:white;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            font-weight:600;
+        .gc-content{
+            max-width:1400px;margin:0 auto;
+            padding:28px 32px;
         }
 
-        .topbar-user {
-            display:flex;
-            align-items:center;
-            gap:10px;
-            cursor:pointer;
-        }
-        .topbar-avatar {
-            width:36px;
-            height:36px;
-            background:var(--blue);
-            border-radius:50%;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            color:white;
-            font-size:14px;
-            font-weight:600;
-        }
-        .topbar-user-info strong {
-            font-size:13px;
-            display:block;
-            color:#f1f5f9;
-        }
-        .topbar-user-info span {
-            font-size:12px;
-            color:#94a3b8;
-        }
-
-        
-        .main-content {
-            margin-left:var(--sidebar-width);
-            margin-top:var(--topbar-height);
-            padding:28px;
-            min-height:calc(100vh - var(--topbar-height));
-        }
-
-        
-        .stat-card {
-            background:var(--card-bg);
-            border:1px solid var(--border-color);
-            border-radius:12px;
-            padding:20px;
-            transition:box-shadow 0.15s ease;
-        }
-
-            .stat-card:hover {
-                box-shadow:0 4px 12px rgba(0,0,0,0.08);
-            }
-            .stat-card .stat-icon {
-                width:44px;
-                height:44px;
-                border-radius:10px;
-                display:flex;
-                align-items:center;
-                justify-content:center;
-                font-size:20px;
-                margin-bottom:12px;
-            }
-            .stat-card .stat-value {
-                font-size:28px;
-                font-weight:700;
-                color:var(--text-primary);
-                line-height:1;
-                margin-bottom:4px;
-            }
-            .stat-card .stat-label {
-                font-size:13px;
-                color:var(--text-muted);
-            }
-            .stat-card .stat-change {
-                font-size:12px;
-                font-weight:500;
-                margin-top:8px;
-            }
-        .stat-change.up {
-            color:var(--green);
-        }
-
-        .stat-change.down {
-            color:#ef4444;
-        }
-
-        
-        .content-card {
-            background:var(--card-bg);
-            border:1px solid var(--border-color);
-            border-radius:12px;
-            overflow:hidden;
-        }
-        .content-card-header {
-            padding:16px 20px;
-            border-bottom:1px solid var(--border-color);
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-        }
-            .content-card-header h5 {
-                font-size:15px;
-                font-weight:600;
-                margin:0;
-                color:var(--text-primary);
-            }
-            .content-card-header p {
-                font-size:12px;
-                color:var(--text-muted);
-                margin:2px 0 0;
-            }
-
-
-        .badge-status {
-            padding:4px 10px;
-            border-radius:20px;
-            font-size:12px;
-            font-weight:500;
-        }
-
-        .badge-scheduled {
-            background:rgba(37,99,235,0.3);
-            color:#93c5fd;
-        }
-        .badge-inlucru {
-            background:rgba(234,88,12,0.3);
-            color:#fdba74;
-        }
-
-        .badge-finalizata {
-            background:rgba(22,163,74,0.3);
-            color:#86efac;
-        }
-
-        .badge-anulata {
-            background:rgba(220,38,38,0.3);
-            color:#fca5a5;
-        }
-
-        .badge-platita {
-            background:rgba(22,163,74,0.3);
-            color:#86efac;
-        }
-        .badge-neplata {
-            background:rgba(220,38,38,0.3);
-            color:#fca5a5;
-        }
-        .badge-partial {
-            background:rgba(234,88,12,0.3);
-            color:#fdba74;
-        }
-
-        .btn-primary-custom {
-            background:var(--blue);
-            color:white;
-            border:none;
-            padding:9px 18px;
-            border-radius:8px;
-            font-size:14px;
-            font-weight:500;
-            cursor:pointer;
-            text-decoration:none;
-            display:inline-flex;
-            align-items:center;
-            gap:6px;
-            transition:background 0.15s;
-        }
-            .btn-primary-custom:hover {
-                background:#1d4ed8;
-                color:white;
-            }
-        .btn-outline-custom {
-            background:transparent;
-            color:var(--text-muted);
-            border:1px solid var(--border-color);
-            padding:7px 14px;
-            border-radius:8px;
-            font-size:13px;
-            font-weight:500;
-            cursor:pointer;
-            text-decoration:none;
-            display:inline-flex;
-            align-items:center;
-            gap:6px;
-            transition:all 0.15s;
-        }
-            .btn-outline-custom:hover {
-                border-color:var(--blue);
-                color:var(--blue);
-            }
-
-        .custom-table {
-            width:100%;
-            border-collapse:collapse;
-        }
-
-            .custom-table th {
-                padding:12px 16px;
-                font-size:12px;
-                font-weight:600;
-                text-transform:uppercase;
-                letter-spacing:0.05em;
-                color:var(--text-muted);
-                border-bottom:1px solid var(--border-color);
-                background:rgba(0,0,0,0.2);
-            }
-            .custom-table td {
-                padding:14px 16px;
-                font-size:14px;
-                border-bottom:1px solid var(--border-color);
-                color:var(--text-primary);
-            }
-            .custom-table tr:last-child td {
-                border-bottom:none;
-            }
-            .custom-table tr:hover td {
-                background:rgba(255,255,255,0.05);
-            }
-        .client-avatar {
-            width:36px;
-            height:36px;
-            border-radius:50%;
-            background:var(--blue);
-            color:white;
-            display:inline-flex;
-            align-items:center;
-            justify-content:center;
-            font-size:13px;
-            font-weight:600;
-            flex-shrink:0;
-        }
-
-        .stock-bar {
-            height:6px;
-            background:#e2e8f0;
-            border-radius:3px;
-            overflow:hidden;
-            width:80px;
-            display:inline-block;
-            vertical-align:middle;
-        }
-        .stock-bar-fill {
-            height:100%;
-            border-radius:3px;
-        }
-        .alert-warning-custom {
-            background:rgba(252,211,77,0.1);
-            border:1px solid rgba(252,211,77,0.3);
-            border-radius:10px;
-            padding:14px 18px;
-            display:flex;
-            align-items:center;
-            gap:12px;
-            font-size:14px;
-            color:#fcd34d;
-        }
-        .form-card {
-            background:var(--card-bg);
-            border:1px solid var(--border-color);
-            border-radius:12px;
-            padding:28px;
-        }
-        .form-label {
-            font-size:13px;
-            font-weight:500;
-            color:var(--text-primary);
-            margin-bottom:6px;
-        }
-        input[type=text], input[type=number], input[type=email], input[type=password], input[type=date], input[type=search], textarea, select {
-            background:rgba(37,99,235,0.15);
-            color:#f1f5f9;
-        }
-        select option { background:#0f172a; color:#f1f5f9; }
-        input::placeholder, textarea::placeholder { color:#64748b; }
-
-        .form-control, .form-select {
-            border:1px solid rgba(255,255,255,0.15);
-            border-radius:8px;
-            padding:9px 12px;
-            font-size:14px;
-            color:#f1f5f9;
-            background:rgba(37,99,235,0.15);
-            transition:border-color 0.15s;
-        }
-        .form-control::placeholder { color:#64748b; }
-        .form-control:focus, .form-select:focus {
-            border-color:var(--blue);
-            box-shadow:0 0 0 3px rgba(37,99,235,0.2);
-            outline:none;
-            background:rgba(37,99,235,0.22);
-            color:#f1f5f9;
-        }
-        .page-header {
-            display:flex;
-            align-items:flex-start;
+        .page-header{
+            display:flex;align-items:center;
             justify-content:space-between;
             margin-bottom:24px;
+            padding-bottom:16px;
+            border-bottom:1px solid #2a2a2a;
         }
-            .page-header h2 {
-                font-size:22px;
-                font-weight:700;
-                margin:0 0 4px;
-                color:var(--text-primary);
-            }
-            .page-header p {
-                font-size:14px;
-                color:var(--text-muted);
-                margin:0;
-            }
-        .alert {
+        .page-header-left h2{
+            font-family:'Barlow Condensed',sans-serif;
+            font-size:28px;font-weight:700;
+            color:#fff;text-transform:uppercase;
+            letter-spacing:0.03em;line-height:1;margin-bottom:2px;
+        }
+        .page-header-left p{font-size:13px;color:var(--muted);margin:0;}
+
+        .stat-card{
+            background:#111;
+            border:1px solid var(--red);
             border-radius:10px;
-            font-size:14px;
+            padding:16px 18px;
+        }
+        .stat-card .stat-icon{
+            width:38px;height:38px;
+            background:none;border:none;
+            display:flex;align-items:center;justify-content:center;
+            font-size:22px;margin-bottom:10px;
+            color:var(--red);
+        }
+        .stat-card .stat-value{
+            font-family:'Barlow Condensed',sans-serif;
+            font-size:34px;font-weight:700;
+            color:#fff;line-height:1;margin-bottom:4px;
+        }
+        .stat-card .stat-label{
+            font-size:11px;font-weight:700;
+            text-transform:uppercase;letter-spacing:0.07em;
+            color:#aaa;
+        }
+        .stat-card .stat-change{
+            font-size:12px;font-weight:500;margin-top:10px;
+            display:flex;align-items:center;gap:4px;
+        }
+        .stat-change.up{color:#16a34a;}
+        .stat-change.down{color:var(--red);}
+
+        .content-card{
+            background:#111;
+            border:1px solid var(--red);
+            border-radius:10px;
+            overflow:hidden;
+        }
+        .content-card-header{
+            padding:13px 18px;
+            border-bottom:1px solid rgba(193,39,45,0.25);
+            display:flex;align-items:center;
+            justify-content:space-between;
+            background:#1a1a1a;
+        }
+        .content-card-header h5{
+            font-size:12px;font-weight:700;
+            text-transform:uppercase;letter-spacing:0.07em;
+            color:#fff;margin:0;
+        }
+        .content-card-header p{font-size:12px;color:#888;margin:2px 0 0;}
+
+        .custom-table{width:100%;border-collapse:collapse;color:#ddd;}
+        .custom-table th{
+            padding:10px 16px;
+            font-size:10px;font-weight:700;
+            text-transform:uppercase;letter-spacing:0.08em;
+            color:#888;background:#1a1a1a;
+            border-bottom:1px solid rgba(193,39,45,0.2);
+        }
+        .custom-table td{
+            padding:13px 16px;font-size:13px;
+            border-bottom:1px solid #1f1f1f;color:#ddd;
+        }
+        .custom-table tr:last-child td{border-bottom:none;}
+        .custom-table tr:hover td{background:#1a1a1a;}
+
+        .badge-status{
+            padding:3px 9px;font-size:10px;
+            font-weight:700;text-transform:uppercase;
+            letter-spacing:0.05em;border-radius:6px;
+        }
+        .badge-scheduled{background:#e8f0fe;color:#1a56db;}
+        .badge-inlucru{background:#fff3e0;color:#c2410c;}
+        .badge-finalizata{background:#f0fdf4;color:#15803d;}
+        .badge-anulata{background:#fef2f2;color:#b91c1c;}
+        .badge-platita{background:#f0fdf4;color:#15803d;}
+        .badge-neplata{background:#fef2f2;color:#b91c1c;}
+        .badge-partial{background:#fff3e0;color:#c2410c;}
+
+        .btn-primary-custom{
+            background:var(--red);color:#fff;border:none;
+            padding:9px 20px;border-radius:6px;
+            font-size:12px;font-weight:700;
+            text-transform:uppercase;letter-spacing:0.05em;
+            cursor:pointer;text-decoration:none;
+            display:inline-flex;align-items:center;gap:6px;
+            transition:background .12s;
+        }
+        .btn-primary-custom:hover{background:var(--red-dark);color:#fff;}
+        .btn-outline-custom{
+            background:transparent;color:#aaa;
+            border:1px solid #333;
+            padding:7px 14px;border-radius:6px;
+            font-size:11px;font-weight:600;
+            text-transform:uppercase;letter-spacing:0.04em;
+            cursor:pointer;text-decoration:none;
+            display:inline-flex;align-items:center;gap:5px;
+            transition:all .12s;
+        }
+        .btn-outline-custom:hover{border-color:var(--red);color:var(--red);}
+
+        .client-avatar{
+            width:32px;height:32px;border-radius:6px;
+            background:var(--red);color:#fff;
+            display:inline-flex;align-items:center;justify-content:center;
+            font-size:11px;font-weight:700;flex-shrink:0;
         }
 
-        .alert-success {
-            background:rgba(22,163,74,0.15);
-            border-color:rgba(22,163,74,0.3);
-            color:#86efac;
+        .form-card{
+            background:#111;border:1px solid var(--red);
+            border-top:3px solid var(--red);
+            border-radius:10px;
+            padding:28px;
         }
-        .alert-danger {
-            background:rgba(220,38,38,0.15);
-            border-color:rgba(220,38,38,0.3);
-            color:#fca5a5;
+        .form-label{
+            font-size:11px;font-weight:700;
+            text-transform:uppercase;letter-spacing:0.05em;
+            color:#aaa;margin-bottom:6px;display:block;
         }
-        .alert .btn-close {
-            filter:invert(1) opacity(0.6);
+        .form-control,.form-select{
+            border:1px solid #333;border-radius:6px;
+            padding:9px 12px;font-size:14px;
+            color:#e0e0e0;background:#1a1a1a;
+            transition:border-color .15s;
+        }
+        .form-control:focus,.form-select:focus{
+            border-color:var(--red);
+            box-shadow:0 0 0 3px rgba(193,39,45,0.15);
+            outline:none;color:#e0e0e0;background:#111;
+        }
+        .form-control::placeholder{color:#555;}
+        input[type=text],input[type=number],input[type=email],
+        input[type=password],input[type=date],input[type=search],
+        textarea,select{background:#1a1a1a;color:#e0e0e0;}
+        select option{background:#1a1a1a;color:#e0e0e0;}
+
+        .alert{border-radius:8px;font-size:13px;}
+        .alert-success{background:rgba(22,163,74,0.1);border:1px solid rgba(22,163,74,0.3);border-left:4px solid #16a34a;color:#4ade80;}
+        .alert-danger{background:rgba(193,39,45,0.1);border:1px solid rgba(193,39,45,0.3);border-left:4px solid var(--red);color:#fca5a5;}
+        .alert .btn-close{opacity:.4;filter:invert(1);}
+
+        .stock-bar{height:4px;background:#eee;width:70px;display:inline-block;vertical-align:middle;}
+        .stock-bar-fill{height:100%;}
+        .alert-warning-custom{
+            background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);
+            border-left:4px solid #f59e0b;
+            padding:12px 16px;display:flex;align-items:center;
+            gap:10px;font-size:13px;color:#fbbf24;
         }
 
-        @@media (max-width:768px){
-            .sidebar {
-                transform:translateX(-100%);
-            }
-            .main-content {
-                margin-left:0;
-            }
-            .topbar {
-                left:0;
-            }
+        .page-with-stats{
+            display:flex;
+            gap:20px;
+            align-items:flex-start;
+        }
+        .pstats{
+            width:180px;
+            flex-shrink:0;
+            display:flex;
+            flex-direction:column;
+            gap:12px;
+        }
+        .pmain{flex:1;min-width:0;}
+
+        .gc-content{max-width:1400px;margin:0 auto;padding:24px 28px;}
+
+        @@media(max-width:900px){
+            .page-with-stats{flex-direction:column;}
+            .pstats{width:100%;flex-direction:row;flex-wrap:wrap;}
+            .pstats .stat-card{flex:1;min-width:140px;}
+            .gc-subnav{padding:0 16px;}
+            .gc-topnav{padding:0 16px;}
+            .gc-search{display:none;}
+            .gc-content{padding:16px;}
         }
     </style>
 </head>
 <body>
 @{
-    var username=User.Identity?.Name?.Split('@')[0]??"user";
+    var username = User.Identity?.Name?.Split('@')[0] ?? "user";
+    var ctrl = ViewContext.RouteData.Values["controller"]?.ToString();
 }
-    <aside class="sidebar">
-        <div class="sidebar-logo">
-            <div class="sidebar-logo-text">
-                <strong style="font-size:20px;">GarageCare</strong>
+
+    <header class="gc-topnav">
+        <a class="gc-logo" asp-controller="Home" asp-action="Index">
+            <div class="gc-logo-bar"></div>
+            <div class="gc-logo-text">
+                <strong>GarageCare</strong>
+                <small>Service Management</small>
             </div>
-        </div>
+        </a>
 
-        <div class="sidebar-section-label">Main Menu</div>
-        <nav class="sidebar-nav">
-            <a asp-controller="Home" asp-action="Index"
-               class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString()=="Home"? "active" : "")">
-                <i class="bi bi-grid-fill"></i> Dashboard
-            </a>
-            <a asp-controller="Clienti" asp-action="Index"
-               class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString()=="Clienti"? "active" : "")">
-                <i class="bi bi-people"></i> Clienți
-            </a>
-            <a asp-controller="Masini" asp-action="Index"
-               class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString()=="Masini"? "active" : "")">
-                <i class="bi bi-car-front"></i> Mașini
-            </a>
-            <a asp-controller="Programari" asp-action="Index"
-               class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString()=="Programari"? "active" : "")">
-                <i class="bi bi-calendar-check"></i> Programări
-            </a>
-        </nav>
-
-        <div class="sidebar-section-label">Service & Piese</div>
-        <nav class="sidebar-nav">
-            <a asp-controller="Piese" asp-action="Index"
-               class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString()=="Piese"? "active" : "")">
-                <i class="bi bi-gear"></i> Piese
-            </a>
-            <a asp-controller="Facturi" asp-action="Index"
-               class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString()=="Facturi"? "active" : "")">
-                <i class="bi bi-receipt"></i> Facturi
-            </a>
-        </nav>
-
-        <div class="sidebar-section-label">Analytics</div>
-        <nav class="sidebar-nav">
-            <a asp-controller="Rapoarte" asp-action="Index"
-               class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString()=="Rapoarte"? "active" : "")">
-                <i class="bi bi-bar-chart-line"></i> Rapoarte
-            </a>
-            <a asp-controller="Chatbot" asp-action="Index"
-               class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString()=="Chatbot"? "active" : "")">
-                <i class="bi bi-robot"></i> Asistent AI
-            </a>
-        </nav>
-
-        <div class="sidebar-bottom">
-            <div class="sidebar-link" style="color:#94a3b8;">
-                <i class="bi bi-person-circle"></i>
-                <div style="color:#f1f5f9;font-size:13px;">@username</div>
+        <form method="get" asp-controller="Cautare" asp-action="Index">
+            <div class="gc-search">
+                <i class="bi bi-search"></i>
+                <input type="text" name="q" placeholder="Caută clienți, mașini..." />
             </div>
-        </div>
-    </aside>
+        </form>
 
-    <header class="topbar">
-        <div class="topbar-left">
-            <h1>@ViewData["Title"]</h1>
-            <p>Auto Service Management System</p>
-        </div>
-        <div class="topbar-right">
-            <form method="get" asp-controller="Cautare" asp-action="Index" style="position:relative;">
-                <i class="bi bi-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:14px;"></i>
-                <input type="text" name="q" class="topbar-search input"
-                       placeholder="Search..."
-                       style="padding:8px 16px 8px 36px;border:1px solid rgba(37,99,235,0.4);border-radius:8px;font-size:13px;color:#f1f5f9;width:220px;outline:none;background:rgba(37,99,235,0.18);" />
-            </form>
+        <div class="gc-nav-right">
             <a asp-controller="Piese" asp-action="Index" asp-route-stocScazut="true"
-               class="topbar-icon-btn" title="Alerte stoc">
+               class="gc-icon-btn" title="Alerte stoc">
                 <i class="bi bi-bell"></i>
-                @{
-                    var alerteStoc=0;
-                    try{ alerteStoc=ViewBag.AlerteGlobale??0; } catch { }
-                }
-                @if(alerteStoc > 0)
-                {
-                    <span class="topbar-badge">@alerteStoc</span>
-                }
+                @{ var _alerte = 0; try { _alerte = ViewBag.AlerteGlobale ?? 0; } catch { } }
+                @if(_alerte > 0){<span class="gc-badge">@_alerte</span>}
             </a>
-            <div class="topbar-user">
-                <div class="topbar-avatar">@username[0].ToString().ToUpper()</div>
-                <div class="topbar-user-info">
-                    <strong>@username</strong>
-                </div>
+            <div class="gc-user">
+                <div class="gc-avatar">@username[0].ToString().ToUpper()</div>
+                <span class="gc-username">@username</span>
             </div>
             <form asp-controller="Landing" asp-action="Logout" method="post" style="margin:0;">
                 @Html.AntiForgeryToken()
-                <button type="submit" class="topbar-icon-btn" title="Logout">
+                <button type="submit" class="gc-icon-btn" title="Logout">
                     <i class="bi bi-box-arrow-right"></i>
                 </button>
             </form>
         </div>
     </header>
-    <main class="main-content">
+
+    <nav class="gc-subnav">
+        <a asp-controller="Home" asp-action="Index"
+           class="gc-nav-link @(ctrl=="Home"?"active":"")">
+            <i class="bi bi-grid-1x2"></i> Dashboard
+        </a>
+        <a asp-controller="Clienti" asp-action="Index"
+           class="gc-nav-link @(ctrl=="Clienti"?"active":"")">
+            <i class="bi bi-people"></i> Clienți
+        </a>
+        <a asp-controller="Masini" asp-action="Index"
+           class="gc-nav-link @(ctrl=="Masini"?"active":"")">
+            <i class="bi bi-car-front"></i> Mașini
+        </a>
+        <a asp-controller="Programari" asp-action="Index"
+           class="gc-nav-link @(ctrl=="Programari"?"active":"")">
+            <i class="bi bi-calendar-check"></i> Programări
+        </a>
+        <div class="gc-subnav-sep"></div>
+        <a asp-controller="Piese" asp-action="Index"
+           class="gc-nav-link @(ctrl=="Piese"?"active":"")">
+            <i class="bi bi-gear"></i> Piese
+        </a>
+        <a asp-controller="Facturi" asp-action="Index"
+           class="gc-nav-link @(ctrl=="Facturi"?"active":"")">
+            <i class="bi bi-receipt"></i> Facturi
+        </a>
+        <div class="gc-subnav-sep"></div>
+        <a asp-controller="Rapoarte" asp-action="Index"
+           class="gc-nav-link @(ctrl=="Rapoarte"?"active":"")">
+            <i class="bi bi-bar-chart-line"></i> Rapoarte
+        </a>
+        <a asp-controller="Chatbot" asp-action="Index"
+           class="gc-nav-link @(ctrl=="Chatbot"?"active":"")">
+            <i class="bi bi-robot"></i> Asistent AI
+        </a>
+    </nav>
+
+    <main class="gc-content">
         @RenderBody()
     </main>
 
@@ -675,9 +429,6 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
-    @{
-        await Html.RenderPartialAsync("_Notifications");
-    }
-
+    @{ await Html.RenderPartialAsync("_Notifications"); }
 </body>
 </html>

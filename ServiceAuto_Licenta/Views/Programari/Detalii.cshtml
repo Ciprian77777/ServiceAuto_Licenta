@@ -15,9 +15,7 @@
         </div>
     </div>
     <div style="display:flex;gap:8px;align-items:center;">
-        <span class="badge-status @(Model.Status==StatusProgramare.Finalizata? "badge-finalizata" :
-                                                   Model.Status==StatusProgramare.InLucru? "badge-inlucru" :
-                                                   Model.Status==StatusProgramare.Anulata? "badge-anulata" : "badge-scheduled")"
+        <span class="badge-status @(Model.Status==StatusProgramare.Finalizata?"badge-finalizata":Model.Status==StatusProgramare.InLucru?"badge-inlucru":Model.Status==StatusProgramare.Anulata?"badge-anulata":"badge-scheduled")"
               style="font-size:13px;padding:6px 14px;">
             @Model.Status
         </span>
@@ -89,22 +87,22 @@
             </div>
         </div>
 
-        <div class="content-card" style="border:1.5px solid #2563eb;">
-            <div class="content-card-header" style="background:rgba(37,99,235,0.15);">
-                <h5 style="color:#93c5fd;">Total programare</h5>
+        <div class="content-card" style="border:1.5px solid var(--red);">
+            <div class="content-card-header" style="background:var(--red);">
+                <h5 style="color:#fff;">Total programare</h5>
             </div>
             <div style="padding:20px;">
                 <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:8px;">
-                    <span style="color:var(--text-muted);">Fără TVA</span>
-                    <span>@Model.TotalFaraTva.ToString("N2") lei</span>
+                    <span style="color:#666;">Fără TVA</span>
+                    <span style="color:#111;">@Model.TotalFaraTva.ToString("N2") lei</span>
                 </div>
                 <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:12px;">
-                    <span style="color:var(--text-muted);">TVA (19%)</span>
-                    <span>@Model.Tva.ToString("N2") lei</span>
+                    <span style="color:#666;">TVA (19%)</span>
+                    <span style="color:#111;">@Model.Tva.ToString("N2") lei</span>
                 </div>
-                <div style="display:flex;justify-content:space-between;font-size:18px;font-weight:700;padding-top:12px;border-top:1px solid var(--border-color);">
-                    <span>Total</span>
-                    <span style="color:#2563eb;">@Model.TotalCuTva.ToString("N2") lei</span>
+                <div style="display:flex;justify-content:space-between;font-size:20px;font-weight:700;padding-top:12px;border-top:2px solid var(--red);">
+                    <span style="color:#111;">Total</span>
+                    <span style="color:var(--red);">@Model.TotalCuTva.ToString("N2") lei</span>
                 </div>
 
                 @if(Model.Factura==null&&Model.Status==StatusProgramare.Finalizata)
@@ -140,9 +138,7 @@
                     <div style="border:1px solid var(--border-color);border-radius:10px;overflow:hidden;">
                         <div style="padding:14px 16px;background:rgba(0,0,0,0.15);display:flex;justify-content:space-between;align-items:center;">
                             <div style="display:flex;align-items:center;gap:10px;">
-                                <div style="width:32px;height:32px;background:rgba(37,99,235,0.25);border-radius:8px;display:flex;align-items:center;justify-content:center;">
-                                    <i class="bi bi-wrench" style="color:#2563eb;font-size:14px;"></i>
-                                </div>
+                                <i class="bi bi-wrench" style="color:var(--red);font-size:18px;"></i>
                                 <div>
                                     <div style="font-weight:600;font-size:14px;">@lucrare.Denumire</div>
                                     @if(!string.IsNullOrEmpty(lucrare.Descriere))
@@ -154,7 +150,7 @@
                             <div style="display:flex;align-items:center;gap:12px;">
                                 <div style="text-align:right;">
                                     <div style="font-size:13px;color:var(--text-muted);">Manoperă</div>
-                                    <div style="font-weight:600;color:#2563eb;">@lucrare.Manopera.ToString("N2") lei</div>
+                                    <div style="font-weight:600;color:#111;">@lucrare.Manopera.ToString("N2") lei</div>
                                 </div>
                                 <form asp-action="StergeLucrare" method="post">
                                     <input type="hidden" name="lucrareId" value="@lucrare.Id" />

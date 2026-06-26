@@ -27,7 +27,6 @@
             </div>
         </div>
 
-        -- Card preview vizual -->
         <div id="card-preview" class="mb-4 p-4 rounded-4 text-white"
              style="background:linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);min-height:180px;position:relative;overflow:hidden;">
             <div style="position:absolute;top:-30px;right:-30px;width:150px;height:150px;
@@ -62,7 +61,6 @@
                 </div>
             </div>
         </div>
-
 
         <div class="card shadow-sm">
             <div class="card-body p-4">
@@ -105,13 +103,12 @@
                         </div>
                     </div>
 
-
-                    <div class="d-flex align-items-center gap-2 mb-4 p-3 rounded"
-                         style="background:var(--bs-success-bg-subtle)">
-                        <i class="bi bi-shield-lock-fill text-success fs-5"></i>
+                    <div class="d-flex align-items-center gap-2 mb-4 p-3"
+                         style="background:#1a1a1a;border:1px solid #333;border-radius:8px;">
+                        <i class="bi bi-shield-lock-fill" style="color:#c1272d;font-size:1.1rem;"></i>
                         <div>
-                            <p class="mb-0 small text-success fw-bold">Plată securizată (simulare)</p>
-                            <p class="mb-0 small text-muted">Datele cardului nu sunt stocate</p>
+                            <p class="mb-0 small fw-bold" style="color:#e0e0e0;">Plată securizată</p>
+                            <p class="mb-0 small" style="color:#888;">Datele cardului nu sunt stocate</p>
                         </div>
                         <div class="ms-auto d-flex gap-2 opacity-75">
                             <span class="badge bg-dark">VISA</span>
@@ -139,33 +136,28 @@
 
 @section Scripts {
     <script>
-        // Format număr card
         document.getElementById('numarCard').addEventListener('input', function (e){
             let val=e.target.value.replace(/\D/g, '').substring(0, 16);
             let formatted=val.replace(/(\d{4})/g, '$1 ').trim();
             e.target.value=formatted;
 
-            // Update preview
             let display=val.padEnd(16, '•');
             document.getElementById('card-number-display').textContent =
                 display.substring(0,4) + ' ' + display.substring(4,8) + ' ' +
                 display.substring(8,12) + ' ' + display.substring(12,16);
 
-            // Detectează tipul cardului
-            let type='💳';
+            let type='CARD';
             if(val.startsWith('4')) type='VISA';
             else if(val.startsWith('5')) type='MC';
             else if(val.startsWith('3')) type='AMEX';
             document.getElementById('card-type-label').textContent=type;
         });
 
-        // Format titular
         document.getElementById('titular').addEventListener('input', function (e){
             let val=e.target.value.toUpperCase();
             document.getElementById('card-name-display').textContent=val||'NUME TITULAR';
         });
 
-        // Format expirare
         document.getElementById('expirare').addEventListener('input', function (e){
             let val=e.target.value.replace(/\D/g, '').substring(0, 4);
             if(val.length>=2) val=val.substring(0, 2) + '/' + val.substring(2);
@@ -173,7 +165,6 @@
             document.getElementById('card-exp-display').textContent=val||'MM/AA';
         });
 
-        // Submit cu overlay procesare
         document.getElementById('payment-form').addEventListener('submit', function (e){
             let numar=document.getElementById('numarCard').value.replace(/\s/g, '');
             let exp=document.getElementById('expirare').value;
@@ -189,7 +180,6 @@
             document.getElementById('processing-overlay').classList.remove('d-none');
         });
 
-        // Tooltip Bootstrap
         var tooltipEls=document.querySelectorAll('[data-bs-toggle="tooltip"]');
         tooltipEls.forEach(el=>new bootstrap.Tooltip(el));
     </script>

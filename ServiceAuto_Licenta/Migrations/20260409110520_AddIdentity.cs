@@ -5,10 +5,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ServiceAutoLicenta.Migrations
 {
-    /// <inheritdoc />
     public partial class AddIdentity : Migration
     {
-        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<int>(
@@ -239,7 +237,6 @@ namespace ServiceAutoLicenta.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
         }
 
-        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(

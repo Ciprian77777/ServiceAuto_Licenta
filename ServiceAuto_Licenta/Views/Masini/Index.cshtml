@@ -5,7 +5,7 @@
 
 <div class="page-header">
     <div>
-        <h2>Vehicle Management</h2>
+        <h2>Mașini</h2>
         <p>Gestionează vehiculele înregistrate</p>
     </div>
     <a asp-action="Adauga" class="btn-primary-custom">
@@ -28,49 +28,31 @@
     </div>
 }
 
-<div class="row g-3 mb-4">
-    <div class="col-md-4">
+<div class="page-with-stats">
+    <aside class="pstats">
         <div class="stat-card">
-            <div style="display:flex;align-items:center;gap:16px;">
-                <div class="stat-icon" style="background:rgba(22,163,74,0.25);margin-bottom:0;">
-                    <i class="bi bi-car-front-fill" style="color:#16a34a;"></i>
-                </div>
-                <div>
-                    <div class="stat-value" style="font-size:22px;">@Model.Count()</div>
-                    <div class="stat-label">Total Mașini</div>
-                </div>
-            </div>
+            <div class="stat-icon"><i class="bi bi-car-front-fill"></i></div>
+            <div class="stat-value">@Model.Count()</div>
+            <div class="stat-label">Total Mașini</div>
         </div>
-    </div>
-    <div class="col-md-4">
         <div class="stat-card">
-            <div style="display:flex;align-items:center;gap:16px;">
-                <div class="stat-icon" style="background:rgba(37,99,235,0.25);margin-bottom:0;">
-                    <i class="bi bi-people-fill" style="color:#2563eb;"></i>
-                </div>
-                <div>
-                    <div class="stat-value" style="font-size:22px;">@Model.Select(m=>m.ClientId).Distinct().Count()</div>
-                    <div class="stat-label">Proprietari unici</div>
-                </div>
-            </div>
+            <div class="stat-icon"><i class="bi bi-people-fill"></i></div>
+            <div class="stat-value">@Model.Select(m=>m.ClientId).Distinct().Count()</div>
+            <div class="stat-label">Proprietari unici</div>
         </div>
-    </div>
-    <div class="col-md-4">
         <div class="stat-card">
-            <div style="display:flex;align-items:center;gap:16px;">
-                <div class="stat-icon" style="background:rgba(234,88,12,0.25);margin-bottom:0;">
-                    <i class="bi bi-calendar-check" style="color:#ea580c;"></i>
-                </div>
-                <div>
-                    <div class="stat-value" style="font-size:22px;">@Model.Sum(m=>m.Programari.Count)</div>
-                    <div class="stat-label">Total programări</div>
-                </div>
-            </div>
+            <div class="stat-icon"><i class="bi bi-calendar-check"></i></div>
+            <div class="stat-value">@Model.Sum(m=>m.Programari.Count)</div>
+            <div class="stat-label">Total programări</div>
         </div>
-    </div>
-</div>
-
-<div class="content-card">
+        <div class="stat-card">
+            <div class="stat-icon"><i class="bi bi-calendar-plus"></i></div>
+            <div class="stat-value">@Model.Count(m=>m.Programari.Any())</div>
+            <div class="stat-label">Cu programări</div>
+        </div>
+    </aside>
+    <div class="pmain">
+    <div class="content-card">
     <div class="content-card-header">
         <form method="get" style="display:flex;gap:8px;align-items:center;">
             <div style="position:relative;">
@@ -140,10 +122,8 @@
                         <td style="font-size:13px;color:var(--text-muted);">
                             @(masina.KmActuali?.ToString("N0")??"0") km
                         </td>
-                        <td>
-                            <span style="background:rgba(37,99,235,0.3);color:#93c5fd;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;">
-                                @masina.Programari.Count
-                            </span>
+                        <td style="font-size:13px;font-weight:600;color:#333;">
+                            @masina.Programari.Count
                         </td>
                         <td>
                             <div style="display:flex;gap:6px;">
@@ -166,4 +146,6 @@
             </tbody>
         </table>
     }
+</div>
+    </div>
 </div>

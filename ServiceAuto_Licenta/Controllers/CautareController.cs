@@ -24,7 +24,7 @@ namespace ServiceAutoLicenta.Controllers
             if(string.IsNullOrEmpty(q))
                 return View(r);
 
-            string userId=userManager.GetUserId(User);
+            string? userId=userManager.GetUserId(User);
             q=q.ToLower();
             r.Query=q;
             r.Clienti=await db.Clienti
@@ -35,19 +35,19 @@ namespace ServiceAutoLicenta.Controllers
 
             r.Masini=await db.Masini
                 .Include(x=>x.Client)
-                .Where(x=>x.Client.UserId==userId &&(x.Marca.ToLower().Contains(q)||x.ModelMasina.ToLower().Contains(q) ||x.NrInmatriculare.ToLower().Contains(q) ))
+                .Where(x=>x.Client.UserId==userId &&(x.Marca.ToLower().Contains(q)||x.ModelMasina.ToLower().Contains(q) ||x.NrInmatriculare.ToLower().Contains(q)))
                 .Take(5)
                 .ToListAsync();
 
             r.Programari=await db.Programari
                 .Include(x=>x.Masina)
                 .ThenInclude(x=>x.Client)
-                .Where(x=>x.Masina.Client.UserId==userId&&(  x.Masina.NrInmatriculare.ToLower().Contains(q)|| x.Masina.Client.Nume.ToLower().Contains(q) ))
+                .Where(x=>x.Masina.Client.UserId==userId&&(x.Masina.NrInmatriculare.ToLower().Contains(q)|| x.Masina.Client.Nume.ToLower().Contains(q)))
                 .Take(5)
                 .ToListAsync();
 
             r.Piese=await db.Piese
-                .Where(x=>x.UserId==userId&&(  x.Denumire.ToLower().Contains(q)|| x.CodPiesa.ToLower().Contains(q) ))
+                .Where(x=>x.UserId==userId&&(x.Denumire.ToLower().Contains(q)|| x.CodPiesa.ToLower().Contains(q)))
                 .Take(5)
                 .ToListAsync();
 
@@ -64,12 +64,12 @@ namespace ServiceAutoLicenta.Controllers
 
     public class SearchResult
     {
-        public string Query { get; set; }
-        public List<Client> Clienti { get; set; }=new List<Client>();
-        public List<Masina> Masini { get; set; }=new List<Masina>();
-        public List<Programare> Programari { get; set; }=new List<Programare>();
-        public List<Piesa> Piese { get; set; }=new List<Piesa>();
-        public List<Factura> Facturi { get; set; }=new List<Factura>();
+        public string? Query {get;set;}
+        public List<Client> Clienti {get;set;}=new List<Client>();
+        public List<Masina> Masini {get;set;}=new List<Masina>();
+        public List<Programare> Programari {get;set;}=new List<Programare>();
+        public List<Piesa> Piese {get;set;}=new List<Piesa>();
+        public List<Factura> Facturi {get;set;}=new List<Factura>();
         public int TotalRezultate=>Clienti.Count + Masini.Count + Programari.Count + Piese.Count + Facturi.Count;
     }
 }

@@ -5,10 +5,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ServiceAutoLicenta.Migrations
 {
-    /// <inheritdoc />
     public partial class RenameModelToModelMasina : Migration
     {
-        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.RenameColumn(
@@ -52,7 +50,6 @@ namespace ServiceAutoLicenta.Migrations
                 value: new DateTime(2026, 3, 25, 0, 17, 18, 538, DateTimeKind.Local).AddTicks(8520));
         }
 
-        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.RenameColumn(
