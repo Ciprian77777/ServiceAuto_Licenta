@@ -1,7 +1,7 @@
-﻿@model ServiceAutoLicenta.Models.Entities.Factura
+@model ServiceAutoLicenta.Models.Entities.Factura
 @using ServiceAutoLicenta.Models.Entities
 @{
-    ViewData["Title"]="Factură " + Model.SerieNumar;
+    ViewData["Title"]="Factura " + Model.SerieNumar;
 }
 
 <div class="page-header">
@@ -15,7 +15,7 @@
         </a>
         <div>
             <h2 style="font-family:monospace;">@Model.SerieNumar</h2>
-            <p>Emisă pe @Model.DataEmitere.ToString("dd MMMM yyyy")</p>
+            <p>Emisa pe @Model.DataEmitere.ToString("dd MMMM yyyy")</p>
         </div>
     </div>
     <span class="badge-status @(Model.StatusPlata==StatusPlata.Platita?"badge-platita":Model.StatusPlata==StatusPlata.Partial?"badge-partial":"badge-neplata")"
@@ -35,7 +35,7 @@
 <div class="row g-4">
     <div class="col-md-4">
         <div class="content-card mb-4">
-            <div class="content-card-header"><h5>Date factură</h5></div>
+            <div class="content-card-header"><h5>Date factura</h5></div>
             <div style="padding:20px;display:flex;flex-direction:column;gap:12px;">
                 <div style="display:flex;justify-content:space-between;font-size:14px;">
                     <span style="color:var(--text-muted);">Serie/Nr.</span>
@@ -46,11 +46,11 @@
                     <span>@Model.DataEmitere.ToString("dd.MM.yyyy")</span>
                 </div>
                 <div style="display:flex;justify-content:space-between;font-size:14px;">
-                    <span style="color:var(--text-muted);">Scadență</span>
+                    <span style="color:var(--text-muted);">Scaden?a</span>
                     <span>@(Model.DataScadenta?.ToString("dd.MM.yyyy")??"-")</span>
                 </div>
                 <div style="display:flex;justify-content:space-between;font-size:14px;">
-                    <span style="color:var(--text-muted);">Metodă plată</span>
+                    <span style="color:var(--text-muted);">Metoda plata</span>
                     <span>@(Model.MetodaPlata?.ToString()??"-")</span>
                 </div>
             </div>
@@ -61,7 +61,7 @@
             <div style="padding:20px;">
                 <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
                     <div class="client-avatar" style="width:44px;height:44px;font-size:15px;">
-                        @(Model.Programare.Masina.Client.Nume.Substring(0, 1))@(Model.Programare.Masina.Client.Prenume.Substring(0, 1))
+                        @(Model.Programare.Masina.Client.Nume.Substring(0,1))@(Model.Programare.Masina.Client.Prenume.Substring(0,1))
                     </div>
                     <div>
                         <div style="font-weight:600;">@Model.Programare.Masina.Client.NumeComplet</div>
@@ -70,7 +70,7 @@
                 </div>
                 <div style="font-size:13px;color:var(--text-muted);display:flex;align-items:center;gap:6px;">
                     <i class="bi bi-car-front"></i>
-                    @Model.Programare.Masina.NrInmatriculare — @Model.Programare.Masina.Marca @Model.Programare.Masina.ModelMasina
+                    @Model.Programare.Masina.NrInmatriculare � @Model.Programare.Masina.Marca @Model.Programare.Masina.ModelMasina
                 </div>
             </div>
         </div>
@@ -79,7 +79,7 @@
         {
             <div class="content-card">
                 <div class="content-card-header">
-                    <h5><i class="bi bi-cash me-2"></i>Înregistrează plata</h5>
+                    <h5><i class="bi bi-cash me-2"></i>�nregistreaza plata</h5>
                 </div>
                 <div style="padding:16px;">
                     <form asp-action="ActualizeazaStatus" method="post">
@@ -92,18 +92,18 @@
                         <div style="margin-bottom:12px;">
                             <select name="metodaPlata" class="form-select"
                                     asp-items="Html.GetEnumSelectList<ServiceAutoLicenta.Models.Entities.MetodaPlata>()">
-                                <option value="">-- Metodă plată --</option>
+                                <option value="">-- Metoda plata --</option>
                             </select>
                         </div>
                         <button type="submit" class="btn-primary-custom" style="width:100%;justify-content:center;">
-                            <i class="bi bi-check-lg"></i> Salvează plata
+                            <i class="bi bi-check-lg"></i> Salveaza plata
                         </button>
                     </form>
                     @if(Model.StatusPlata==StatusPlata.Neplata)
                     {
                         <a asp-action="PlataCard" asp-route-id="@Model.Id"
                            class="btn-outline-custom" style="width:100%;justify-content:center;margin-top:8px;">
-                            <i class="bi bi-credit-card me-1"></i> Plătește cu card
+                            <i class="bi bi-credit-card me-1"></i> Plate?te cu card
                         </a>
                     }
                 </div>
@@ -115,7 +115,7 @@
         <div class="content-card">
             <div class="content-card-header">
                 <div>
-                    <h5>Detalii lucrări</h5>
+                    <h5>Detalii lucrari</h5>
                     <p>Servicii prestate</p>
                 </div>
             </div>
@@ -123,7 +123,7 @@
                 <thead>
                     <tr>
                         <th>Descriere</th>
-                        <th style="text-align:right;">Preț</th>
+                        <th style="text-align:right;">Pre?</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -145,7 +145,7 @@
                             <tr>
                                 <td style="padding-left:48px;font-size:13px;color:var(--text-muted);">
                                     @lp.Piesa.Denumire
-                                    <span style="background:rgba(255,255,255,0.12);padding:1px 6px;border-radius:4px;font-size:11px;margin-left:4px;">× @lp.Cantitate</span>
+                                    <span style="background:rgba(255,255,255,0.12);padding:1px 6px;border-radius:4px;font-size:11px;margin-left:4px;">� @lp.Cantitate</span>
                                 </td>
                                 <td style="text-align:right;font-size:13px;">@lp.Subtotal.ToString("N2") lei</td>
                             </tr>
@@ -154,7 +154,7 @@
                 </tbody>
                 <tfoot>
                     <tr style="background:rgba(0,0,0,0.1);">
-                        <td style="text-align:right;color:var(--text-muted);font-size:13px;">Subtotal (fără TVA)</td>
+                        <td style="text-align:right;color:var(--text-muted);font-size:13px;">Subtotal (fara TVA)</td>
                         <td style="text-align:right;font-size:13px;">@Model.Subtotal.ToString("N2") lei</td>
                     </tr>
                     <tr style="background:rgba(0,0,0,0.1);">

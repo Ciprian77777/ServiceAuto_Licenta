@@ -18,7 +18,7 @@
 
     <div class="col-md-3 d-flex flex-column gap-3">
         @{
-            decimal venituri = ViewBag.VenituriLuna ?? 0m;
+            decimal venituri = ViewBag.VenituriLuna;
             decimal profitEstimat = venituri * 0.45m;
         }
         <div class="stat-card">
@@ -50,7 +50,7 @@
                 </div>
                 <span style="font-size:12px;font-weight:700;color:#15803d;">+12%</span>
             </div>
-            <div class="stat-value">@(ViewBag.TotalClienti ?? 0)</div>
+            <div class="stat-value">@ViewBag.TotalClienti</div>
             <div class="stat-label">Total clienți</div>
         </div>
 
@@ -61,7 +61,7 @@
                 </div>
                 <span style="font-size:12px;font-weight:700;color:#15803d;">+9%</span>
             </div>
-            <div class="stat-value">@(ViewBag.TotalProgramari ?? 0)</div>
+            <div class="stat-value">@ViewBag.TotalProgramari</div>
             <div class="stat-label">Total programări</div>
         </div>
     </div>
@@ -124,14 +124,14 @@
                             @{
                                 int i = 1;
                             }
-                            @if(ViewBag.PieseTop != null)
+                            @if(ViewBag.PieseTop!=null)
                             {
                                 @foreach(var piesa in ViewBag.PieseTop)
                                 {
                                     string bgP = "#e2e8f0"; string fgP = "var(--text-muted)";
-                                    if(i == 1){bgP = "#fbbf24"; fgP = "white";}
-                                    else if(i == 2){bgP = "#94a3b8"; fgP = "white";}
-                                    else if(i == 3){bgP = "#cd7c2f"; fgP = "white";}
+                                    if(i==1){bgP="#fbbf24";fgP="white";}
+                                    else if(i==2){bgP="#94a3b8";fgP="white";}
+                                    else if(i==3){bgP="#cd7c2f";fgP="white";}
                                     <tr>
                                         <td>
                                             <span style="width:24px;height:24px;background:@bgP;color:@fgP;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">
@@ -145,7 +145,7 @@
                                     i++;
                                 }
                             }
-                            @if(i == 1)
+                            @if(i==1)
                             {
                                 <tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:20px;">Nu există date.</td></tr>
                             }
@@ -175,14 +175,14 @@
                             @{
                                 int j = 1;
                             }
-                            @if(ViewBag.ClientiTop != null)
+                            @if(ViewBag.ClientiTop!=null)
                             {
                                 @foreach(var client in ViewBag.ClientiTop)
                                 {
                                     string bgC = "#e2e8f0"; string fgC = "var(--text-muted)";
-                                    if(j == 1){bgC = "#fbbf24"; fgC = "white";}
-                                    else if(j == 2){bgC = "#94a3b8"; fgC = "white";}
-                                    else if(j == 3){bgC = "#cd7c2f"; fgC = "white";}
+                                    if(j==1){bgC="#fbbf24";fgC="white";}
+                                    else if(j==2){bgC="#94a3b8";fgC="white";}
+                                    else if(j==3){bgC="#cd7c2f";fgC="white";}
                                     <tr>
                                         <td>
                                             <span style="width:24px;height:24px;background:@bgC;color:@fgC;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">
@@ -192,7 +192,7 @@
                                         <td>
                                             <div style="display:flex;align-items:center;gap:8px;">
                                                 <div class="client-avatar" style="width:28px;height:28px;font-size:10px;">
-                                                    @(client.Nume.Length >= 2 ? client.Nume.Substring(0, 1) : "?")
+                                                    @(client.Nume.Length>=2?client.Nume.Substring(0,1):"?")
                                                 </div>
                                                 <span style="font-size:13px;font-weight:500;">@client.Nume</span>
                                             </div>
@@ -203,7 +203,7 @@
                                     j++;
                                 }
                             }
-                            @if(j == 1)
+                            @if(j==1)
                             {
                                 <tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:20px;">Nu există date.</td></tr>
                             }
@@ -234,15 +234,15 @@
                     @{
                         int k = 1; int maxCount = 1;
                     }
-                    @if(ViewBag.LucrariTop != null)
+                    @if(ViewBag.LucrariTop!=null)
                     {
                         @foreach(var lucrare in ViewBag.LucrariTop)
                         {
-                            if(k == 1) maxCount = lucrare.Count;
+                            if(k==1) maxCount=lucrare.Count;
                             string bgLuc = "#e2e8f0"; string fgLuc = "var(--text-muted)";
-                            if(k == 1){bgLuc = "#fbbf24"; fgLuc = "white";}
-                            else if(k == 2){bgLuc = "#94a3b8"; fgLuc = "white";}
-                            else if(k == 3){bgLuc = "#cd7c2f"; fgLuc = "white";}
+                            if(k==1){bgLuc="#fbbf24";fgLuc="white";}
+                            else if(k==2){bgLuc="#94a3b8";fgLuc="white";}
+                            else if(k==3){bgLuc="#cd7c2f";fgLuc="white";}
                             <tr>
                                 <td>
                                     <span style="width:24px;height:24px;background:@bgLuc;color:@fgLuc;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">
@@ -269,7 +269,7 @@
                             k++;
                         }
                     }
-                    @if(k == 1)
+                    @if(k==1)
                     {
                         <tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:20px;">Nu există date.</td></tr>
                     }
@@ -399,10 +399,10 @@
                 labels: ['Programată', 'În lucru', 'Finalizată', 'Anulată'],
                 datasets: [{
                     data: [
-                        @(ViewBag.NrProgramata ?? 0),
-                        @(ViewBag.NrInLucru ?? 0),
-                        @(ViewBag.NrFinalizata ?? 0),
-                        @(ViewBag.NrAnulata ?? 0)
+                        @ViewBag.NrProgramata,
+                        @ViewBag.NrInLucru,
+                        @ViewBag.NrFinalizata,
+                        @ViewBag.NrAnulata
                     ],
                     backgroundColor: ['#2563eb', '#ea580c', '#16a34a', '#ef4444'],
                     borderWidth: 0
@@ -426,9 +426,9 @@
                 labels: ['Plătite', 'Neîncasate', 'Parțial'],
                 datasets: [{
                     data: [
-                        @(ViewBag.NrPlatite ?? 0),
-                        @(ViewBag.NrNeplata ?? 0),
-                        @(ViewBag.NrPartial ?? 0)
+                        @ViewBag.NrPlatite,
+                        @ViewBag.NrNeplata,
+                        @ViewBag.NrPartial
                     ],
                     backgroundColor: ['#16a34a', '#ef4444', '#ea580c'],
                     borderWidth: 0

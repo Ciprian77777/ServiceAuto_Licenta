@@ -1,16 +1,16 @@
-﻿@model IEnumerable<ServiceAutoLicenta.Models.Entities.Programare>
+@model IEnumerable<ServiceAutoLicenta.Models.Entities.Programare>
 @using ServiceAutoLicenta.Models.Entities
 @{
-    ViewData["Title"]="Programări";
+    ViewData["Title"]="Programari";
 }
 
 <div class="page-header">
     <div>
-        <h2>Programări</h2>
-        <p>Gestionează programările service-ului</p>
+        <h2>Programari</h2>
+        <p>Gestioneaza programarile service-ului</p>
     </div>
     <a asp-action="Adauga" class="btn-primary-custom">
-        <i class="bi bi-plus-lg"></i> Programare nouă
+        <i class="bi bi-plus-lg"></i> Programare noua
     </a>
 </div>
 
@@ -39,7 +39,7 @@
     <div class="stat-card">
         <div class="stat-icon"><i class="bi bi-wrench-adjustable"></i></div>
         <div class="stat-value">@Model.Count(p=>p.Status==StatusProgramare.InLucru)</div>
-        <div class="stat-label">În lucru</div>
+        <div class="stat-label">�n lucru</div>
     </div>
     <div class="stat-card">
         <div class="stat-icon"><i class="bi bi-check2-circle"></i></div>
@@ -61,13 +61,13 @@
 <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
     <a asp-action="Index" class="btn-outline-custom @(string.IsNullOrEmpty(ViewBag.Status)?"active-filter":"")">Toate</a>
     <a asp-action="Index" asp-route-status="Programata" class="btn-outline-custom @(ViewBag.Status=="Programata"?"active-filter":"")">
-        <span style="width:7px;height:7px;background:#1a56db;display:inline-block;margin-right:4px;"></span>Programată
+        <span style="width:7px;height:7px;background:#1a56db;display:inline-block;margin-right:4px;"></span>Programata
     </a>
     <a asp-action="Index" asp-route-status="InLucru" class="btn-outline-custom @(ViewBag.Status=="InLucru"?"active-filter":"")">
-        <span style="width:7px;height:7px;background:#c2410c;display:inline-block;margin-right:4px;"></span>În lucru
+        <span style="width:7px;height:7px;background:#c2410c;display:inline-block;margin-right:4px;"></span>�n lucru
     </a>
     <a asp-action="Index" asp-route-status="Finalizata" class="btn-outline-custom @(ViewBag.Status=="Finalizata"?"active-filter":"")">
-        <span style="width:7px;height:7px;background:#15803d;display:inline-block;margin-right:4px;"></span>Finalizată
+        <span style="width:7px;height:7px;background:#15803d;display:inline-block;margin-right:4px;"></span>Finalizata
     </a>
 </div>
 
@@ -79,9 +79,9 @@
                 <i class="bi bi-search" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:14px;"></i>
                 <input type="text" name="cautare" value="@ViewBag.Cautare"
                        style="padding:8px 12px 8px 32px;border:1px solid var(--border-color);border-radius:8px;font-size:13px;width:100%;outline:none;"
-                       placeholder="Caută după client sau nr. înmatriculare..." />
+                       placeholder="Cauta dupa client sau nr. �nmatriculare..." />
             </div>
-            <button type="submit" class="btn-outline-custom">Caută</button>
+            <button type="submit" class="btn-outline-custom">Cauta</button>
             @if(!string.IsNullOrEmpty(ViewBag.Cautare))
             {
                 <a asp-action="Index" asp-route-status="@ViewBag.Status" class="btn-outline-custom" style="color:#ef4444;border-color:#fca5a5;">
@@ -96,9 +96,9 @@
 {
     <div class="content-card" style="text-align:center;padding:60px 20px;color:var(--text-muted);">
         <i class="bi bi-calendar-x" style="font-size:3rem;opacity:0.3;"></i>
-        <p style="margin-top:12px;">Nu există programări.</p>
+        <p style="margin-top:12px;">Nu exista programari.</p>
         <a asp-action="Adauga" class="btn-primary-custom" style="margin-top:8px;">
-            <i class="bi bi-plus-lg"></i> Adaugă programare
+            <i class="bi bi-plus-lg"></i> Adauga programare
         </a>
     </div>
 }
@@ -117,7 +117,7 @@ else
                     <div style="flex:1;min-width:0;">
                         <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
                             <div class="client-avatar" style="font-size:11px;width:28px;height:28px;">
-                                @(p.Masina.Client.Nume.Substring(0, 1))@(p.Masina.Client.Prenume.Substring(0, 1))
+                                @(p.Masina.Client.Nume.Substring(0,1))@(p.Masina.Client.Prenume.Substring(0,1))
                             </div>
                             <span style="font-weight:600;font-size:14px;">@p.Masina.Client.NumeComplet</span>
                         </div>
@@ -158,7 +158,7 @@ else
     </div>
         }
     </div>
-    <p style="font-size:13px;color:var(--text-muted);margin-top:12px;">Total: @Model.Count() programări</p>
+    <p style="font-size:13px;color:var(--text-muted);margin-top:12px;">Total: @Model.Count() programari</p>
 }
 
 <style>

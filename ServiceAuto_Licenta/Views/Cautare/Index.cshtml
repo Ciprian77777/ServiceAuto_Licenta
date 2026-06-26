@@ -1,4 +1,4 @@
-ï»¿@model ServiceAutoLicenta.Controllers.SearchResult
+@model ServiceAutoLicenta.Controllers.SearchResult
 @using ServiceAutoLicenta.Models.Entities
 @{
     ViewData["Title"]="Cautare";
@@ -12,11 +12,11 @@
             <p>
                 @if(Model.TotalRezultate > 0)
                 {
-                    <span>@Model.TotalRezultate rezultate pentru â€ž<strong>@Model.Query</strong>"</span>
+                    <span>@Model.TotalRezultate rezultate pentru „<strong>@Model.Query</strong>"</span>
                 }
                 else
                 {
-                    <span>Niciun rezultat pentru â€ž<strong>@Model.Query</strong>"</span>
+                    <span>Niciun rezultat pentru „<strong>@Model.Query</strong>"</span>
                 }
             </p>
         }
@@ -68,7 +68,7 @@ else if(Model.TotalRezultate==0)
 {
     <div style="text-align:center;padding:60px 20px;color:var(--text-muted);">
         <i class="bi bi-emoji-frown" style="font-size:3rem;opacity:0.2;"></i>
-        <p style="margin-top:16px;font-size:15px;">Niciun rezultat pentru â€ž@Model.Query"</p>
+        <p style="margin-top:16px;font-size:15px;">Niciun rezultat pentru „@Model.Query"</p>
         <p style="font-size:13px;">Incearca sa cauti dupa alt termen</p>
     </div>
 }
@@ -99,7 +99,7 @@ else
                                 <td>
                                     <div style="display:flex;align-items:center;gap:10px;">
                                         <div class="client-avatar" style="font-size:11px;">
-                                            @(c.Nume.Substring(0, 1))@(c.Prenume.Substring(0, 1))
+                                            @(c.Nume.Substring(0,1))@(c.Prenume.Substring(0,1))
                                         </div>
                                         <div>
                                             <div style="font-weight:500;">@c.NumeComplet</div>

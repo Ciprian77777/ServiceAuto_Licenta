@@ -1,7 +1,7 @@
-﻿@model ServiceAutoLicenta.Models.Entities.Factura
+@model ServiceAutoLicenta.Models.Entities.Factura
 @using ServiceAutoLicenta.Models.Entities
 @{
-    ViewData["Title"] = "Factura " + Model.SerieNumar;
+    ViewData["Title"]="Factura "+Model.SerieNumar;
     Layout = null;
 }
 <!DOCTYPE html>
@@ -434,11 +434,11 @@
 
     <div class="print-actions">
         <a href="javascript:history.back()" class="btn-back">
-            ← Inapoi
+            ? Inapoi
         </a>
-        <span>Factura @Model.SerieNumar — previzualizare print</span>
+        <span>Factura @Model.SerieNumar � previzualizare print</span>
         <button class="btn-print" onclick="window.print()">
-            🖨️ Printeaza / Salveaza PDF
+            ??? Printeaza / Salveaza PDF
         </button>
     </div>
 
@@ -474,10 +474,10 @@
                         }
                     </div>
                     <div>
-                        <span class="status-badge @(Model.StatusPlata == StatusPlata.Platita ? "status-platita" :
-                                                                              Model.StatusPlata == StatusPlata.Partial ? "status-partial" : "status-neplata")">
-                            @(Model.StatusPlata == StatusPlata.Platita ? "✓ PLATITA" :
-                                                        Model.StatusPlata == StatusPlata.Partial ? "~ PARTIAL" : "⚠ NEPLATITA")
+                        <span class="status-badge @(Model.StatusPlata==StatusPlata.Platita?"status-platita":
+                                                                              Model.StatusPlata==StatusPlata.Partial?"status-partial":"status-neplata")">
+                            @(Model.StatusPlata==StatusPlata.Platita?"? PLATITA":
+                                                        Model.StatusPlata==StatusPlata.Partial?"~ PARTIAL":"? NEPLATITA")
                         </span>
                     </div>
                 </div>
@@ -556,7 +556,7 @@
                         <tr class="service-row">
                             <td>
                                 <div class="service-name">
-                                    <span class="service-icon">⚙</span>
+                                    <span class="service-icon">?</span>
                                     @lucrare.Denumire
                                 </div>
                                 @if (!string.IsNullOrEmpty(lucrare.Descriere))
@@ -617,7 +617,7 @@
                 </div>
                 <div class="payment-card">
                     <div class="payment-card-label">Status plata</div>
-                    <div class="payment-card-value" style="color:@(Model.StatusPlata == StatusPlata.Platita ? "#16a34a" : "#dc2626");">
+                    <div class="payment-card-value" style="color:@(Model.StatusPlata==StatusPlata.Platita?"#16a34a":"#dc2626");">
                         @Model.StatusPlata
                     </div>
                 </div>

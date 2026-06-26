@@ -1,9 +1,9 @@
 @using ServiceAutoLicenta.Models.Entities
 @{
-    ViewData["Title"] = "Dashboard";
-    decimal venLuna = ViewBag.VenituriLuna   ?? 0;
-    decimal venAnt  = ViewBag.VenituriLunaAnt ?? 0;
-    decimal diff    = venAnt > 0 ? Math.Round((venLuna - venAnt) / venAnt * 100, 1) : 0;
+    ViewData["Title"]="Dashboard";
+    decimal venLuna=ViewBag.VenituriLuna;
+    decimal venAnt=ViewBag.VenituriLunaAnt;
+    decimal diff=venAnt>0?Math.Round((venLuna-venAnt)/venAnt*100,1):0;
 }
 
 <div class="page-header">
@@ -23,18 +23,18 @@
             @venLuna.ToString("N0") <span style="font-size:18px;color:#888;">lei</span>
         </div>
     </div>
-    @if(diff != 0)
+    @if(diff!=0)
     {
     <div style="text-align:right;">
         <div style="font-size:11px;color:#666;margin-bottom:4px;">față de luna trecută</div>
         <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;color:@(diff>=0?"#16a34a":"#c1272d");">
-            @(diff >= 0 ? "+" : "")@diff%
+            @(diff>=0?"+":"")@diff%
         </div>
     </div>
     }
 </div>
 
-@if((ViewBag.AlerteStoc ?? 0) > 0)
+@if(ViewBag.AlerteStoc > 0)
 {
 <div class="content-card mb-3">
     <div class="content-card-header" style="background:#fffbeb;border-bottom-color:#fde68a;">
@@ -82,7 +82,7 @@
                     <tr><th>Client / Mașină</th><th>Data</th><th>Status</th><th></th></tr>
                 </thead>
                 <tbody>
-                @if(ViewBag.UltimeProgramari != null)
+                @if(ViewBag.UltimeProgramari!=null)
                 {
                     @foreach(var p in ViewBag.UltimeProgramari)
                     {

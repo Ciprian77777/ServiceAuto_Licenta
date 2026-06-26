@@ -1,7 +1,7 @@
-﻿@model ServiceAutoLicenta.Models.Entities.Factura
+@model ServiceAutoLicenta.Models.Entities.Factura
 @using ServiceAutoLicenta.Models.Entities
 @{
-    ViewData["Title"]="Generează factură";
+    ViewData["Title"]="Genereaza factura";
     var programare=ViewBag.Programare as Programare;
 }
 
@@ -12,8 +12,8 @@
             <i class="bi bi-arrow-left"></i>
         </a>
         <div>
-            <h2>Generează factură</h2>
-            <p>Factură pentru programarea #@Model.ProgramareId</p>
+            <h2>Genereaza factura</h2>
+            <p>Factura pentru programarea #@Model.ProgramareId</p>
         </div>
     </div>
 </div>
@@ -21,17 +21,17 @@
 <div class="row g-4">
     <div class="col-md-5">
         <div class="content-card">
-            <div class="content-card-header"><h5>Sumar lucrări</h5></div>
+            <div class="content-card-header"><h5>Sumar lucrari</h5></div>
             <div style="padding:20px;">
                 @if(programare!=null)
                 {
                     <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border-color);">
                         <div class="client-avatar">
-                            @(programare.Masina.Client.Nume.Substring(0, 1))@(programare.Masina.Client.Prenume.Substring(0, 1))
+                            @(programare.Masina.Client.Nume.Substring(0,1))@(programare.Masina.Client.Prenume.Substring(0,1))
                         </div>
                         <div>
                             <div style="font-weight:600;">@programare.Masina.Client.NumeComplet</div>
-                            <div style="font-size:13px;color:var(--text-muted);">@programare.Masina.NrInmatriculare — @programare.Masina.Marca @programare.Masina.ModelMasina</div>
+                            <div style="font-size:13px;color:var(--text-muted);">@programare.Masina.NrInmatriculare � @programare.Masina.Marca @programare.Masina.ModelMasina</div>
                         </div>
                     </div>
 
@@ -45,7 +45,7 @@
                             @foreach(var lp in lucrare.LucrarePiese)
                             {
                                 <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted);padding-left:12px;">
-                                    <span>@lp.Piesa.Denumire × @lp.Cantitate</span>
+                                    <span>@lp.Piesa.Denumire � @lp.Cantitate</span>
                                     <span>@lp.Subtotal.ToString("N2") lei</span>
                                 </div>
                             }
@@ -74,7 +74,7 @@
     <div class="col-md-7">
         <div class="form-card">
             <div style="font-weight:600;font-size:15px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border-color);">
-                <i class="bi bi-file-earmark-text me-2" style="color:#2563eb;"></i>Date factură
+                <i class="bi bi-file-earmark-text me-2" style="color:#2563eb;"></i>Date factura
             </div>
             <form asp-action="Genereaza" asp-controller="Facturi" method="post">
                 <input type="hidden" asp-for="ProgramareId" />
@@ -84,7 +84,7 @@
 
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label asp-for="SerieNumar" class="form-label">Serie / Număr *</label>
+                        <label asp-for="SerieNumar" class="form-label">Serie / Numar *</label>
                         <input asp-for="SerieNumar" class="form-control" style="font-family:monospace;" />
                         <span asp-validation-for="SerieNumar" class="text-danger" style="font-size:12px;"></span>
                     </div>
@@ -93,31 +93,31 @@
                         <input asp-for="DataEmitere" type="date" class="form-control" />
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="DataScadenta" class="form-label">Data scadență</label>
+                        <label asp-for="DataScadenta" class="form-label">Data scaden?a</label>
                         <input asp-for="DataScadenta" type="date" class="form-control" />
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="StatusPlata" class="form-label">Status plată</label>
+                        <label asp-for="StatusPlata" class="form-label">Status plata</label>
                         <select asp-for="StatusPlata" class="form-select"
                                 asp-items="Html.GetEnumSelectList<ServiceAutoLicenta.Models.Entities.StatusPlata>()">
                         </select>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="MetodaPlata" class="form-label">Metodă plată</label>
+                        <label asp-for="MetodaPlata" class="form-label">Metoda plata</label>
                         <select asp-for="MetodaPlata" class="form-select"
                                 asp-items="Html.GetEnumSelectList<ServiceAutoLicenta.Models.Entities.MetodaPlata>()">
-                            <option value="">-- Selectează --</option>
+                            <option value="">-- Selecteaza --</option>
                         </select>
                     </div>
                 </div>
 
                 <div style="display:flex;gap:12px;margin-top:28px;">
                     <button type="submit" class="btn-primary-custom">
-                        <i class="bi bi-file-earmark-check"></i> Generează factura
+                        <i class="bi bi-file-earmark-check"></i> Genereaza factura
                     </button>
                     <a asp-controller="Programari" asp-action="Detalii"
                        asp-route-id="@Model.ProgramareId" class="btn-outline-custom">
-                        Anulează
+                        Anuleaza
                     </a>
                 </div>
             </form>

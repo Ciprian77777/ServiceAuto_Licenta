@@ -1,5 +1,5 @@
 @{
-    ViewData["Title"] = "GarageCare";
+    ViewData["Title"]="GarageCare";
     Layout = null;
 }
 <!DOCTYPE html>
@@ -352,7 +352,7 @@
         </div>
 
         <div class="auth-card">
-            @if(TempData["LoginError"] != null)
+            @if(TempData["LoginError"]!=null)
             {
                 <div class="error-msg"><i class="bi bi-exclamation-circle me-2"></i>@TempData["LoginError"]</div>
             }
@@ -519,7 +519,7 @@
             document.getElementById('tab-' + tab).classList.add('active');
             document.getElementById('auth').scrollIntoView({ behavior: 'smooth' });
         }
-        @if(TempData["ShowRegister"] != null)
+        @if(TempData["ShowRegister"]!=null)
         {
             <text>window.addEventListener('DOMContentLoaded', () => switchTab('register'));</text>
         }

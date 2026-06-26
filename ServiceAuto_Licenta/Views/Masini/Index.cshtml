@@ -1,15 +1,15 @@
-﻿@model IEnumerable<ServiceAutoLicenta.Models.Entities.Masina>
+@model IEnumerable<ServiceAutoLicenta.Models.Entities.Masina>
 @{
-    ViewData["Title"]="Mașini";
+    ViewData["Title"]="Ma?ini";
 }
 
 <div class="page-header">
     <div>
-        <h2>Mașini</h2>
-        <p>Gestionează vehiculele înregistrate</p>
+        <h2>Ma?ini</h2>
+        <p>Gestioneaza vehiculele �nregistrate</p>
     </div>
     <a asp-action="Adauga" class="btn-primary-custom">
-        <i class="bi bi-plus-lg"></i> Mașină nouă
+        <i class="bi bi-plus-lg"></i> Ma?ina noua
     </a>
 </div>
 
@@ -33,7 +33,7 @@
         <div class="stat-card">
             <div class="stat-icon"><i class="bi bi-car-front-fill"></i></div>
             <div class="stat-value">@Model.Count()</div>
-            <div class="stat-label">Total Mașini</div>
+            <div class="stat-label">Total Ma?ini</div>
         </div>
         <div class="stat-card">
             <div class="stat-icon"><i class="bi bi-people-fill"></i></div>
@@ -43,12 +43,12 @@
         <div class="stat-card">
             <div class="stat-icon"><i class="bi bi-calendar-check"></i></div>
             <div class="stat-value">@Model.Sum(m=>m.Programari.Count)</div>
-            <div class="stat-label">Total programări</div>
+            <div class="stat-label">Total programari</div>
         </div>
         <div class="stat-card">
             <div class="stat-icon"><i class="bi bi-calendar-plus"></i></div>
             <div class="stat-value">@Model.Count(m=>m.Programari.Any())</div>
-            <div class="stat-label">Cu programări</div>
+            <div class="stat-label">Cu programari</div>
         </div>
     </aside>
     <div class="pmain">
@@ -59,9 +59,9 @@
                 <i class="bi bi-search" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:14px;"></i>
                 <input type="text" name="cautare" value="@ViewBag.Cautare"
                        style="padding:8px 12px 8px 32px;border:1px solid var(--border-color);border-radius:8px;font-size:13px;width:280px;outline:none;"
-                       placeholder="Caută după nr. înmatriculare, marcă, client..." />
+                       placeholder="Cauta dupa nr. �nmatriculare, marca, client..." />
             </div>
-            <button type="submit" class="btn-outline-custom">Caută</button>
+            <button type="submit" class="btn-outline-custom">Cauta</button>
             @if(!string.IsNullOrEmpty(ViewBag.Cautare))
             {
                 <a asp-action="Index" class="btn-outline-custom" style="color:#ef4444;border-color:#fca5a5;">
@@ -69,16 +69,16 @@
                 </a>
             }
         </form>
-        <span style="font-size:13px;color:var(--text-muted);">@Model.Count() mașini găsite</span>
+        <span style="font-size:13px;color:var(--text-muted);">@Model.Count() ma?ini gasite</span>
     </div>
 
     @if(!Model.Any())
     {
         <div style="text-align:center;padding:60px 20px;color:var(--text-muted);">
             <i class="bi bi-car-front" style="font-size:3rem;opacity:0.3;"></i>
-            <p style="margin-top:12px;">Nu există mașini înregistrate.</p>
+            <p style="margin-top:12px;">Nu exista ma?ini �nregistrate.</p>
             <a asp-action="Adauga" class="btn-primary-custom" style="margin-top:8px;">
-                <i class="bi bi-plus-lg"></i> Adaugă prima mașină
+                <i class="bi bi-plus-lg"></i> Adauga prima ma?ina
             </a>
         </div>
     }
@@ -87,12 +87,12 @@
         <table class="custom-table">
             <thead>
                 <tr>
-                    <th>Nr. înmatriculare</th>
-                    <th>Mașină</th>
+                    <th>Nr. �nmatriculare</th>
+                    <th>Ma?ina</th>
                     <th>Proprietar</th>
                     <th>Km</th>
-                    <th>Programări</th>
-                    <th>Acțiuni</th>
+                    <th>Programari</th>
+                    <th>Ac?iuni</th>
                 </tr>
             </thead>
             <tbody>
@@ -111,7 +111,7 @@
                         <td>
                             <div style="display:flex;align-items:center;gap:10px;">
                                 <div class="client-avatar" style="font-size:11px;">
-                                    @(masina.Client.Nume.Substring(0, 1))@(masina.Client.Prenume.Substring(0, 1))
+                                    @(masina.Client.Nume.Substring(0,1))@(masina.Client.Prenume.Substring(0,1))
                                 </div>
                                 <a asp-controller="Clienti" asp-action="Detalii" asp-route-id="@masina.ClientId"
                                    style="font-size:14px;color:var(--text-primary);text-decoration:none;font-weight:500;">
@@ -132,11 +132,11 @@
                                     <i class="bi bi-eye"></i>
                                 </a>
                                 <a asp-action="Editeaza" asp-route-id="@masina.Id"
-                                   class="btn-outline-custom" style="padding:5px 10px;" title="Editează">
+                                   class="btn-outline-custom" style="padding:5px 10px;" title="Editeaza">
                                     <i class="bi bi-pencil"></i>
                                 </a>
                                 <a asp-action="Sterge" asp-route-id="@masina.Id"
-                                   class="btn-outline-custom" style="padding:5px 10px;color:#ef4444;border-color:#fca5a5;" title="Șterge">
+                                   class="btn-outline-custom" style="padding:5px 10px;color:#ef4444;border-color:#fca5a5;" title="?terge">
                                     <i class="bi bi-trash"></i>
                                 </a>
                             </div>

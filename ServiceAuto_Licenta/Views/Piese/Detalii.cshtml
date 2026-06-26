@@ -1,6 +1,6 @@
-﻿@model ServiceAutoLicenta.Models.Entities.Piesa
+@model ServiceAutoLicenta.Models.Entities.Piesa
 @{
-    ViewData["Title"]="Detalii piesă";
+    ViewData["Title"]="Detalii piesa";
 }
 
 <div class="page-header">
@@ -14,7 +14,7 @@
         </div>
     </div>
     <a asp-action="Editeaza" asp-route-id="@Model.Id" class="btn-outline-custom">
-        <i class="bi bi-pencil"></i> Editează
+        <i class="bi bi-pencil"></i> Editeaza
     </a>
 </div>
 
@@ -29,22 +29,22 @@
 <div class="row g-4">
     <div class="col-md-4">
         <div class="content-card mb-4">
-            <div class="content-card-header"><h5>Date piesă</h5></div>
+            <div class="content-card-header"><h5>Date piesa</h5></div>
             <div style="padding:20px;display:flex;flex-direction:column;gap:12px;">
                 <div style="display:flex;justify-content:space-between;font-size:14px;">
                     <span style="color:var(--text-muted);">Cod</span>
                     <span style="font-family:monospace;font-weight:600;background:rgba(255,255,255,0.12);padding:2px 8px;border-radius:4px;">@Model.CodPiesa</span>
                 </div>
                 <div style="display:flex;justify-content:space-between;font-size:14px;">
-                    <span style="color:var(--text-muted);">Producător</span>
+                    <span style="color:var(--text-muted);">Producator</span>
                     <span>@(Model.Producator??"-")</span>
                 </div>
                 <div style="display:flex;justify-content:space-between;font-size:14px;">
-                    <span style="color:var(--text-muted);">Preț achiziție</span>
+                    <span style="color:var(--text-muted);">Pre? achizi?ie</span>
                     <span>@Model.PretAchizitie.ToString("N2") lei</span>
                 </div>
                 <div style="display:flex;justify-content:space-between;font-size:14px;">
-                    <span style="color:var(--text-muted);">Preț vânzare</span>
+                    <span style="color:var(--text-muted);">Pre? v�nzare</span>
                     <strong>@Model.PretVanzare.ToString("N2") lei</strong>
                 </div>
                 <div style="display:flex;justify-content:space-between;font-size:14px;padding-top:8px;border-top:1px solid var(--border-color);">
@@ -54,24 +54,24 @@
             </div>
         </div>
 
-        <div class="content-card" style="border:1.5px solid @(Model.StocScazut? "#fca5a5" : "#86efac");">
-            <div class="content-card-header" style="background:@(Model.StocScazut? "#fef2f2" : "#f0fdf4");">
-                <h5 style="color:@(Model.StocScazut? "#dc2626" : "#16a34a");">
+        <div class="content-card" style="border:1.5px solid @(Model.StocScazut?"#fca5a5":"#86efac");">
+            <div class="content-card-header" style="background:@(Model.StocScazut?"#fef2f2":"#f0fdf4");">
+                <h5 style="color:@(Model.StocScazut?"#dc2626":"#16a34a");">
                     <i class="bi bi-box-seam me-2"></i>Stoc
                 </h5>
             </div>
             <div style="padding:20px;text-align:center;">
-                <div style="font-size:48px;font-weight:700;color:@(Model.StocScazut? "#ef4444" : "#16a34a");">
+                <div style="font-size:48px;font-weight:700;color:@(Model.StocScazut?"#ef4444":"#16a34a");">
                     @Model.StocCurent
                 </div>
                 <div style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">
-                    bucăți disponibile (min. @Model.StocMinim)
+                    buca?i disponibile (min. @Model.StocMinim)
                 </div>
                 @{
-                    int proc=Model.StocMinim > 0? Math.Min(100, (int)((double)Model.StocCurent / Model.StocMinim * 100)) : 100;
+                    int proc=Model.StocMinim>0?Math.Min(100,(int)((double)Model.StocCurent/Model.StocMinim*100)):100;
                 }
                 <div style="background:#e2e8f0;border-radius:4px;height:8px;margin-bottom:20px;">
-                    <div style="width:@(Math.Min(proc, 100))%;height:100%;border-radius:4px;background:@(Model.StocScazut? "#ef4444" : "#16a34a");"></div>
+                    <div style="width:@(Math.Min(proc,100))%;height:100%;border-radius:4px;background:@(Model.StocScazut?"#ef4444":"#16a34a");"></div>
                 </div>
                 <form asp-action="ActualizeazaStoc" method="post">
                     <input type="hidden" name="id" value="@Model.Id" />
@@ -84,7 +84,7 @@
                         </button>
                     </div>
                     <small style="font-size:11px;color:var(--text-muted);margin-top:4px;display:block;">
-                        Pozitiv=intrare stoc, negativ=ieșire stoc
+                        Pozitiv=intrare stoc, negativ=ie?ire stoc
                     </small>
                 </form>
             </div>
@@ -96,14 +96,14 @@
             <div class="content-card-header">
                 <div>
                     <h5>Istoric utilizare</h5>
-                    <p>@Model.LucrarePiese.Count utilizări înregistrate</p>
+                    <p>@Model.LucrarePiese.Count utilizari �nregistrate</p>
                 </div>
             </div>
             @if(!Model.LucrarePiese.Any())
             {
                 <div style="text-align:center;padding:40px;color:var(--text-muted);">
                     <i class="bi bi-clock-history" style="font-size:2.5rem;opacity:0.3;"></i>
-                    <p style="margin-top:10px;">Piesa nu a fost utilizată în nicio lucrare.</p>
+                    <p style="margin-top:10px;">Piesa nu a fost utilizata �n nicio lucrare.</p>
                 </div>
             }
             else
@@ -112,10 +112,10 @@
                     <thead>
                         <tr>
                             <th>Data</th>
-                            <th>Mașină</th>
+                            <th>Ma?ina</th>
                             <th>Client</th>
                             <th>Cant.</th>
-                            <th>Preț unit.</th>
+                            <th>Pre? unit.</th>
                             <th>Subtotal</th>
                         </tr>
                     </thead>

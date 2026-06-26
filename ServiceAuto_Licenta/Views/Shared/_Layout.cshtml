@@ -368,7 +368,7 @@
             <a asp-controller="Piese" asp-action="Index" asp-route-stocScazut="true"
                class="gc-icon-btn" title="Alerte stoc">
                 <i class="bi bi-bell"></i>
-                @{ var _alerte = 0; try { _alerte = ViewBag.AlerteGlobale ?? 0; } catch { } }
+                @{ var _alerte = 0; try { _alerte = (int)ViewBag.AlerteGlobale; } catch { } }
                 @if(_alerte > 0){<span class="gc-badge">@_alerte</span>}
             </a>
             <div class="gc-user">

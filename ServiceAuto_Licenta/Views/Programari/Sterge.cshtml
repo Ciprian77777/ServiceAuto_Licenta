@@ -60,7 +60,7 @@
                 <div style="display:flex;gap:12px;">
                     <button type="submit"
                             style="flex:1;background:#ef4444;color:white;border:none;padding:10px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;"
-                            @(Model.Factura!=null? "disabled" : "")>
+                            @(Model.Factura!=null?"disabled":"")>
                         <i class="bi bi-trash me-1"></i> Șterge definitiv
                     </button>
                     <a asp-action="Index" class="btn-outline-custom" style="flex:1;justify-content:center;">
