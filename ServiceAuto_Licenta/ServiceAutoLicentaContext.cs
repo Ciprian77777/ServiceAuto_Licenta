@@ -11,13 +11,13 @@ namespace ServiceAutoLicenta.Data
     {
         public ServiceAutoLicentaContext(DbContextOptions<ServiceAutoLicentaContext> options)
             : base(options){ }
-        public DbSet<Client>Clienti{get;set; }
-        public DbSet<Masina>Masini{get;set; }
-        public DbSet<Programare>Programari{get;set; }
-        public DbSet<Lucrare>Lucrari {get;set; }
-        public DbSet<Piesa> Piese{get;set; }
-        public DbSet<LucrarePiesa>LucrarePiese {get;set; }
-        public DbSet<Factura>Facturi{get;set; }
+        public DbSet<Client>Clienti{get;set;}
+        public DbSet<Masina>Masini{get;set;}
+        public DbSet<Programare>Programari{get;set;}
+        public DbSet<Lucrare>Lucrari {get;set;}
+        public DbSet<Piesa> Piese{get;set;}
+        public DbSet<LucrarePiesa>LucrarePiese {get;set;}
+        public DbSet<Factura>Facturi{get;set;}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
